@@ -158,7 +158,7 @@ async function initFormularioInscripcion() {
       window.scrollTo({ top: document.getElementById('inscripcion').offsetTop - 100, behavior: 'smooth' });
     } else {
       console.error('Fallo en registrarInscripcion');
-      alert('Hubo un problema técnico al registrar tu inscripción. Por favor, contacta directamente con nosotros en contacto@somoshispanidad.es');
+      alert('Hubo un problema técnico al registrar tu inscripción. Por favor, inténtalo de nuevo más tarde o contacta con la administración.');
     }
   });
 }

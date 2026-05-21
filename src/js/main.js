@@ -47,6 +47,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // ── MARCAR PÁGINA ACTIVA EN EL MENÚ ──────────────────
   marcarPaginaActiva();
 
+
+  // ── GENERAR CÓDIGO QR DINÁMICO EN EL FOOTER ───────────
+  const qrImg = document.getElementById('footer-qr');
+  if (qrImg) {
+    const currentUrl = encodeURIComponent(window.location.href);
+    // Usamos el color de fondo var(--warm-white) #faf6f0 y color de código var(--ink) #2c1a0e
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentUrl}&color=2c1a0e&bgcolor=faf6f0`;
+  }
+
 });
 
 

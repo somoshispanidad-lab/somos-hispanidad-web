@@ -630,6 +630,56 @@ footer {
   max-width: 340px;
 }
 
+.footer-brand-col {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.footer-brand-info {
+  flex: 1;
+}
+
+.footer-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.footer-qr-card {
+  background: var(--warm-white);
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--sepia-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(44, 26, 14, 0.2);
+}
+
+.footer-qr-img {
+  display: block;
+  width: 90px;
+  height: 90px;
+}
+
+.footer-qr-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .footer-qr-container {
+    display: none;
+  }
+}
+
 .footer-col-title {
   font-family: 'Lato', sans-serif;
   font-size: 0.65rem;

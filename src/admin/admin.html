@@ -18,7 +18,39 @@
       <input type="email" id="login-email" class="admin-form-input" placeholder="Correo electrónico" required style="width:100%; margin-bottom:12px; padding:10px;">
       <input type="password" id="login-password" class="admin-form-input" placeholder="Contraseña" required style="width:100%; margin-bottom:16px; padding:10px;">
       <button type="submit" class="admin-btn admin-btn-primary" style="width:100%">Acceder</button>
+      <div style="text-align: center; margin-top: 12px;">
+        <a href="#" id="link-forgot-password" style="font-size: 0.8rem; color: var(--ink-light); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+      </div>
       <div id="login-error" style="color:red; font-size:0.8rem; margin-top:10px; display:none;">Error de inicio de sesión.</div>
+    </form>
+  </div>
+</div>
+
+<!-- RECOVERY WRAPPER -->
+<div id="recovery-wrapper" class="admin-login-wrapper" style="display:none;">
+  <div class="admin-login-box">
+    <div class="admin-logo" style="margin-bottom: 24px; text-align: center;">Recuperar <span>Clave</span></div>
+    <p style="font-size: 0.85rem; color: var(--ink-light); margin-bottom: 16px; text-align: center;">Introduce tu correo electrónico para recibir un enlace de recuperación.</p>
+    <form id="admin-recovery-form">
+      <input type="email" id="recovery-email" class="admin-form-input" placeholder="Correo electrónico" required style="width:100%; margin-bottom:16px; padding:10px;">
+      <button type="submit" class="admin-btn admin-btn-primary" style="width:100%">Enviar enlace</button>
+      <div style="text-align: center; margin-top: 12px;">
+        <a href="#" id="link-back-login" style="font-size: 0.8rem; color: var(--ink-light); text-decoration: none;">← Volver al login</a>
+      </div>
+      <div id="recovery-msg" style="font-size:0.8rem; margin-top:10px; display:none; text-align: center;"></div>
+    </form>
+  </div>
+</div>
+
+<!-- UPDATE PASSWORD WRAPPER -->
+<div id="update-password-wrapper" class="admin-login-wrapper" style="display:none;">
+  <div class="admin-login-box">
+    <div class="admin-logo" style="margin-bottom: 24px; text-align: center;">Nueva <span>Contraseña</span></div>
+    <p style="font-size: 0.85rem; color: var(--ink-light); margin-bottom: 16px; text-align: center;">Introduce tu nueva contraseña.</p>
+    <form id="admin-update-password-form">
+      <input type="password" id="update-password-input" class="admin-form-input" placeholder="Nueva contraseña" required style="width:100%; margin-bottom:16px; padding:10px;">
+      <button type="submit" class="admin-btn admin-btn-primary" style="width:100%">Actualizar contraseña</button>
+      <div id="update-msg" style="font-size:0.8rem; margin-top:10px; display:none; text-align: center;"></div>
     </form>
   </div>
 </div>
@@ -310,6 +342,14 @@
         <label>Enlace (YouTube o PDF)</label>
         <input type="url" id="cont-url" class="admin-form-input" placeholder="https://...">
       </div>
+<div class="admin-form-group">
+  <label>Archivo local (PDF, imagen, etc.)</label>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <input type="file" id="cont-archivo" accept=".pdf,.png,.jpg,.jpeg,.gif" style="display:none;">
+    <button id="btn-seleccionar-archivo" class="admin-btn admin-btn-outline" type="button">📁 Seleccionar archivo</button>
+    <span id="archivo-nombre" style="font-size:0.85rem; color:#555;"></span>
+  </div>
+</div>
       <div class="admin-form-group">
         <label>URL de la miniatura/imagen</label>
         <input type="url" id="cont-imagen" class="admin-form-input" placeholder="https://...">

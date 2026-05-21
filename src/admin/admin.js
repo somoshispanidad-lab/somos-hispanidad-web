@@ -12,20 +12,30 @@ document.addEventListener('DOMContentLoaded', async function () {
   
   let editingId = null;
 
-  // Referencias UI Auth
   const loginWrapper = document.getElementById('login-wrapper');
+  const recoveryWrapper = document.getElementById('recovery-wrapper');
+  const updatePasswordWrapper = document.getElementById('update-password-wrapper');
   const dashboardWrapper = document.getElementById('dashboard-wrapper');
+  
   const loginForm = document.getElementById('admin-login-form');
+  const recoveryForm = document.getElementById('admin-recovery-form');
+  const updatePasswordForm = document.getElementById('admin-update-password-form');
+  
   const loginError = document.getElementById('login-error');
   const btnLogout = document.querySelector('.admin-topbar-actions .admin-btn-outline');
   const adminUserSpan = document.querySelector('.admin-user');
 
   // ── AUTENTICACIÓN CON SUPABASE ─────────────────────
+  let isRecoveryMode = false;
+
   async function checkAuth() {
+    if (isRecoveryMode) return; // No hacer checkAuth normal si estamos en modo recuperación
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
       // Mostrar dashboard
       loginWrapper.style.display = 'none';
+      recoveryWrapper.style.display = 'none';
+      updatePasswordWrapper.style.display = 'none';
       dashboardWrapper.style.display = 'flex';
       adminUserSpan.textContent = session.user.email;
       // Cargar datos
@@ -33,6 +43,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     } else {
       // Mostrar login
       loginWrapper.style.display = 'flex';
+      recoveryWrapper.style.display = 'none';
+      updatePasswordWrapper.style.display = 'none';
       dashboardWrapper.style.display = 'none';
     }
   }
@@ -45,13 +57,95 @@ document.addEventListener('DOMContentLoaded', async function () {
       const password = document.getElementById('login-password').value;
       loginError.style.display = 'none';
 
+      const btn = loginForm.querySelector('button');
+      btn.textContent = 'Accediendo...';
+      btn.disabled = true;
+
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       
+      btn.textContent = 'Acceder';
+      btn.disabled = false;
+
       if (error) {
         loginError.textContent = error.message === 'Invalid login credentials' ? 'Credenciales incorrectas' : error.message;
         loginError.style.display = 'block';
       } else {
         await checkAuth();
+      }
+    });
+  }
+
+  // Links de Recuperación
+  document.getElementById('link-forgot-password')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginWrapper.style.display = 'none';
+    recoveryWrapper.style.display = 'flex';
+  });
+
+  document.getElementById('link-back-login')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    recoveryWrapper.style.display = 'none';
+    loginWrapper.style.display = 'flex';
+  });
+
+  // Formulario de Recuperación
+  if (recoveryForm) {
+    recoveryForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('recovery-email').value;
+      const msg = document.getElementById('recovery-msg');
+      const btn = recoveryForm.querySelector('button');
+      
+      msg.style.display = 'none';
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+
+      btn.textContent = 'Enviar enlace';
+      btn.disabled = false;
+
+      msg.style.display = 'block';
+      if (error) {
+        msg.style.color = 'red';
+        msg.textContent = 'Error: ' + error.message;
+      } else {
+        msg.style.color = 'green';
+        msg.textContent = '¡Enlace enviado! Revisa tu bandeja de entrada.';
+      }
+    });
+  }
+
+  // Formulario de Nueva Contraseña
+  if (updatePasswordForm) {
+    updatePasswordForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const password = document.getElementById('update-password-input').value;
+      const msg = document.getElementById('update-msg');
+      const btn = updatePasswordForm.querySelector('button');
+
+      msg.style.display = 'none';
+      btn.textContent = 'Actualizando...';
+      btn.disabled = true;
+
+      const { error } = await supabaseClient.auth.updateUser({ password: password });
+
+      btn.textContent = 'Actualizar contraseña';
+      btn.disabled = false;
+
+      msg.style.display = 'block';
+      if (error) {
+        msg.style.color = 'red';
+        msg.textContent = 'Error: ' + error.message;
+      } else {
+        msg.style.color = 'green';
+        msg.textContent = '¡Contraseña actualizada! Volviendo al inicio...';
+        setTimeout(() => {
+          isRecoveryMode = false;
+          checkAuth();
+        }, 2000);
       }
     });
   }
@@ -70,8 +164,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // Escuchar cambios de auth
   supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-      checkAuth();
+    console.log('Auth event:', event);
+    if (event === 'PASSWORD_RECOVERY') {
+      isRecoveryMode = true;
+      loginWrapper.style.display = 'none';
+      dashboardWrapper.style.display = 'none';
+      recoveryWrapper.style.display = 'none';
+      updatePasswordWrapper.style.display = 'flex';
+    } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+      if (!isRecoveryMode) checkAuth();
     }
   });
 
@@ -325,6 +426,57 @@ document.addEventListener('DOMContentLoaded', async function () {
   const btnCerrarModal = document.getElementById('btn-cerrar-modal-contenido');
   const formContenido = document.getElementById('form-nuevo-contenido');
 
+  // ---- File upload UI elements ----
+  const fileInput = document.getElementById('cont-archivo');
+  const btnSelectFile = document.getElementById('btn-seleccionar-archivo');
+  const fileNameSpan = document.getElementById('archivo-nombre');
+
+  // Open file picker
+  btnSelectFile?.addEventListener('click', () => fileInput?.click());
+
+  // Handle file selection & upload
+  fileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    // 500 KB limit
+    const MAX_SIZE = 500 * 1024;
+    if (file.size > MAX_SIZE) {
+      alert('El archivo supera el límite máximo de 500 KB.');
+      fileInput.value = '';
+      return;
+    }
+    fileNameSpan.textContent = file.name;
+    btnSelectFile.textContent = 'Subiendo…';
+    btnSelectFile.disabled = true;
+    try {
+      const publicUrl = await uploadFileToSupabase(file);
+      // Fill the URL field automatically
+      document.getElementById('cont-url').value = publicUrl;
+    } catch (err) {
+      console.error(err);
+      alert('Error al subir el archivo: ' + err.message);
+    } finally {
+      btnSelectFile.textContent = '📁 Seleccionar archivo';
+      btnSelectFile.disabled = false;
+    }
+  });
+
+  // Upload helper – stores file in the 'content-files' bucket (public)
+  async function uploadFileToSupabase(file) {
+    const timestamp = Date.now();
+    const safeName = file.name.replace(/\s+/g, '_');
+    const path = `${timestamp}_${safeName}`;
+    const { data, error } = await supabaseClient.storage
+      .from('content-files')
+      .upload(path, file, { upsert: false });
+    if (error) throw error;
+    const { publicURL, error: urlErr } = supabaseClient.storage
+      .from('content-files')
+      .getPublicUrl(path);
+    if (urlErr) throw urlErr;
+    return publicURL;
+  }
+
   if (btnNuevoContenido && modalContenido) {
     btnNuevoContenido.addEventListener('click', async () => {
       editingId = null; // Modo creación
@@ -348,7 +500,24 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     formContenido.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+      // Ensure any selected file has been uploaded (if cont-url still empty)
+      if (fileInput?.files.length > 0 && !document.getElementById('cont-url').value) {
+        const file = fileInput.files[0];
+        const MAX_SIZE = 500 * 1024;
+        if (file.size > MAX_SIZE) {
+          alert('El archivo supera el límite máximo de 500 KB.');
+          return;
+        }
+        try {
+          const publicUrl = await uploadFileToSupabase(file);
+          document.getElementById('cont-url').value = publicUrl;
+        } catch (err) {
+          console.error(err);
+          alert('Error al subir el archivo: ' + err.message);
+          return;
+        }
+      }
+
       const title = document.getElementById('cont-titulo').value;
       const content_type = document.getElementById('cont-tipo').value;
       const author_id = document.getElementById('cont-autor').value || null;

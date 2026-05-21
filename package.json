@@ -8,10 +8,19 @@
     "build": "echo 'No build step required for static site'",
     "dev": "npx live-server --port=3000 --open=index.html"
   },
-  "keywords": ["hispanidad", "cultura", "historia", "españa", "iberoamerica"],
+  "keywords": [
+    "hispanidad",
+    "cultura",
+    "historia",
+    "españa",
+    "iberoamerica"
+  ],
   "author": "Somos Hispanidad",
   "license": "UNLICENSED",
   "devDependencies": {
     "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.1"
   }
 }

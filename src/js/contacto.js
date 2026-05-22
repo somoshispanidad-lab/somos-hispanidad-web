@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
       console.warn('Supabase no disponible, continuando con envío de email:', err);
     }
 
-    // 2. Enviar notificación por email vía EmailJS
+    // 2. Enviar notificación por email vía EmailJS (a la asociación)
     let emailOk = false;
     try {
       if (typeof emailjs !== 'undefined') {
@@ -69,6 +69,28 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     } catch(err) {
       console.error('Error al enviar email con EmailJS:', err);
+    }
+
+    // 3. Enviar acuse de recibo automático al solicitante
+    try {
+      if (typeof emailjs !== 'undefined') {
+        await emailjs.send(
+          'service_sfxfhke',
+          'template_5jjf7vs',
+          {
+            from_name:  'Administración Somos Hispanidad',
+            from_email: 'contacto@somoshispanidad.es',
+            subject:    'Solicitud recibida',
+            message:    'Su solicitud ha sido recibida, próximamente contactaremos con usted. Gracias por comunicarse con Somos Hispanidad',
+            to_email:   email,
+            to_name:    nombre
+          }
+        );
+        console.log('✅ Acuse de recibo enviado a', email);
+      }
+    } catch(err) {
+      // Fallo silencioso — el mensaje ya está guardado y notificado
+      console.warn('⚠ Acuse de recibo no enviado:', err);
     }
 
     if (guardadoOk || emailOk) {

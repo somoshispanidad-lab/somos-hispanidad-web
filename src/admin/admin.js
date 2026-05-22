@@ -241,15 +241,31 @@ document.addEventListener('DOMContentLoaded', async function () {
     const tbody = document.querySelector('#panel-eventos tbody');
     if (error) {
       console.error('Error Supabase (Events):', error);
-      return tbody.innerHTML = `<tr><td colspan="6" style="color:red; padding:20px;">Error cargando eventos: ${error.message}</td></tr>`;
+      return tbody.innerHTML = `<tr><td colspan="7" style="color:red; padding:20px;">Error cargando eventos: ${error.message}</td></tr>`;
     }
-    if (!data || data.length === 0) return tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;">No hay eventos registrados.</td></tr>';
+    if (!data || data.length === 0) return tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;">No hay eventos registrados.</td></tr>';
     
     tbody.innerHTML = data.map(ev => {
       const d = new Date(ev.event_date).toLocaleDateString('es-ES');
       const badgeReg = ev.registration_open ? '<span class="admin-badge green">Abierto</span>' : '<span class="admin-badge yellow">Cerrado</span>';
       const badgePub = ev.published ? '<span class="admin-badge green">Visible</span>' : '<span class="admin-badge red" style="background:#fee2e2; color:#b91c1c;">Oculto</span>';
-      return `<tr><td>${d}</td><td>${ev.title}</td><td>${ev.event_type}</td><td>${ev.location}</td><td>${badgePub} ${badgeReg}</td><td><button class="admin-btn-sm edit-btn" data-table="events" data-id="${ev.id}">Editar</button> <button class="admin-btn-sm red delete-btn" data-table="events" data-id="${ev.id}">Eliminar</button></td></tr>`;
+      const evTitleEsc = (ev.title || '').replace(/'/g, "\\'");
+      return `<tr>
+        <td>${d}</td>
+        <td>${ev.title}</td>
+        <td>${ev.event_type}</td>
+        <td>${ev.location}</td>
+        <td>${badgePub} ${badgeReg}</td>
+        <td>
+          <button class="admin-btn-sm inscritos-btn" data-id="${ev.id}" data-titulo="${evTitleEsc}" style="background:#e0f2fe; color:#0369a1; border-color:#7dd3fc;">
+            👥 Ver inscritos
+          </button>
+        </td>
+        <td>
+          <button class="admin-btn-sm edit-btn" data-table="events" data-id="${ev.id}">Editar</button>
+          <button class="admin-btn-sm red delete-btn" data-table="events" data-id="${ev.id}">Eliminar</button>
+        </td>
+      </tr>`;
     }).join('');
   }
 
@@ -961,5 +977,199 @@ document.addEventListener('DOMContentLoaded', async function () {
       btnMasivo.textContent = '🚀 Enviar a todos los simpatizantes';
     });
   }
+
+  // ── INSCRITOS POR EVENTO ─────────────────────────────────
+
+  let currentEventoId     = null;
+  let currentEventoTitulo = null;
+  let inscritosCache      = [];
+
+  const modalInscritos       = document.getElementById('modal-inscritos');
+  const btnCerrarInscritos   = document.getElementById('btn-cerrar-modal-inscritos');
+  const tbodyInscritos       = document.getElementById('tbody-inscritos');
+  const modalInscritosTitulo = document.getElementById('modal-inscritos-titulo');
+  const modalInscritosCount  = document.getElementById('modal-inscritos-count');
+
+  // Abrir modal al pulsar "Ver inscritos"
+  document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.inscritos-btn');
+    if (!btn) return;
+
+    currentEventoId     = btn.getAttribute('data-id');
+    currentEventoTitulo = btn.getAttribute('data-titulo');
+
+    if (modalInscritosTitulo) modalInscritosTitulo.textContent = `Inscritos — ${currentEventoTitulo}`;
+    if (tbodyInscritos) tbodyInscritos.innerHTML = '<tr><td colspan="6" style="padding:20px; text-align:center;">Cargando...</td></tr>';
+    if (modalInscritos) modalInscritos.style.display = 'flex';
+
+    await loadInscritos(currentEventoId);
+  });
+
+  // Cerrar modal inscritos
+  btnCerrarInscritos?.addEventListener('click', () => {
+    if (modalInscritos) modalInscritos.style.display = 'none';
+    currentEventoId = null;
+    currentEventoTitulo = null;
+    inscritosCache = [];
+  });
+
+  // Cargar lista de inscritos desde Supabase
+  async function loadInscritos(eventId) {
+    const { data, error } = await supabaseClient
+      .from('event_registrations')
+      .select('*')
+      .eq('event_id', eventId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      if (tbodyInscritos) tbodyInscritos.innerHTML = `<tr><td colspan="6" style="color:red; padding:16px;">Error: ${error.message}</td></tr>`;
+      return;
+    }
+
+    inscritosCache = data || [];
+
+    if (modalInscritosCount) {
+      modalInscritosCount.textContent = `${inscritosCache.length} inscrito${inscritosCache.length !== 1 ? 's' : ''}`;
+    }
+
+    if (inscritosCache.length === 0) {
+      tbodyInscritos.innerHTML = '<tr><td colspan="6" style="padding:20px; text-align:center; color:#5a4a3a;">No hay inscritos en este evento todavía.</td></tr>';
+      return;
+    }
+
+    tbodyInscritos.innerHTML = inscritosCache.map(r => {
+      const fecha = new Date(r.created_at).toLocaleDateString('es-ES');
+      return `<tr>
+        <td>${r.name || '-'}</td>
+        <td><a href="mailto:${r.email}" style="color:#0369a1;">${r.email || '-'}</a></td>
+        <td>${r.phone || '-'}</td>
+        <td style="max-width:180px; white-space:normal; font-size:0.83rem;">${r.comments || '-'}</td>
+        <td>${fecha}</td>
+        <td><button class="admin-btn-sm red delete-btn" data-table="event_registrations" data-id="${r.id}">Borrar</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Exportar inscritos a CSV
+  document.getElementById('btn-exportar-inscritos')?.addEventListener('click', () => {
+    if (!inscritosCache || inscritosCache.length === 0) {
+      alert('No hay inscritos que exportar.');
+      return;
+    }
+    const headers = ['Nombre', 'Email', 'Teléfono', 'Comentarios', 'Fecha Registro'];
+    const rows = inscritosCache.map(r => [
+      `"${(r.name || '').replace(/"/g, '""')}"`,
+      `"${(r.email || '').replace(/"/g, '""')}"`,
+      `"${(r.phone || '').replace(/"/g, '""')}"`,
+      `"${(r.comments || '').replace(/"/g, '""')}"`,
+      `"${new Date(r.created_at).toLocaleDateString('es-ES')}"`
+    ].join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const safeTitle = (currentEventoTitulo || 'evento').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    link.setAttribute('href', url);
+    link.setAttribute('download', `inscritos_${safeTitle}_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+  // ── AÑADIR INSCRITO MANUALMENTE ─────────────────────────
+
+  const modalAddInscrito       = document.getElementById('modal-add-inscrito');
+  const btnAbrirAddInscrito    = document.getElementById('btn-abrir-add-inscrito');
+  const btnCerrarAddInscrito   = document.getElementById('btn-cerrar-modal-add-inscrito');
+  const btnCancelarAddInscrito = document.getElementById('btn-cancelar-add-inscrito');
+  const formAddInscrito        = document.getElementById('form-add-inscrito');
+  const addInscritoTituloEl    = document.getElementById('add-inscrito-evento-titulo');
+  const addInscritoMsg         = document.getElementById('add-inscrito-msg');
+
+  // Abrir modal añadir inscrito
+  btnAbrirAddInscrito?.addEventListener('click', () => {
+    if (addInscritoTituloEl) addInscritoTituloEl.textContent = currentEventoTitulo || '';
+    if (formAddInscrito) formAddInscrito.reset();
+    if (addInscritoMsg) addInscritoMsg.style.display = 'none';
+    if (modalAddInscrito) modalAddInscrito.style.display = 'flex';
+  });
+
+  // Cerrar modal añadir inscrito
+  [btnCerrarAddInscrito, btnCancelarAddInscrito].forEach(btn => {
+    btn?.addEventListener('click', () => {
+      if (modalAddInscrito) modalAddInscrito.style.display = 'none';
+      if (formAddInscrito) formAddInscrito.reset();
+      if (addInscritoMsg) addInscritoMsg.style.display = 'none';
+    });
+  });
+
+  // Guardar inscrito manual
+  formAddInscrito?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre      = document.getElementById('add-insc-nombre')?.value.trim();
+    const email       = document.getElementById('add-insc-email')?.value.trim();
+    const telefono    = document.getElementById('add-insc-telefono')?.value.trim() || null;
+    const comentarios = document.getElementById('add-insc-comentarios')?.value.trim() || null;
+
+    if (!nombre || !email || !currentEventoId) {
+      alert('Nombre y correo son obligatorios.');
+      return;
+    }
+
+    const btnSubmit = document.getElementById('btn-submit-add-inscrito');
+    if (btnSubmit) { btnSubmit.textContent = 'Guardando...'; btnSubmit.disabled = true; }
+    if (addInscritoMsg) addInscritoMsg.style.display = 'none';
+
+    // 1. Insertar en Supabase
+    const { error } = await supabaseClient
+      .from('event_registrations')
+      .insert([{ event_id: currentEventoId, name: nombre, email, phone: telefono, comments: comentarios }]);
+
+    if (btnSubmit) { btnSubmit.textContent = 'Guardar inscrito'; btnSubmit.disabled = false; }
+
+    if (error) {
+      if (addInscritoMsg) {
+        addInscritoMsg.style.display = 'block';
+        addInscritoMsg.style.background = '#fef2f2';
+        addInscritoMsg.style.color = '#991b1b';
+        addInscritoMsg.textContent = '❌ Error al guardar: ' + error.message;
+      }
+      return;
+    }
+
+    // 2. Enviar email de confirmación automático
+    try {
+      if (typeof emailjs !== 'undefined' && currentEventoTitulo) {
+        await emailjs.send('service_sfxfhke', 'template_5jjf7vs', {
+          from_name: 'Administración Somos Hispanidad',
+          from_email: 'contacto@somoshispanidad.es',
+          subject: `Inscripción en ${currentEventoTitulo} recibida`,
+          message: `Su inscripción en ${currentEventoTitulo} ha sido recibida, próximamente recibirá confirmación de su solicitud. Gracias por contactar con Somos Hispanidad`,
+          to_email: email,
+          to_name: nombre
+        });
+        console.log('✅ Email de confirmación enviado a', email);
+      }
+    } catch (emailErr) {
+      console.warn('⚠ Email de confirmación no enviado:', emailErr);
+    }
+
+    // 3. Mostrar éxito y refrescar lista
+    if (addInscritoMsg) {
+      addInscritoMsg.style.display = 'block';
+      addInscritoMsg.style.background = '#f0fdf4';
+      addInscritoMsg.style.color = '#166534';
+      addInscritoMsg.textContent = `✅ ${nombre} añadido. Se ha enviado email de confirmación.`;
+    }
+    if (formAddInscrito) formAddInscrito.reset();
+
+    setTimeout(() => {
+      if (modalAddInscrito) modalAddInscrito.style.display = 'none';
+      if (addInscritoMsg) addInscritoMsg.style.display = 'none';
+      loadInscritos(currentEventoId);
+    }, 1500);
+  });
 
 });

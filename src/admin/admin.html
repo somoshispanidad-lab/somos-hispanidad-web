@@ -119,7 +119,7 @@
       <div class="admin-table-wrap">
         <table class="admin-table">
           <thead>
-            <tr><th>Fecha</th><th>Título</th><th>Tipo</th><th>Lugar</th><th>Estado</th><th>Acciones</th></tr>
+            <tr><th>Fecha</th><th>Título</th><th>Tipo</th><th>Lugar</th><th>Estado</th><th>Inscritos</th><th>Acciones</th></tr>
           </thead>
           <tbody>
             <tr><td>20 Jun 2026</td><td>Visita al Monasterio del Escorial</td><td>Visita Cultural</td><td>El Escorial, Madrid</td><td><span class="admin-badge green">Abierto</span></td><td><button class="admin-btn-sm">Editar</button> <button class="admin-btn-sm red">Eliminar</button></td></tr>
@@ -468,6 +468,76 @@
       <button id="btn-procesar-carga" class="admin-btn admin-btn-primary" style="flex:1">Importar ahora</button>
       <button id="btn-cancelar-carga" class="admin-btn" style="flex:1">Cancelar</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL INSCRITOS POR EVENTO -->
+<div id="modal-inscritos" class="admin-modal" style="display:none;">
+  <div class="admin-modal-content" style="max-width: 860px;">
+    <div class="admin-modal-header">
+      <h2 id="modal-inscritos-titulo">Inscritos</h2>
+      <button class="admin-close-modal" id="btn-cerrar-modal-inscritos">&times;</button>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+      <p id="modal-inscritos-count" style="font-size:0.85rem; color:#5a4a3a; margin:0;"></p>
+      <div style="display:flex; gap:10px;">
+        <button id="btn-exportar-inscritos" class="admin-btn admin-btn-outline" style="font-size:0.8rem;">⬇ Exportar CSV</button>
+        <button id="btn-abrir-add-inscrito" class="admin-btn admin-btn-primary" style="font-size:0.8rem;">+ Añadir inscrito</button>
+      </div>
+    </div>
+    <div class="admin-table-wrap" style="max-height: 420px; overflow-y: auto;">
+      <table class="admin-table" id="tabla-inscritos">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Comentarios</th>
+            <th>Fecha</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-inscritos">
+          <tr><td colspan="6" style="padding:20px; text-align:center;">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AÑADIR INSCRITO MANUALMENTE -->
+<div id="modal-add-inscrito" class="admin-modal" style="display:none;">
+  <div class="admin-modal-content" style="max-width: 500px;">
+    <div class="admin-modal-header">
+      <h2>Añadir Inscrito Manualmente</h2>
+      <button class="admin-close-modal" id="btn-cerrar-modal-add-inscrito">&times;</button>
+    </div>
+    <p style="font-size:0.83rem; color:#5a4a3a; margin-bottom:20px;">
+      Evento: <strong id="add-inscrito-evento-titulo" style="color:#3a2a1a;"></strong>
+    </p>
+    <form id="form-add-inscrito">
+      <div class="admin-form-group">
+        <label>Nombre completo *</label>
+        <input type="text" id="add-insc-nombre" class="admin-form-input" required placeholder="Nombre y apellidos">
+      </div>
+      <div class="admin-form-group">
+        <label>Correo electrónico *</label>
+        <input type="email" id="add-insc-email" class="admin-form-input" required placeholder="correo@ejemplo.es">
+      </div>
+      <div class="admin-form-group">
+        <label>Teléfono</label>
+        <input type="tel" id="add-insc-telefono" class="admin-form-input" placeholder="+34 600 000 000">
+      </div>
+      <div class="admin-form-group">
+        <label>Comentarios</label>
+        <textarea id="add-insc-comentarios" class="admin-form-input" rows="3" placeholder="Observaciones..."></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button type="submit" id="btn-submit-add-inscrito" class="admin-btn admin-btn-primary" style="flex:1;">Guardar inscrito</button>
+        <button type="button" id="btn-cancelar-add-inscrito" class="admin-btn admin-btn-outline" style="flex:1;">Cancelar</button>
+      </div>
+      <div id="add-inscrito-msg" style="margin-top:12px; font-size:0.83rem; display:none; padding:10px; border-radius:4px;"></div>
+    </form>
   </div>
 </div>
 

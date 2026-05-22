@@ -152,6 +152,30 @@ async function initFormularioInscripcion() {
 
     if (ok) {
       console.log('Inscripción exitosa');
+
+      // ── EMAIL DE CONFIRMACIÓN AUTOMÁTICO ──────────────
+      try {
+        // Obtener el título del evento seleccionado
+        const selectEl = document.getElementById('select-evento');
+        const eventoTitulo = selectEl?.options[selectEl.selectedIndex]?.text || 'el evento';
+
+        if (typeof emailjs !== 'undefined') {
+          await emailjs.send('service_sfxfhke', 'template_5jjf7vs', {
+            from_name: 'Administración Somos Hispanidad',
+            from_email: 'contacto@somoshispanidad.es',
+            subject: `Inscripción en ${eventoTitulo} recibida`,
+            message: `Su inscripción en ${eventoTitulo} ha sido recibida, próximamente recibirá confirmación de su solicitud. Gracias por contactar con Somos Hispanidad`,
+            to_email: email,
+            to_name: nombre
+          });
+          console.log('✅ Email de confirmación enviado a', email);
+        }
+      } catch (emailErr) {
+        // El email falla silenciosamente — la inscripción ya está guardada
+        console.warn('⚠ Email de confirmación no enviado:', emailErr);
+      }
+      // ─────────────────────────────────────────────────
+
       const exito = document.getElementById('inscripcion-exito');
       if (exito) exito.style.display = 'block';
       form.style.display = 'none';

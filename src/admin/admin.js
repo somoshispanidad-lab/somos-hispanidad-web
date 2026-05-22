@@ -461,17 +461,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   });
 
-  // Upload helper – stores file in the 'content-files' bucket (public)
   async function uploadFileToSupabase(file) {
     const timestamp = Date.now();
     const safeName = file.name.replace(/\s+/g, '_');
     const path = `${timestamp}_${safeName}`;
     const { data, error } = await supabaseClient.storage
-      .from('content-files')
+      .from('Documentos')
       .upload(path, file, { upsert: false });
     if (error) throw error;
     const { publicURL, error: urlErr } = supabaseClient.storage
-      .from('content-files')
+      .from('Documentos')
       .getPublicUrl(path);
     if (urlErr) throw urlErr;
     return publicURL;

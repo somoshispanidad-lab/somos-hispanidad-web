@@ -18,7 +18,8 @@
   "author": "Somos Hispanidad",
   "license": "UNLICENSED",
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "vercel": "^54.2.0"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1"

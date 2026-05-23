@@ -328,14 +328,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   async function loadSupporters() {
-    const { data, error } = await supabaseClient.from('event_registrations').select('*, events(title)').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('supporters').select('*').order('created_at', { ascending: false });
     const tbody = document.querySelector('#panel-simpatizantes tbody');
-    if (error || !data) return tbody.innerHTML = '<tr><td colspan="4">Error cargando inscripciones</td></tr>';
-    if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="4">No hay inscritos</td></tr>';
+    if (error || !data) return tbody.innerHTML = '<tr><td colspan="5">Error cargando simpatizantes</td></tr>';
+    if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="5">No hay simpatizantes registrados</td></tr>';
     
     tbody.innerHTML = data.map(s => {
       const d = new Date(s.created_at).toLocaleDateString('es-ES');
-      return `<tr><td>${s.name}</td><td>${s.email}</td><td>${s.events?.title || '-'}</td><td>${d}</td></tr>`;
+      return `<tr><td>${s.name}</td><td>${s.email}</td><td>${s.source || '-'}</td><td>${d}</td><td><button class="admin-btn-sm red delete-btn" data-table="supporters" data-id="${s.id}">Eliminar</button></td></tr>`;
     }).join('');
   }
 

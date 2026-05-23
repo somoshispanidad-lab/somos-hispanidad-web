@@ -178,24 +178,23 @@
     <div class="admin-panel" id="panel-simpatizantes">
       <div class="admin-panel-header">
         <h2>Simpatizantes</h2>
-        <button id="btn-exportar-simpatizantes" class="admin-btn admin-btn-outline">Exportar CSV</button>
-      </div>
-      <div class="admin-supabase-note">
-        📌 En producción, esta tabla se cargará desde la tabla <code>simpatizantes</code> de Supabase, con datos de inscripciones a eventos.
+        <div style="display:flex; gap:10px;">
+          <button id="btn-add-simpatizante" class="admin-btn admin-btn-primary">+ Añadir simpatizante</button>
+          <button id="btn-exportar-simpatizantes" class="admin-btn admin-btn-outline">⬇ Exportar CSV</button>
+        </div>
       </div>
       <div class="admin-table-wrap">
-        <table class="admin-table">
+        <table class="admin-table" id="tabla-simpatizantes">
           <thead>
-            <tr><th>Nombre</th><th>Email</th><th>Evento</th><th>Fecha registro</th></tr>
+            <tr><th>Nombre</th><th>Email</th><th>Fuente</th><th>Fecha registro</th><th>Acción</th></tr>
           </thead>
-          <tbody>
-            <tr><td>María García</td><td>maria@ejemplo.es</td><td>Visita al Escorial</td><td>1 May 2026</td></tr>
-            <tr><td>Carlos Rodríguez</td><td>carlos@ejemplo.es</td><td>Conferencia España Olvidada</td><td>3 May 2026</td></tr>
-            <tr><td>Ana Martínez</td><td>ana@ejemplo.es</td><td>Visita al Escorial</td><td>5 May 2026</td></tr>
+          <tbody id="tbody-simpatizantes">
+            <tr><td colspan="5" style="padding:20px; text-align:center;">Cargando simpatizantes...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
+
 
     <!-- PANEL: MENSAJES -->
     <div class="admin-panel" id="panel-mensajes">
@@ -547,6 +546,45 @@
 <script>
   (function(){ emailjs.init({ publicKey: '0slY_AJYvHsj932ME' }); })();
 </script>
+<!-- MODAL AÑADIR SIMPATIZANTE -->
+<div id="modal-add-simpatizante" class="admin-modal" style="display:none;">
+  <div class="admin-modal-content" style="max-width: 520px;">
+    <div class="admin-modal-header">
+      <h2>Añadir Simpatizante</h2>
+      <button class="admin-close-modal" id="btn-cerrar-modal-add-simpatizante">&times;</button>
+    </div>
+    <form id="form-add-simpatizante">
+      <div class="admin-form-group">
+        <label>Nombre completo *</label>
+        <input type="text" id="add-simp-nombre" class="admin-form-input" required placeholder="Nombre y apellidos">
+      </div>
+      <div class="admin-form-group">
+        <label>Correo electrónico *</label>
+        <input type="email" id="add-simp-email" class="admin-form-input" required placeholder="correo@ejemplo.es">
+      </div>
+      <div class="admin-form-group">
+        <label>Teléfono</label>
+        <input type="tel" id="add-simp-telefono" class="admin-form-input" placeholder="+34 600 000 000">
+      </div>
+      <div class="admin-form-group">
+        <label>Evento al que asistió / se inscribió</label>
+        <select id="add-simp-evento" class="admin-form-input">
+          <option value="">— Sin evento vinculado —</option>
+        </select>
+      </div>
+      <div class="admin-form-group">
+        <label>Fuente / Observaciones</label>
+        <input type="text" id="add-simp-fuente" class="admin-form-input" placeholder="Ej: wix, formulario web, evento presencial...">
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button type="submit" id="btn-submit-add-simpatizante" class="admin-btn admin-btn-primary" style="flex:1;">Guardar simpatizante</button>
+        <button type="button" id="btn-cancelar-add-simpatizante" class="admin-btn admin-btn-outline" style="flex:1;">Cancelar</button>
+      </div>
+      <div id="add-simp-msg" style="margin-top:12px; font-size:0.83rem; display:none; padding:10px; border-radius:4px;"></div>
+    </form>
+  </div>
+</div>
+
 <script src="admin.js"></script>
 </body>
 </html>

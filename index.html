@@ -1,480 +1,563 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y promover los lazos culturales entre España y el mundo hispano.">
-<meta property="og:title" content="Somos Hispanidad — En lucha contra la Leyenda Negra">
-<meta property="og:description" content="Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y promover los lazos culturales entre España y el mundo hispano.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://somoshispanidad.es/">
-<meta property="og:image" content="https://somoshispanidad.es/assets/images/hero-bg.jpg">
-<meta property="og:locale" content="es_ES">
-<link rel="canonical" href="https://somoshispanidad.es/">
-<link rel="icon" type="image/png" href="assets/images/favicon-32.png">
-<title>Somos Hispanidad — En lucha contra la Leyenda Negra</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="src/css/styles.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y promover los lazos culturales entre España y el mundo hispano.">
+  <meta property="og:title" content="Somos Hispanidad — En lucha contra la Leyenda Negra">
+  <meta property="og:description"
+    content="Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y promover los lazos culturales entre España y el mundo hispano.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://somoshispanidad.es/">
+  <meta property="og:image" content="https://somoshispanidad.es/assets/images/hero-bg.jpg">
+  <meta property="og:locale" content="es_ES">
+  <link rel="canonical" href="https://somoshispanidad.es/">
+  <link rel="icon" type="image/png" href="assets/images/favicon-32.png">
+  <title>Somos Hispanidad — En lucha contra la Leyenda Negra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="src/css/styles.css">
 </head>
 
 <body>
 
-<!-- ── NAV ── -->
-<nav id="navbar">
-  <a href="index.html" class="nav-logo">Somos <span>Hispanidad</span></a>
-  <ul class="nav-links">
-    <li><a href="index.html">Inicio</a></li>
-    <li><a href="src/pages/asociacion.html">La Asociación</a></li>
-    <li><a href="src/pages/eventos.html">Eventos</a></li>
-    <li><a href="src/pages/contenidos.html">Contenidos</a></li>
-    <li><a href="src/pages/autores.html">Autores</a></li>
-    <li><a href="src/pages/contacto.html">Contacto</a></li>
-  </ul>
-  <button class="hamburger" id="hamburger" aria-label="Menú">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+  <!-- ── NAV ── -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">Somos <span>Hispanidad</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="src/pages/asociacion.html">La Asociación</a></li>
+      <li><a href="src/pages/eventos.html">Eventos</a></li>
+      <li><a href="src/pages/contenidos.html">Contenidos</a></li>
+      <li><a href="src/pages/autores.html">Autores</a></li>
+      <li><a href="src/pages/contacto.html">Contacto</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
-<div class="mobile-menu" id="mobileMenu">
-  <a href="index.html" onclick="closeMobile()">Inicio</a>
-  <a href="src/pages/asociacion.html" onclick="closeMobile()">La Asociación</a>
-  <a href="src/pages/eventos.html" onclick="closeMobile()">Eventos</a>
-  <a href="src/pages/contenidos.html" onclick="closeMobile()">Contenidos</a>
-  <a href="src/pages/autores.html" onclick="closeMobile()">Autores</a>
-  <a href="src/pages/contacto.html" onclick="closeMobile()">Contacto</a>
-</div>
-
-<!-- ── HERO ── -->
-<section id="inicio">
-  <div class="hero-bg" id="heroBg"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <p class="hero-eyebrow">Conexión · Solidaridad · Crecimiento</p>
-    <h1 class="hero-title">Somos<br>Hispanidad</h1>
-    <div class="hero-divider">
-      <span class="hero-divider-icon">✦</span>
-    </div>
-    <p class="hero-subtitle">Es tiempo de desarticular la Leyenda Negra.<br>Orgullosos de nuestra historia.</p>
-    <p class="hero-tagline">España · Hispanoamérica · Cultura · Lengua · Identidad</p>
-    <div>
-      <a href="#quienes-somos" class="btn-primary">Conoce nuestra misión</a>
-      <a href="src/pages/contenidos.html" class="btn-outline">Ver contenidos</a>
-    </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" onclick="closeMobile()">Inicio</a>
+    <a href="src/pages/asociacion.html" onclick="closeMobile()">La Asociación</a>
+    <a href="src/pages/eventos.html" onclick="closeMobile()">Eventos</a>
+    <a href="src/pages/contenidos.html" onclick="closeMobile()">Contenidos</a>
+    <a href="src/pages/autores.html" onclick="closeMobile()">Autores</a>
+    <a href="src/pages/contacto.html" onclick="closeMobile()">Contacto</a>
   </div>
-  <div class="hero-scroll">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-    Descubrir
-  </div>
-</section>
 
-<!-- ── QUIENES SOMOS ── -->
-<section id="quienes-somos">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div class="reveal">
-        <span class="section-label">Quiénes Somos</span>
-        <h2 class="section-title">Bienvenidos a nuestra Comunidad Hispana</h2>
-        <div class="ornament">
-          <div class="ornament-diamond"></div>
-          <div class="ornament-line"></div>
-        </div>
-        <p class="body-text">
-          Somos ciudadanos que buscamos establecer lazos entre españoles e hispanos, más allá de lo puramente lingüístico.
-        </p>
-        <br>
-        <p class="body-text">
-          Nos dedicamos a explorar y reivindicar la verdad histórica y resaltar los vínculos comunes de la cultura hispánica: derecho, religión, tradiciones, estilo de vida y, por supuesto, la lengua.
-        </p>
-        <div class="about-badges">
-          <span class="badge">Verdad Histórica</span>
-          <span class="badge">Cultura Hispánica</span>
-          <span class="badge">Mestizaje</span>
-          <span class="badge">Lengua</span>
-          <span class="badge">Iberoamérica</span>
-        </div>
+  <!-- ── HERO ── -->
+  <section id="inicio">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Conexión · Solidaridad · Crecimiento</p>
+      <h1 class="hero-title">Somos<br>Hispanidad</h1>
+      <div class="hero-divider">
+        <span class="hero-divider-icon">✦</span>
       </div>
-      <div class="about-image-wrap reveal" style="transition-delay: 0.2s;">
-        <img
-          src="assets/images/sello-hispanidad.png"
-          alt="Sello Somos Hispanidad Utraque Unum"
-          class="about-logo"
-          loading="lazy"
-        >
-        <div class="about-image-frame"></div>
+      <p class="hero-subtitle">Es tiempo de desarticular la Leyenda Negra.<br>Orgullosos de nuestra historia.</p>
+      <p class="hero-tagline">España · Hispanoamérica · Cultura · Lengua · Identidad</p>
+      <div>
+        <a href="#quienes-somos" class="btn-primary">Conoce nuestra misión</a>
+        <a href="src/pages/contenidos.html" class="btn-outline">Ver contenidos</a>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── QUE OFRECEMOS ── -->
-<section id="que-ofrecemos">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">Qué Ofrecemos</span>
-      <h2 class="section-title">Misión, Compromiso<br>y Método</h2>
-      <div class="ornament">
-        <div class="ornament-diamond"></div>
-        <div class="ornament-line"></div>
-      </div>
-    </div>
-    <div class="offers-grid">
-      <div class="offer-card reveal">
-        <div class="offer-number">01</div>
-        <h3 class="offer-title">Nuestro Objetivo</h3>
-        <p class="offer-text">Conocer la verdad de la experiencia del imperio español, resaltar sus valores y rescatar su impronta en la actualidad.</p>
-      </div>
-      <div class="offer-card reveal" style="transition-delay: 0.15s;">
-        <div class="offer-number">02</div>
-        <h3 class="offer-title">Nuestro Compromiso</h3>
-        <p class="offer-text">Trabajar en la difusión de la herencia cultural y tradiciones de todos los países hispanos, reforzando nuestra identidad compartida.</p>
-      </div>
-      <div class="offer-card reveal" style="transition-delay: 0.3s;">
-        <div class="offer-number">03</div>
-        <h3 class="offer-title">Nuestro Método</h3>
-        <p class="offer-text">Promover el intercambio de ideas, opiniones e investigación entre los participantes de nuestra comunidad.</p>
-      </div>
-    </div>
-    <div class="offers-image-container reveal" style="transition-delay: 0.45s; margin-top: 60px;">
-      <img src="assets/images/monasterio.jpg" alt="Monasterio de El Escorial" class="offers-featured-image">
-      <div class="offers-image-overlay">
-         <span class="offers-image-caption">Símbolo de la Civilización Hispánica</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── BAROMETRO ── -->
-<section id="barometro">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">Proyecto Destacado</span>
-      <h2 class="section-title">Barómetro<br>sobre la Hispanidad</h2>
-      <div class="ornament">
-        <div class="ornament-diamond" style="background: var(--gold);"></div>
-        <div class="ornament-line"></div>
-      </div>
-      <p class="barometro-text">
-        Un proyecto de investigación y análisis destinado a medir y comprender la percepción de la hispanidad, sus valores y su legado histórico entre las comunidades hispanohablantes del mundo.
-      </p>
-      <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Barometro-versiones/BAROMETRO%20v1.pdf" id="btn-barometro" class="barometro-cta" target="_blank">
-        Saber más →
+      <!-- Aviso próximo evento (rellenado dinámicamente por JS) -->
+      <a id="hero-next-event" href="src/pages/eventos.html" class="hero-next-event" style="display:none;" aria-label="Próximo evento">
+        <span class="hero-next-event-dot"></span>
+        <span id="hero-next-event-label">Próximo evento</span>
       </a>
     </div>
-    <div class="reveal" style="transition-delay: 0.2s;">
-      <img
-        src="assets/images/barometro.jpg"
-        alt="Barómetro sobre la Hispanidad"
-        class="barometro-image"
-        loading="lazy"
-      >
+    <div class="hero-scroll">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 5v14M5 12l7 7 7-7" />
+      </svg>
+      Descubrir
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── CICLO INDIGENAS ── -->
-<section id="ciclo">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">Ciclo de Conferencias</span>
-      <h2 class="section-title">El Papel de los Indígenas<br>en la Conquista</h2>
-      <div class="ornament">
-        <div class="ornament-diamond"></div>
-        <div class="ornament-line"></div>
-      </div>
-    </div>
-    <div class="ciclo-layout">
-      <div class="reveal">
-        <p class="body-text" style="margin-bottom: 28px;">
-          Frente a la narrativa reduccionista de la "Leyenda Negra" que presenta a los pueblos originarios como meras víctimas pasivas, este ciclo de eventos se propone analizar la historia con rigor y valentía.
-        </p>
-        <p class="body-text" style="margin-bottom: 28px;">
-          La Hispanidad no fue una imposición unilateral, sino un proceso complejo de alianzas, mestizaje y participación activa.
-        </p>
-        <p class="body-text" style="margin-bottom: 36px;">
-          Exploraremos cómo los indígenas no solo fueron actores clave en la conquista, sino colaboradores fundamentales de una nueva civilización. Desde las coaliciones guerreras que derribaron imperios opresores hasta la integración cultural y administrativa.
-        </p>
-        <div style="background: var(--cream-dark); padding: 28px; border-left: 3px solid var(--gold);">
-          <p style="font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px;">Conferencia</p>
-          <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--sepia-deep); margin-bottom: 8px;">El papel de los indígenas en la conquista de América: Mesoamérica</p>
-          <p style="font-family: 'Lato', sans-serif; font-size: 0.8rem; color: var(--ink-soft);">D. José J. Laorden</p>
-          <a href="https://youtu.be/afx1w-wiLCg" target="_blank" class="btn-primary" style="display: inline-block; margin-top: 20px; font-size: 0.7rem; padding: 10px 24px;">Ver Conferencia</a>
-        </div>
-
-        <div style="background: var(--cream-dark); padding: 28px; border-left: 3px solid var(--gold); margin-top: 24px;">
-          <p style="font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px;">Conferencia</p>
-          <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--sepia-deep); margin-bottom: 8px;">La participación de los indígenas en la Conquista de América</p>
-          <p style="font-family: 'Lato', sans-serif; font-size: 0.8rem; color: var(--ink-soft);">D. Ginés Ladrón de Guevara</p>
-          <a href="https://youtu.be/TquEzGZC__o" target="_blank" class="btn-primary" style="display: inline-block; margin-top: 20px; font-size: 0.7rem; padding: 10px 24px;">Ver Conferencia</a>
-        </div>
-      </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── ACTOS CULTURALES ── -->
-<section id="actos-culturales">
-  <div class="actos-culturales-inner">
-    <div class="reveal" style="text-align: center; max-width: 800px; margin: 0 auto;">
-      <span class="section-label">Actividad de la Asociación</span>
-      <h2 class="section-title">Actos Culturales</h2>
-      <div class="ornament" style="justify-content: center;">
-        <div class="ornament-diamond" style="background: var(--gold);"></div>
-        <div class="ornament-line" style="max-width: 200px; background: linear-gradient(to right, var(--gold), transparent);"></div>
-      </div>
-      <p class="body-text" style="color: var(--cream-dark); margin: 0 auto;">
-        Nuestra asociación promueve el encuentro y la divulgación a través de visitas culturales a lugares históricos, asistencia a conferencias y la organización de actos conmemorativos. Buscamos que la historia no solo se lea, sino que se viva en comunidad.
-      </p>
-    </div>
-
-    <!-- Bloque de Visita -->
-    <div class="reveal" style="margin-top: 80px;">
-      <div class="acto-card">
-        <img src="assets/images/escorial.jpg" alt="Visita al Museo de América" class="acto-image">
-        <div class="acto-content">
-          <h3 class="acto-title">Visita al Museo de América</h3>
-          <p class="acto-text">Un recorrido por las salas del Museo de América de Madrid, redescubriendo el legado común y las raíces culturales que definen nuestra identidad hispánica compartida.</p>
-          <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Escritos/Primera%20visita%20de%20Somos%20Hispanidad.pdf" target="_blank" class="btn-primary" style="display: inline-block; margin-top: 25px; font-size: 0.75rem;">Saber más →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── CONTENIDOS ── -->
-<section id="contenidos">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">Nuestros Contenidos</span>
-      <h2 class="section-title">Artículos y Conferencias</h2>
-      <div class="ornament">
-        <div class="ornament-diamond"></div>
-        <div class="ornament-line"></div>
-      </div>
-    </div>
-    <div class="contenidos-grid">
-      <article class="post-card reveal">
-        <img
-          src="assets/images/yt-EZ2i15y-P3Y.jpg"
-          alt="Justicia Real en la América Española"
-          class="post-thumb"
-          loading="lazy"
-        >
-        <div class="post-body">
-          <p class="post-meta">21 Abr 2026 · Conferencia</p>
-          <h3 class="post-title">Presentación del libro "Justicia Real en la América Española", por don César Pérez Guevara</h3>
-          <a href="https://youtu.be/EZ2i15y-P3Y" target="_blank" class="post-link">Ver contenido →</a>
-        </div>
-      </article>
-      <article class="post-card reveal" style="transition-delay: 0.15s;">
-        <img
-          src="assets/images/yt-afx1w-wiLCg.jpg"
-          alt="Indígenas en la conquista de América"
-          class="post-thumb"
-          loading="lazy"
-        >
-        <div class="post-body">
-          <p class="post-meta">8 Abr 2026 · Charla Temática</p>
-          <h3 class="post-title">El papel de los indígenas en la conquista de América: Mesoamérica</h3>
-          <a href="https://youtu.be/afx1w-wiLCg" target="_blank" class="post-link">Ver contenido →</a>
-        </div>
-      </article>
-      <article class="post-card reveal" style="transition-delay: 0.3s;">
-        <div class="post-thumb" style="background: var(--cream-dark); display:flex; align-items:center; justify-content:center;">
-          <span style="font-family:'Cinzel',serif; color:var(--sepia); font-size:0.8rem; letter-spacing:0.1em;">TERROR BOLIVARIANO</span>
-        </div>
-        <div class="post-body">
-          <p class="post-meta">18 Mar 2026 · Artículo · Francisco Massó</p>
-          <h3 class="post-title">Terror Bolivariano — Análisis del revisionismo histórico contemporáneo</h3>
-          <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Escritos/Terror%20bolivariano.pdf" target="_blank" class="post-link">Leer artículo →</a>
-        </div>
-      </article>
-    </div>
-    <div style="text-align: center; margin-top: 56px;" class="reveal">
-      <a href="src/pages/contenidos.html" class="btn-primary">Ver todos los contenidos</a>
-    </div>
-  </div>
-</section>
-
-<!-- ── ESCORIAL BANNER ── -->
-<section id="escorial">
-  <div class="escorial-bg"></div>
-  <div class="escorial-overlay"></div>
-  <div class="escorial-content reveal">
-    <p class="escorial-quote">
-      "El Monasterio de El Escorial: símbolo eterno del esplendor y la grandeza de la civilización hispánica."
-    </p>
-    <p class="escorial-attr">Real Monasterio de San Lorenzo de El Escorial · Madrid, España</p>
-    <a href="src/pages/eventos.html" style="display:inline-block; margin-top: 28px;" class="btn-outline">Ver próxima visita</a>
-  </div>
-</section>
-
-<!-- ── EVENTOS ── -->
-<section id="eventos">
-  <div class="section-inner">
-    <div class="reveal">
-      <span class="section-label">Agenda</span>
-      <h2 class="section-title">Próximos Acontecimientos</h2>
-      <div class="ornament">
-        <div class="ornament-diamond"></div>
-        <div class="ornament-line"></div>
-      </div>
-    </div>
-    <div class="eventos-layout" style="margin-top: 60px;">
-      <div>
-        <div class="evento-card reveal">
-          <div class="evento-date">
-            <div class="evento-day">20</div>
-            <div class="evento-month">Jun · 2026</div>
-          </div>
-          <div class="evento-info">
-            <h3 class="evento-title">Visita guiada al Monasterio del Escorial con comida de hermandad</h3>
-            <p class="evento-loc">📍 Real Monasterio de San Lorenzo de El Escorial</p>
-            <a href="src/pages/eventos.html" class="btn-primary" style="font-size: 0.7rem; padding: 10px 22px;">Reservar plaza</a>
-          </div>
-        </div>
-
-        <div class="evento-card reveal">
-          <div class="evento-date">
-            <div class="evento-day">02</div>
-            <div class="evento-month">May · 2026</div>
-          </div>
-          <div class="evento-info">
-            <h3 class="evento-title">Conferencia del Duque de Moctezuma: La ayuda de las civilizaciones mesoamericanas en la conquista de México</h3>
-            <p class="evento-loc">📍 Por determinar</p>
-            <a href="src/pages/eventos.html" class="btn-primary" style="font-size: 0.7rem; padding: 10px 22px;">Saber más</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── CONTACTO ── -->
-<section id="contacto">
-  <div class="section-inner">
-    <div class="contacto-grid">
-      <div>
+  <!-- ── QUIENES SOMOS ── -->
+  <section id="quienes-somos">
+    <div class="section-inner">
+      <div class="about-grid">
         <div class="reveal">
-          <span class="section-label">Conecta con Nosotros</span>
-          <h2 class="section-title">Contacta y Mantente Informado</h2>
+          <span class="section-label">Quiénes Somos</span>
+          <h2 class="section-title">Bienvenidos a nuestra Comunidad Hispana</h2>
           <div class="ornament">
             <div class="ornament-diamond"></div>
             <div class="ornament-line"></div>
           </div>
-          <p class="body-text">¿Quieres unirte a nuestra comunidad, proponer contenidos o simplemente saber más? Escríbenos y te responderemos a la mayor brevedad.</p>
+          <p class="body-text">
+            Somos ciudadanos que buscamos establecer lazos entre españoles e hispanos, más allá de lo puramente
+            lingüístico.
+          </p>
+          <br>
+          <p class="body-text">
+            Nos dedicamos a explorar y reivindicar la verdad histórica y resaltar los vínculos comunes de la cultura
+            hispánica: derecho, religión, tradiciones, estilo de vida y, por supuesto, la lengua.
+          </p>
+          <div class="about-badges">
+            <span class="badge">Verdad Histórica</span>
+            <span class="badge">Cultura Hispánica</span>
+            <span class="badge">Mestizaje</span>
+            <span class="badge">Lengua</span>
+            <span class="badge">Iberoamérica</span>
+          </div>
         </div>
-        <!-- Formulario activo con Supabase -->
-
-        <!-- Mensaje éxito -->
-        <div id="contacto-exito" class="form-success" style="margin-top:24px;display:none">
-          ✦ Mensaje recibido. Te respondemos en breve.
+        <div class="about-image-wrap reveal" style="transition-delay: 0.2s;">
+          <img src="assets/images/sello-hispanidad.png" alt="Sello Somos Hispanidad Utraque Unum" class="about-logo"
+            loading="lazy">
+          <div class="about-image-frame"></div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <form id="form-contacto" class="form-group reveal">
-          <input class="form-input" type="text" id="contacto-nombre" placeholder="Tu nombre *" aria-label="Nombre" required>
-          <input class="form-input" type="email" id="contacto-email" placeholder="Tu correo electrónico *" aria-label="Email" required>
-          <input class="form-input" type="text" id="contacto-asunto" placeholder="Asunto" aria-label="Asunto">
-          <textarea class="form-input" id="contacto-mensaje" placeholder="Tu mensaje..." aria-label="Mensaje" rows="5" required></textarea>
-          <button type="submit" class="btn-primary" style="align-self: flex-start; cursor: pointer; border: none; font-size: 0.75rem;">Enviar Mensaje</button>
-        </form>
+  <!-- ── QUE OFRECEMOS ── -->
+  <section id="que-ofrecemos">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Qué Ofrecemos</span>
+        <h2 class="section-title">Misión, Compromiso<br>y Método</h2>
+        <div class="ornament">
+          <div class="ornament-diamond"></div>
+          <div class="ornament-line"></div>
+        </div>
+      </div>
+      <div class="offers-grid">
+        <div class="offer-card reveal">
+          <div class="offer-number">01</div>
+          <h3 class="offer-title">Nuestro Objetivo</h3>
+          <p class="offer-text">Conocer la verdad de la experiencia del imperio español, resaltar sus valores y rescatar
+            su impronta en la actualidad.</p>
+        </div>
+        <div class="offer-card reveal" style="transition-delay: 0.15s;">
+          <div class="offer-number">02</div>
+          <h3 class="offer-title">Nuestro Compromiso</h3>
+          <p class="offer-text">Trabajar en la difusión de la herencia cultural y tradiciones de todos los países
+            hispanos, reforzando nuestra identidad compartida.</p>
+        </div>
+        <div class="offer-card reveal" style="transition-delay: 0.3s;">
+          <div class="offer-number">03</div>
+          <h3 class="offer-title">Nuestro Método</h3>
+          <p class="offer-text">Promover el intercambio de ideas, opiniones e investigación entre los participantes de
+            nuestra comunidad.</p>
+        </div>
+      </div>
+      <div class="offers-image-container reveal" style="transition-delay: 0.45s; margin-top: 60px;">
+        <img src="assets/images/monasterio.jpg" alt="Monasterio de El Escorial" class="offers-featured-image">
+        <div class="offers-image-overlay">
+          <span class="offers-image-caption">Símbolo de la Civilización Hispánica</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BAROMETRO ── -->
+  <section id="barometro">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Proyecto Destacado</span>
+        <h2 class="section-title">Barómetro<br>sobre la Hispanidad</h2>
+        <div class="ornament">
+          <div class="ornament-diamond" style="background: var(--gold);"></div>
+          <div class="ornament-line"></div>
+        </div>
+        <p class="barometro-text">
+          Un proyecto de investigación y análisis destinado a medir y comprender la percepción de la hispanidad, sus
+          valores y su legado histórico entre las comunidades hispanohablantes del mundo.
+        </p>
+        <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Barometro-versiones/BAROMETRO%20v1.pdf"
+          id="btn-barometro" class="barometro-cta" target="_blank">
+          Saber más →
+        </a>
       </div>
       <div class="reveal" style="transition-delay: 0.2s;">
-        <div class="contacto-sidebar">
-          <h3>Somos Hispanidad</h3>
-          <div class="contacto-detail">
-            <p>28250 Torrelodones<br>Madrid, España</p>
-            <br>
-            <p><a href="mailto:contacto@somoshispanidad.es">contacto@somoshispanidad.es</a></p>
+        <img src="assets/images/barometro.jpg" alt="Barómetro sobre la Hispanidad" class="barometro-image"
+          loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CICLO INDIGENAS ── -->
+  <section id="ciclo">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Ciclo de Conferencias</span>
+        <h2 class="section-title">El Papel de los Indígenas<br>en la Conquista</h2>
+        <div class="ornament">
+          <div class="ornament-diamond"></div>
+          <div class="ornament-line"></div>
+        </div>
+      </div>
+      <div class="ciclo-layout">
+        <div class="reveal">
+          <p class="body-text" style="margin-bottom: 28px;">
+            Frente a la narrativa reduccionista de la "Leyenda Negra" que presenta a los pueblos originarios como meras
+            víctimas pasivas, este ciclo de eventos se propone analizar la historia con rigor y valentía.
+          </p>
+          <p class="body-text" style="margin-bottom: 28px;">
+            La Hispanidad no fue una imposición unilateral, sino un proceso complejo de alianzas, mestizaje y
+            participación activa.
+          </p>
+          <p class="body-text" style="margin-bottom: 36px;">
+            Exploraremos cómo los indígenas no solo fueron actores clave en la conquista, sino colaboradores
+            fundamentales de una nueva civilización. Desde las coaliciones guerreras que derribaron imperios opresores
+            hasta la integración cultural y administrativa.
+          </p>
+          <div style="background: var(--cream-dark); padding: 28px; border-left: 3px solid var(--gold);">
+            <p
+              style="font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px;">
+              Conferencia</p>
+            <p
+              style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--sepia-deep); margin-bottom: 8px;">
+              El papel de los indígenas en la conquista de América: Mesoamérica</p>
+            <p style="font-family: 'Lato', sans-serif; font-size: 0.8rem; color: var(--ink-soft);">D. José J. Laorden
+            </p>
+            <a href="https://youtu.be/afx1w-wiLCg" target="_blank" class="btn-primary"
+              style="display: inline-block; margin-top: 20px; font-size: 0.7rem; padding: 10px 24px;">Ver
+              Conferencia</a>
           </div>
-          <div class="paginas-amigas">
-            <h4>Páginas Amigas</h4>
-            <a href="https://protocolodesantapola.es/" target="_blank">Protocolo de Santa Pola →</a>
-          </div>
-          <div style="margin-top: 40px; padding: 28px; background: var(--cream-dark); border-top: 3px solid var(--gold);">
-            <p style="font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px;">Muy Pronto</p>
-            <p style="font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--ink-soft); line-height: 1.7;">Nueva plataforma de conexión para la comunidad hispana. Mantente atento a nuestras novedades.</p>
+
+          <div
+            style="background: var(--cream-dark); padding: 28px; border-left: 3px solid var(--gold); margin-top: 24px;">
+            <p
+              style="font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px;">
+              Conferencia</p>
+            <p
+              style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--sepia-deep); margin-bottom: 8px;">
+              La participación de los indígenas en la Conquista de América</p>
+            <p style="font-family: 'Lato', sans-serif; font-size: 0.8rem; color: var(--ink-soft);">D. Ginés Ladrón de
+              Guevara</p>
+            <a href="https://youtu.be/TquEzGZC__o" target="_blank" class="btn-primary"
+              style="display: inline-block; margin-top: 20px; font-size: 0.7rem; padding: 10px 24px;">Ver
+              Conferencia</a>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+    </div>
+  </section>
 
-<!-- ── FOOTER ── -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand-col">
-        <div class="footer-brand-info">
-          <div class="footer-logo">Somos <span>Hispanidad</span></div>
-          <p class="footer-desc">Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y promover los lazos culturales entre España y el mundo hispano a través de la investigación y la difusión.</p>
-          <div class="social-row">
-            <a href="https://www.youtube.com/@SomosHispanidadTorrelodones" target="_blank" class="social-icon" aria-label="YouTube">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-            </a>
+  <!-- ── ACTOS CULTURALES ── -->
+  <section id="actos-culturales">
+    <div class="actos-culturales-inner">
+      <div class="reveal" style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <span class="section-label">Actividad de la Asociación</span>
+        <h2 class="section-title">Actos Culturales</h2>
+        <div class="ornament" style="justify-content: center;">
+          <div class="ornament-diamond" style="background: var(--gold);"></div>
+          <div class="ornament-line"
+            style="max-width: 200px; background: linear-gradient(to right, var(--gold), transparent);"></div>
+        </div>
+        <p class="body-text" style="color: var(--cream-dark); margin: 0 auto;">
+          Nuestra asociación promueve el encuentro y la divulgación a través de visitas culturales a lugares históricos,
+          asistencia a conferencias y la organización de actos conmemorativos. Buscamos que la historia no solo se lea,
+          sino que se viva en comunidad.
+        </p>
+      </div>
+
+      <!-- Bloque de Visita -->
+      <div class="reveal" style="margin-top: 80px;">
+        <div class="acto-card">
+          <img src="assets/images/escorial.jpg" alt="Visita al Museo de América" class="acto-image">
+          <div class="acto-content">
+            <h3 class="acto-title">Visita al Museo de América</h3>
+            <p class="acto-text">Un recorrido por las salas del Museo de América de Madrid, redescubriendo el legado
+              común y las raíces culturales que definen nuestra identidad hispánica compartida.</p>
+            <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Escritos/Primera%20visita%20de%20Somos%20Hispanidad.pdf"
+              target="_blank" class="btn-primary"
+              style="display: inline-block; margin-top: 25px; font-size: 0.75rem;">Saber más →</a>
           </div>
         </div>
-        <div class="footer-qr-container">
-          <div class="footer-qr-card">
-            <img id="footer-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fsomoshispanidad.es%2F&color=2c1a0e&bgcolor=faf6f0" alt="Código QR" class="footer-qr-img" width="100" height="100">
-          </div>
-          <span class="footer-qr-label">Compartir web</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTENIDOS ── -->
+  <section id="contenidos">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Nuestros Contenidos</span>
+        <h2 class="section-title">Artículos y Conferencias</h2>
+        <div class="ornament">
+          <div class="ornament-diamond"></div>
+          <div class="ornament-line"></div>
         </div>
       </div>
-      <div>
-        <p class="footer-col-title">Navegación</p>
-        <ul class="footer-links">
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="src/pages/asociacion.html">La Asociación</a></li>
-          <li><a href="src/pages/eventos.html">Eventos</a></li>
-          <li><a href="src/pages/contenidos.html">Contenidos</a></li>
-          <li><a href="src/pages/autores.html">Autores</a></li>
-          <li><a href="src/pages/contacto.html">Contacto</a></li>
-        </ul>
+      <div class="contenidos-grid">
+        <article class="post-card reveal">
+          <img src="assets/images/yt-EZ2i15y-P3Y.jpg" alt="Justicia Real en la América Española" class="post-thumb"
+            loading="lazy">
+          <div class="post-body">
+            <p class="post-meta">21 Abr 2026 · Conferencia</p>
+            <h3 class="post-title">Presentación del libro "Justicia Real en la América Española", por don César Pérez
+              Guevara</h3>
+            <a href="https://youtu.be/EZ2i15y-P3Y" target="_blank" class="post-link">Ver contenido →</a>
+          </div>
+        </article>
+        <article class="post-card reveal" style="transition-delay: 0.15s;">
+          <img src="assets/images/yt-afx1w-wiLCg.jpg" alt="Indígenas en la conquista de América" class="post-thumb"
+            loading="lazy">
+          <div class="post-body">
+            <p class="post-meta">8 Abr 2026 · Charla Temática</p>
+            <h3 class="post-title">El papel de los indígenas en la conquista de América: Mesoamérica</h3>
+            <a href="https://youtu.be/afx1w-wiLCg" target="_blank" class="post-link">Ver contenido →</a>
+          </div>
+        </article>
+        <article class="post-card reveal" style="transition-delay: 0.3s;">
+          <div class="post-thumb"
+            style="background: var(--cream-dark); display:flex; align-items:center; justify-content:center;">
+            <span style="font-family:'Cinzel',serif; color:var(--sepia); font-size:0.8rem; letter-spacing:0.1em;">TERROR
+              BOLIVARIANO</span>
+          </div>
+          <div class="post-body">
+            <p class="post-meta">18 Mar 2026 · Artículo · Francisco Massó</p>
+            <h3 class="post-title">Terror Bolivariano — Análisis del revisionismo histórico contemporáneo</h3>
+            <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Escritos/Terror%20bolivariano.pdf"
+              target="_blank" class="post-link">Leer artículo →</a>
+          </div>
+        </article>
       </div>
-      <div>
-        <p class="footer-col-title">Recursos</p>
-        <ul class="footer-links">
-          <li><a href="src/pages/contenidos.html">Contenidos</a></li>
-          <li><a href="src/pages/eventos.html">Próximos Eventos</a></li>
-          <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
-          <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
-        </ul>
+      <div style="text-align: center; margin-top: 56px;" class="reveal">
+        <a href="src/pages/contenidos.html" class="btn-primary">Ver todos los contenidos</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2026 Somos Hispanidad · Todos los derechos reservados</p>
-      <a href="src/pages/privacidad.html" class="footer-legal">Política de Privacidad</a>
+  </section>
+
+  <!-- ── ESCORIAL BANNER ── -->
+  <section id="escorial">
+    <div class="escorial-bg"></div>
+    <div class="escorial-overlay"></div>
+    <div class="escorial-content reveal">
+      <p class="escorial-quote">
+        "El Monasterio de El Escorial: símbolo eterno del esplendor y la grandeza de la civilización hispánica."
+      </p>
+      <p class="escorial-attr">Real Monasterio de San Lorenzo de El Escorial · Madrid, España</p>
+      <a href="src/pages/eventos.html" style="display:inline-block; margin-top: 28px;" class="btn-outline">Ver próxima
+        visita</a>
     </div>
-  </div>
-</footer>
+  </section>
 
-<!-- ── BACK TO TOP ── -->
-<a href="#inicio" class="back-top" id="backTop" title="Volver al inicio">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-</a>
+  <!-- ── EVENTOS ── -->
+  <section id="eventos">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Agenda</span>
+        <h2 class="section-title">Próximos Acontecimientos</h2>
+        <div class="ornament">
+          <div class="ornament-diamond"></div>
+          <div class="ornament-line"></div>
+        </div>
+      </div>
+      <div class="eventos-layout" style="margin-top: 60px;">
+        <div>
+          <div class="evento-card reveal">
+            <div class="evento-date">
+              <div class="evento-day">20</div>
+              <div class="evento-month">Jun · 2026</div>
+            </div>
+            <div class="evento-info">
+              <h3 class="evento-title">Visita guiada al Monasterio del Escorial con comida de hermandad</h3>
+              <p class="evento-loc">📍 Real Monasterio de San Lorenzo de El Escorial</p>
+              <a href="src/pages/eventos.html" class="btn-primary"
+                style="font-size: 0.7rem; padding: 10px 22px;">Reservar plaza</a>
+            </div>
+          </div>
 
-<script src="src/js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="src/js/supabaseClient.js"></script>
-<script src="src/js/eventos.js"></script>
-<script src="src/js/contenidos.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-  (function(){
-    emailjs.init({ publicKey: '0slY_AJYvHsj932ME' });
-  })();
-</script>
-<script src="src/js/contacto.js"></script>
-<script>
-  // Activar efecto parallax de entrada en el hero
-  const heroBg = document.getElementById('heroBg');
-  if (heroBg) setTimeout(function() { heroBg.classList.add('loaded'); }, 100);
-</script>
+          <div class="evento-card reveal">
+            <div class="evento-date">
+              <div class="evento-day">02</div>
+              <div class="evento-month">May · 2026</div>
+            </div>
+            <div class="evento-info">
+              <h3 class="evento-title">Conferencia del Duque de Moctezuma: La ayuda de las civilizaciones mesoamericanas
+                en la conquista de México</h3>
+              <p class="evento-loc">📍 Por determinar</p>
+              <a href="src/pages/eventos.html" class="btn-primary" style="font-size: 0.7rem; padding: 10px 22px;">Saber
+                más</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACTO ── -->
+  <section id="contacto">
+    <div class="section-inner">
+      <div class="contacto-grid">
+        <div>
+          <div class="reveal">
+            <span class="section-label">Conecta con Nosotros</span>
+            <h2 class="section-title">Contacta y Mantente Informado</h2>
+            <div class="ornament">
+              <div class="ornament-diamond"></div>
+              <div class="ornament-line"></div>
+            </div>
+            <p class="body-text">¿Quieres unirte a nuestra comunidad, proponer contenidos o simplemente saber más?
+              Escríbenos y te responderemos a la mayor brevedad.</p>
+          </div>
+          <!-- Formulario activo con Supabase -->
+
+          <!-- Mensaje éxito -->
+          <div id="contacto-exito" class="form-success" style="margin-top:24px;display:none">
+            ✦ Mensaje recibido. Te respondemos en breve.
+          </div>
+
+          <form id="form-contacto" class="form-group reveal">
+            <input class="form-input" type="text" id="contacto-nombre" placeholder="Tu nombre *" aria-label="Nombre"
+              required>
+            <input class="form-input" type="email" id="contacto-email" placeholder="Tu correo electrónico *"
+              aria-label="Email" required>
+            <input class="form-input" type="text" id="contacto-asunto" placeholder="Asunto" aria-label="Asunto">
+            <textarea class="form-input" id="contacto-mensaje" placeholder="Tu mensaje..." aria-label="Mensaje" rows="5"
+              required></textarea>
+            <button type="submit" class="btn-primary"
+              style="align-self: flex-start; cursor: pointer; border: none; font-size: 0.75rem;">Enviar Mensaje</button>
+          </form>
+        </div>
+        <div class="reveal" style="transition-delay: 0.2s;">
+          <div class="contacto-sidebar">
+            <h3>Somos Hispanidad</h3>
+            <div class="contacto-detail">
+              <p>28250 Torrelodones<br>Madrid, España</p>
+              <br>
+              <p><a href="mailto:contacto@somoshispanidad.es">contacto@somoshispanidad.es</a></p>
+            </div>
+            <div class="paginas-amigas">
+              <h4>Páginas Amigas</h4>
+              <a href="https://protocolodesantapola.es/" target="_blank">Protocolo de Santa Pola →</a>
+            </div>
+            <div
+              style="margin-top: 40px; padding: 28px; background: var(--cream-dark); border-top: 3px solid var(--gold);">
+              <p
+                style="font-family: 'Lato', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px;">
+                Muy Pronto</p>
+              <p
+                style="font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--ink-soft); line-height: 1.7;">
+                Nueva plataforma de conexión para la comunidad hispana. Mantente atento a nuestras novedades.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand-col">
+          <div class="footer-brand-info">
+            <div class="footer-logo">Somos <span>Hispanidad</span></div>
+            <p class="footer-desc">Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y
+              promover los lazos culturales entre España y el mundo hispano a través de la investigación y la difusión.
+            </p>
+            <div class="social-row">
+              <a href="https://www.youtube.com/@SomosHispanidadTorrelodones" target="_blank" class="social-icon social-icon-yt"
+                aria-label="Nuestro canal de Youtube">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path
+                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+                <span class="social-yt-label">Nuestro canal de Youtube</span>
+              </a>
+            </div>
+          </div>
+          <div class="footer-qr-container">
+            <div class="footer-qr-card">
+              <img id="footer-qr"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fsomoshispanidad.es%2F&color=2c1a0e&bgcolor=faf6f0"
+                alt="Código QR" class="footer-qr-img" width="100" height="100">
+            </div>
+            <span class="footer-qr-label">Compartir web</span>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Navegación</p>
+          <ul class="footer-links">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="src/pages/asociacion.html">La Asociación</a></li>
+            <li><a href="src/pages/eventos.html">Eventos</a></li>
+            <li><a href="src/pages/contenidos.html">Contenidos</a></li>
+            <li><a href="src/pages/autores.html">Autores</a></li>
+            <li><a href="src/pages/contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Recursos</p>
+          <ul class="footer-links">
+            <li><a href="src/pages/contenidos.html">Contenidos</a></li>
+            <li><a href="src/pages/eventos.html">Próximos Eventos</a></li>
+            <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
+            <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Somos Hispanidad · Todos los derechos reservados</p>
+        <a href="src/pages/privacidad.html" class="footer-legal">Política de Privacidad</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── BACK TO TOP ── -->
+  <a href="#inicio" class="back-top" id="backTop" title="Volver al inicio">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </a>
+
+  <script src="src/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/js/supabaseClient.js"></script>
+  <script src="src/js/eventos.js"></script>
+  <script src="src/js/contenidos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init({ publicKey: '0slY_AJYvHsj932ME' });
+    })();
+  </script>
+  <script src="src/js/contacto.js"></script>
+  <script>
+    // Activar efecto parallax de entrada en el hero
+    const heroBg = document.getElementById('heroBg');
+    if (heroBg) setTimeout(function () { heroBg.classList.add('loaded'); }, 100);
+
+    // ── AVISO PRÓXIMO EVENTO (Hero) ──────────────────────
+    (async function () {
+      try {
+        const { data, error } = await supabaseClient
+          .from('events')
+          .select('id, title, event_date')
+          .eq('published', true)
+          .gte('event_date', new Date().toISOString())
+          .order('event_date', { ascending: true })
+          .limit(1);
+
+        if (error || !data || data.length === 0) return;
+
+        const ev = data[0];
+        const label = document.getElementById('hero-next-event-label');
+        const badge = document.getElementById('hero-next-event');
+
+        if (label && badge) {
+          label.textContent = 'Próximo evento: ' + ev.title;
+          badge.href = 'src/pages/eventos.html';
+          badge.style.display = 'inline-flex';
+        }
+      } catch (e) {
+        // Fallo silencioso: el badge queda oculto
+      }
+    })();
+  </script>
 </body>
+
 </html>

@@ -143,16 +143,12 @@ async function initFormularioInscripcion() {
     btn.textContent = 'Procesando...';
     btn.disabled = true;
 
-    // Guardar inscripción en Supabase
-    console.log('Enviando inscripción:', { evento, nombre, email });
     const ok = await registrarInscripcion(evento, nombre, email, phone, comments);
 
     btn.textContent = 'Solicitar plaza';
     btn.disabled = false;
 
     if (ok) {
-      console.log('Inscripción exitosa');
-
       // ── EMAIL DE CONFIRMACIÓN AUTOMÁTICO ──────────────
       try {
         // Obtener el título del evento seleccionado

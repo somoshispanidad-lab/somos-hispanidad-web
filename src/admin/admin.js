@@ -1171,5 +1171,114 @@ document.addEventListener('DOMContentLoaded', async function () {
       loadInscritos(currentEventoId);
     }, 1500);
   });
+  // ── MODAL AÑADIR SIMPATIZANTE ──────────────────────────────────
+  const btnAddSimpatizante = document.getElementById('btn-add-simpatizante');
+  const modalAddSimpatizante = document.getElementById('modal-add-simpatizante');
+  const btnCerrarModalAddSimp = document.getElementById('btn-cerrar-modal-add-simpatizante');
+  const btnCancelarAddSimp = document.getElementById('btn-cancelar-add-simpatizante');
+  const formAddSimpatizante = document.getElementById('form-add-simpatizante');
+  const selectEventoSimp = document.getElementById('add-simp-evento');
+
+  if (btnAddSimpatizante && modalAddSimpatizante) {
+    btnAddSimpatizante.addEventListener('click', async () => {
+      if (formAddSimpatizante) formAddSimpatizante.reset();
+      const msg = document.getElementById('add-simp-msg');
+      if (msg) msg.style.display = 'none';
+      
+      // Cargar eventos en el select
+      try {
+        const { data, error } = await supabaseClient.from('events').select('id, title').order('created_at', { ascending: false });
+        if (!error && data && selectEventoSimp) {
+          selectEventoSimp.innerHTML = '<option value="">— Sin evento vinculado —</option>' + 
+            data.map(e => `<option value="${e.id}">${e.title}</option>`).join('');
+        }
+      } catch(e) {}
+      
+      modalAddSimpatizante.style.display = 'flex';
+    });
+  }
+
+  const cerrarModalAddSimp = () => { if (modalAddSimpatizante) modalAddSimpatizante.style.display = 'none'; };
+  if (btnCerrarModalAddSimp) btnCerrarModalAddSimp.addEventListener('click', cerrarModalAddSimp);
+  if (btnCancelarAddSimp) btnCancelarAddSimp.addEventListener('click', cerrarModalAddSimp);
+
+  if (formAddSimpatizante) {
+    formAddSimpatizante.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('add-simp-msg');
+      const btn = document.getElementById('btn-submit-add-simpatizante');
+      
+      const nombre = document.getElementById('add-simp-nombre').value.trim();
+      const email = document.getElementById('add-simp-email').value.trim();
+      const telefono = document.getElementById('add-simp-telefono')?.value.trim() || '';
+      const event_id = selectEventoSimp ? selectEventoSimp.value : '';
+      const fuente = document.getElementById('add-simp-fuente')?.value.trim() || '';
+      const eventTitle = (event_id && selectEventoSimp) ? selectEventoSimp.options[selectEventoSimp.selectedIndex].text : '';
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Guardando...';
+      }
+      if (msg) msg.style.display = 'none';
+
+      try {
+        // 1. Insertar en supporters
+        const { data: existingSup } = await supabaseClient.from('supporters')
+          .select('id').eq('email', email).maybeSingle();
+
+        if (!existingSup) {
+          const { error: supError } = await supabaseClient.from('supporters').insert([{
+            name: nombre,
+            email: email,
+            consent: true,
+            source: event_id ? `Evento: ${eventTitle}` : (fuente || 'Alta manual admin')
+          }]);
+          if (supError) throw new Error('Error al guardar en simpatizantes: ' + supError.message);
+        }
+
+        // 2. Si hay evento, insertar en event_registrations
+        if (event_id) {
+          const { data: existingReg } = await supabaseClient.from('event_registrations')
+            .select('id').eq('event_id', event_id).eq('email', email).maybeSingle();
+
+          if (!existingReg) {
+            const { error: regError } = await supabaseClient.from('event_registrations').insert([{
+              event_id: event_id,
+              name: nombre,
+              email: email,
+              phone: telefono,
+              comments: fuente || 'Alta manual desde admin'
+            }]);
+            if (regError) throw new Error('Guardado como simpatizante, pero falló al inscribir en evento: ' + regError.message);
+          }
+        }
+
+        if (msg) {
+          msg.textContent = '✅ Simpatizante añadido correctamente.';
+          msg.style.color = '#15803d';
+          msg.style.backgroundColor = '#dcfce7';
+          msg.style.display = 'block';
+        }
+
+        setTimeout(() => {
+          cerrarModalAddSimp();
+          loadSupporters(); // recargar tabla
+        }, 1500);
+
+      } catch (err) {
+        if (msg) {
+          msg.textContent = '❌ ' + err.message;
+          msg.style.color = '#b91c1c';
+          msg.style.backgroundColor = '#fee2e2';
+          msg.style.display = 'block';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Guardar simpatizante';
+        }
+      }
+    });
+  }
 
 });

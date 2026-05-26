@@ -21,7 +21,7 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="src/css/styles.css">
+  <link rel="stylesheet" href="src/css/styles.css?v=1779817097180">
 </head>
 
 <body>
@@ -521,7 +521,7 @@
     </svg>
   </a>
 
-  <script src="src/js/main.js"></script>
+  <script src="src/js/main.js?v=1779817097181"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="src/js/supabaseClient.js"></script>
   <script src="src/js/eventos.js"></script>
@@ -541,22 +541,16 @@
     // ── AVISO PRÓXIMO EVENTO (Hero) ──────────────────────
     (async function () {
       try {
-        const { data, error } = await supabaseClient
-          .from('events')
-          .select('id, title, event_date')
-          .eq('published', true)
-          .gte('event_date', new Date().toISOString())
-          .order('event_date', { ascending: true })
-          .limit(1);
+        const eventos = await getEventos();
+        const ev = eventos.find(e => e.estado === 'abierto' || e.estado === 'proximo');
 
-        if (error || !data || data.length === 0) return;
+        if (!ev) return;
 
-        const ev = data[0];
         const label = document.getElementById('hero-next-event-label');
         const badge = document.getElementById('hero-next-event');
 
         if (label && badge) {
-          label.textContent = 'Próximo evento: ' + ev.title;
+          label.textContent = 'Próximo evento: ' + ev.titulo;
           badge.href = 'src/pages/eventos.html';
           badge.style.display = 'inline-flex';
         }

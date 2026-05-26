@@ -1557,76 +1557,68 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-  <style>
-    .footer-brand-col-landing { display: flex; gap: 32px; align-items: flex-start; }
-    .footer-brand-info-landing { flex: 1; }
-    .footer-qr-container-landing { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
-    .footer-qr-card-landing { background: var(--warm-white); padding: 6px; border-radius: 4px; border: 1px solid var(--sepia-light); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(44, 26, 14, 0.2); }
-    .footer-qr-img-landing { display: block; width: 90px; height: 90px; }
-    .footer-qr-label-landing { font-family: 'Lato', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); text-align: center; }
-    @media (max-width: 768px) { .footer-qr-container-landing { display: none !important; } }
-  </style>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand-col-landing">
-        <div class="footer-brand-info-landing">
-          <div class="footer-logo">Somos <span>Hispanidad</span></div>
-          <p class="footer-desc">Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y promover los lazos culturales entre España y el mundo hispano a través de la investigación y la difusión.</p>
-          <div class="social-row">
-            <a href="https://www.youtube.com/@SomosHispanidadTorrelodones" target="_blank" class="social-icon" aria-label="YouTube">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-            </a>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand-col">
+          <div class="footer-brand-info">
+            <div class="footer-logo">Somos <span>Hispanidad</span></div>
+            <p class="footer-desc">Ciudadanos comprometidos con rescatar la verdad histórica del imperio español y
+              promover los lazos culturales entre España y el mundo hispano a través de la investigación y la difusión.
+            </p>
+            <div class="social-row">
+              <a href="https://www.youtube.com/@SomosHispanidadTorrelodones" target="_blank" class="social-icon social-icon-yt"
+                aria-label="Nuestro canal de Youtube">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path
+                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+                <span class="social-yt-label">Nuestro canal de Youtube</span>
+              </a>
+            </div>
+          </div>
+          <div class="footer-qr-container">
+            <div class="footer-qr-card">
+              <img id="footer-qr"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fsomoshispanidad.es%2F&color=2c1a0e&bgcolor=faf6f0"
+                alt="Código QR" class="footer-qr-img" width="100" height="100">
+            </div>
+            <span class="footer-qr-label">Compartir web</span>
           </div>
         </div>
-        <div class="footer-qr-container-landing">
-          <div class="footer-qr-card-landing">
-            <img id="footer-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fsomoshispanidad.es%2F&color=2c1a0e&bgcolor=faf6f0" alt="Código QR" class="footer-qr-img-landing" width="100" height="100">
-          </div>
-          <span class="footer-qr-label-landing">Compartir web</span>
+        <div>
+          <p class="footer-col-title">Navegación</p>
+          <ul class="footer-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#quienes-somos">La Asociación</a></li>
+            <li><a href="#eventos">Eventos</a></li>
+            <li><a href="#contenidos">Contenidos</a></li>
+            <li><a href="#">Autores</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Recursos</p>
+          <ul class="footer-links">
+            <li><a href="src/pages/contenidos.html">Contenidos</a></li>
+            <li><a href="src/pages/eventos.html">Próximos Eventos</a></li>
+            <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Más</p>
+          <ul class="footer-links">
+            <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
+            <li><a href="#" class="link-disabled">Lecturas recomendadas</a></li>
+            <li><a href="#" class="link-disabled">Divulgadores</a></li>
+          </ul>
         </div>
       </div>
-      <div>
-        <p class="footer-col-title">Navegación</p>
-        <ul class="footer-links">
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#quienes-somos">Quiénes Somos</a></li>
-          <li><a href="#que-ofrecemos">Nuestro Objetivo</a></li>
-          <li><a href="#barometro">Barómetro</a></li>
-          <li><a href="#ciclo">Ciclo Indígenas</a></li>
-          <li><a href="#contenidos">Contenidos</a></li>
-          <li><a href="#eventos">Eventos</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="footer-col-title">Recursos</p>
-        <ul class="footer-links">
-          <li><a href="https://www.somoshispanidad.es/_files/ugd/c4fe9a_89a4b4838f944d48979c9f8ae7d987ea.pdf" target="_blank">Último Orden del Día</a></li>
-          <li><a href="https://www.somoshispanidad.es/_files/ugd/c4fe9a_89e91acaeff04b62a88d2537e14cd1ce.pdf" target="_blank">Programa de Visitas</a></li>
-          <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="footer-col-title">Más</p>
-        <ul class="footer-links">
-          <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
-          <li><a href="#" class="link-disabled">Lecturas recomendadas</a></li>
-          <li><a href="#" class="link-disabled">Divulgadores</a></li>
-        </ul>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Somos Hispanidad · Todos los derechos reservados</p>
+        <a href="https://www.somoshispanidad.es/_files/ugd/c4fe9a_d60b3c057b984740bd2023525d8cef3b.docx" target="_blank" class="footer-legal">Política de Privacidad</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2026 Somos Hispanidad · Todos los derechos reservados</p>
-      <a
-        href="https://www.somoshispanidad.es/_files/ugd/c4fe9a_d60b3c057b984740bd2023525d8cef3b.docx"
-        class="footer-legal"
-        target="_blank"
-      >Aviso Legal</a>
-    </div>
-  </div>
-</footer>
+  </footer>
 
 <!-- ── BACK TO TOP ── -->
 <a href="#inicio" class="back-top" id="backTop" title="Volver al inicio">

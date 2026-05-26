@@ -113,15 +113,16 @@ body { font-family:'Lato',sans-serif; background:var(--cream); color:var(--ink);
 .admin-btn-sm.red:hover { background:rgba(180,50,50,0.1); }
 
 @media (max-width:768px) {
-  .admin-layout { grid-template-columns:1fr; }
-  .admin-sidebar { position:static; height:auto; padding: 16px; border-bottom: 1px solid var(--cream-dark); }
+  .admin-layout { display: flex; flex-direction: column; min-height: 100vh; }
+  .admin-sidebar { position:static; height:auto; padding: 16px; border-bottom: 1px solid var(--cream-dark); width: 100%; }
   .admin-nav { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; white-space: nowrap; -webkit-overflow-scrolling: touch; border-bottom: 1px solid rgba(184,146,106,0.2); }
-  .admin-nav-link { padding: 8px 16px; border-left: none; border-bottom: 3px solid transparent; }
+  .admin-nav-link { padding: 8px 16px; border-left: none; border-bottom: 3px solid transparent; background: transparent !important; }
   .admin-nav-link:hover, .admin-nav-link.active { border-bottom-color: var(--gold); border-left-color: transparent; }
   .admin-sidebar-footer { flex-direction: row !important; gap: 16px !important; overflow-x: auto; white-space: nowrap; }
   .admin-topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
   .admin-topbar-actions { width: 100%; justify-content: space-between; }
-  .admin-panel { padding: 16px; }
+  .admin-main { width: 100%; display: block; overflow-x: hidden; }
+  .admin-panel { padding: 16px; width: 100%; box-sizing: border-box; }
 }
 
 /* LOGIN STYLES */

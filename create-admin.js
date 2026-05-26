@@ -4,8 +4,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function createAdminUser() {
-  const email = 'somoshispanidad@gmail.com';
-  const password = 'Torrelodones2026**';
+  const email = 'javier@iaparaseniors.org';
+  const password = 'B3m3t3r10@';
 
   console.log(`Intentando crear usuario: ${email}`);
 

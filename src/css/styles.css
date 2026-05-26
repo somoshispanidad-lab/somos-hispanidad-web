@@ -30,10 +30,21 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Lato', sans-serif;
-  background-color: var(--warm-white);
   color: var(--ink);
-  font-weight: 300;
+  background-color: var(--cream);
+  line-height: 1.6;
   overflow-x: hidden;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23b8926a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M12 2v4'/><path d='M12 18v4'/><path d='M4.93 4.93l2.83 2.83'/><path d='M16.24 16.24l2.83 2.83'/><path d='M2 12h4'/><path d='M18 12h4'/><path d='M4.93 19.07l2.83-2.83'/><path d='M16.24 7.76l2.83-2.83'/></svg>") 10 10, auto;
+}
+
+a, button, .btn-primary, .btn-outline, .btn-outline-light {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%23b8926a'><circle cx='12' cy='12' r='8'/></svg>") 10 10, pointer !important;
+}
+
+.link-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default !important;
 }
 
 /* ── TEXTURA DE FONDO SUTIL ── */
@@ -605,8 +616,8 @@ footer {
 
 .footer-top {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 60px;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
   padding-bottom: 48px;
   border-bottom: 1px solid rgba(184,146,106,0.2);
 }

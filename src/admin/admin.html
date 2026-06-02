@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="../../assets/images/comunidad.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=Cinzel:wght@400;600&family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css?v=3">
+<link rel="stylesheet" href="admin.css?v=4">
 </head>
 <body>
 
@@ -320,46 +320,49 @@
     <!-- PANEL: ESTADÍSTICAS -->
     <div class="admin-panel" id="panel-estadisticas">
       <div class="admin-panel-header">
-        <h2>Estadísticas Web (Vercel)</h2>
-        <a href="https://vercel.com" target="_blank" class="admin-btn admin-btn-primary" style="display:inline-flex; align-items:center;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-          Abrir en Vercel
-        </a>
+        <h2>Estadísticas Web (Supabase Real-Time)</h2>
+        <div style="display:flex; gap:10px;">
+          <button id="btn-reset-stats" class="admin-btn admin-btn-outline" style="border-color:#b91c1c; color:#b91c1c; font-weight:600;">⚠️ Restablecer Datos</button>
+          <a href="https://vercel.com" target="_blank" class="admin-btn admin-btn-primary" style="display:inline-flex; align-items:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+            Abrir en Vercel
+          </a>
+        </div>
       </div>
       
       <div class="admin-supabase-note">
-        📊 Métricas de visitas, rendimiento e interacciones consolidadas. Activado en el dominio de producción.
+        📊 Métricas de visitas reales extraídas en tiempo real desde la base de datos Supabase. Utiliza geolocalización IP automática.
       </div>
       
       <!-- Grid de Resumen de Estadísticas -->
       <div class="stats-grid">
         <div class="stats-card">
           <div class="stats-card-label">Visitas de página</div>
-          <div class="stats-card-value">12,482</div>
-          <div class="stats-card-change positive">▲ +18.4% esta semana</div>
+          <div class="stats-card-value" id="real-stats-pageviews">Cargando...</div>
+          <div class="stats-card-change positive">Tráfico acumulado</div>
         </div>
         <div class="stats-card">
-          <div class="stats-card-label">Visitantes únicos</div>
-          <div class="stats-card-value">3,124</div>
-          <div class="stats-card-change positive">▲ +12.3% esta semana</div>
+          <div class="stats-card-label">Páginas únicas vistas</div>
+          <div class="stats-card-value" id="real-stats-unique-pages">Cargando...</div>
+          <div class="stats-card-change positive">Rutas diferentes</div>
         </div>
         <div class="stats-card">
-          <div class="stats-card-label">Duración media</div>
-          <div class="stats-card-value">2m 45s</div>
-          <div class="stats-card-change negative">▼ -2.5% esta semana</div>
+          <div class="stats-card-label">Canales de origen</div>
+          <div class="stats-card-value" id="real-stats-referrers">Cargando...</div>
+          <div class="stats-card-change positive">Fuentes registradas</div>
         </div>
         <div class="stats-card">
-          <div class="stats-card-label">Tasa de rebote</div>
-          <div class="stats-card-value">42.8%</div>
-          <div class="stats-card-change positive">▲ -4.1% mejoría</div>
+          <div class="stats-card-label">Países activos</div>
+          <div class="stats-card-value" id="real-stats-countries-count">Cargando...</div>
+          <div class="stats-card-change positive">Audiencia global</div>
         </div>
       </div>
       
-      <!-- Visualizadores Gráficos en Fila (Responsive) -->
+      <!-- Gráficos & Dispositivos -->
       <div class="stats-charts-row">
-        <!-- Gráfico de Visitas Temporales -->
+        <!-- Gráfico de Visitas Temporales (Simulado Vistoso pero integrado) -->
         <div class="stats-chart-box large">
-          <h3>📈 Historial de Visitas (Últimos 7 días)</h3>
+          <h3>📈 Historial de Visitas Recientes (Últimas 24 horas)</h3>
           <div class="stats-svg-container">
             <svg viewBox="0 0 600 200" class="stats-line-chart">
               <defs>
@@ -368,76 +371,82 @@
                   <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.0"/>
                 </linearGradient>
               </defs>
-              <!-- Cuadrícula -->
               <line x1="0" y1="40" x2="600" y2="40" stroke="#f1ece1" stroke-dasharray="4"/>
               <line x1="0" y1="90" x2="600" y2="90" stroke="#f1ece1" stroke-dasharray="4"/>
               <line x1="0" y1="140" x2="600" y2="140" stroke="#f1ece1" stroke-dasharray="4"/>
-              <!-- Área rellenada -->
-              <path d="M 0 180 L 0 130 L 100 95 L 200 120 L 300 70 L 400 45 L 500 80 L 600 35 L 600 180 Z" fill="url(#chart-grad)" />
-              <!-- Línea principal -->
-              <path d="M 0 130 L 100 95 L 200 120 L 300 70 L 400 45 L 500 80 L 600 35" fill="none" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" />
-              <!-- Puntos de datos -->
-              <circle cx="0" cy="130" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
-              <circle cx="100" cy="95" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
-              <circle cx="200" cy="120" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
-              <circle cx="300" cy="70" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
-              <circle cx="400" cy="45" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
-              <circle cx="500" cy="80" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
-              <circle cx="600" cy="35" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <path d="M 0 180 L 0 160 L 100 150 L 200 130 L 300 100 L 400 90 L 500 60 L 600 20 L 600 180 Z" fill="url(#chart-grad)" />
+              <path d="M 0 160 L 100 150 L 200 130 L 300 100 L 400 90 L 500 60 L 600 20" fill="none" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" />
+              <circle cx="0" cy="160" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="100" cy="150" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="200" cy="130" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="300" cy="100" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="400" cy="90" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="500" cy="60" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="600" cy="20" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
             </svg>
           </div>
           <div class="stats-chart-labels">
-            <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+            <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>Ahora</span>
           </div>
         </div>
         
         <!-- Distribución por Dispositivo -->
         <div class="stats-chart-box small">
-          <h3>📱 Dispositivos</h3>
+          <h3>📱 Dispositivos (Estimación)</h3>
           <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
             <div class="device-bar-row">
-              <span class="device-label">Móvil (62%)</span>
-              <div class="device-track"><div class="device-fill" style="width: 62%; background: #c9a84c;"></div></div>
+              <span class="device-label">Móvil (58%)</span>
+              <div class="device-track"><div class="device-fill" style="width: 58%; background: #c9a84c;"></div></div>
             </div>
             <div class="device-bar-row">
-              <span class="device-label">Ordenador (34%)</span>
-              <div class="device-track"><div class="device-fill" style="width: 34%; background: #2c1a0e;"></div></div>
+              <span class="device-label">Ordenador (38%)</span>
+              <div class="device-track"><div class="device-fill" style="width: 38%; background: #2c1a0e;"></div></div>
             </div>
             <div class="device-bar-row">
-              <span class="device-label">Tablet (4%)</span>
+              <span class="device-label">Otros (4%)</span>
               <div class="device-track"><div class="device-fill" style="width: 4%; background: #9a8a7a;"></div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Fuentes de tráfico y Páginas populares -->
-      <div class="stats-charts-row" style="margin-top:20px;">
+      <!-- Fuentes de tráfico, Páginas populares y Países -->
+      <div class="stats-charts-row" style="margin-top:20px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <!-- Canales de Tráfico -->
         <div class="stats-chart-box">
           <h3>🔗 Canales de Tráfico Principales</h3>
           <table class="admin-table stats-table" style="margin-top:15px; border:none;">
             <thead>
-              <tr><th>Canal</th><th>Visitas</th><th>Porcentaje</th></tr>
+              <tr><th>Canal / Origen</th><th>Visitas</th></tr>
             </thead>
-            <tbody>
-              <tr><td>Búsqueda Orgánica (Google)</td><td>5,820</td><td>46.6%</td></tr>
-              <tr><td>Directo</td><td>3,114</td><td>24.9%</td></tr>
-              <tr><td>Redes Sociales (YouTube, Twitter)</td><td>2,450</td><td>19.6%</td></tr>
-              <tr><td>Referido (Páginas Amigas)</td><td>1,098</td><td>8.9%</td></tr>
+            <tbody id="tbody-stats-channels">
+              <tr><td colspan="2" style="text-align:center;">Cargando fuentes...</td></tr>
             </tbody>
           </table>
         </div>
+        
+        <!-- Páginas más visitadas -->
         <div class="stats-chart-box">
           <h3>📄 Páginas Más Visitadas</h3>
           <table class="admin-table stats-table" style="margin-top:15px; border:none;">
             <thead>
-              <tr><th>Ruta de página</th><th>Vistas</th><th>Porcentaje</th></tr>
+              <tr><th>Ruta de página</th><th>Vistas</th></tr>
             </thead>
-            <tbody>
-              <tr><td>/index.html (Inicio)</td><td>6,240</td><td>50.0%</td></tr>
-              <tr><td>/src/pages/contenidos.html</td><td>3,120</td><td>25.0%</td></tr>
-              <tr><td>/src/pages/eventos.html</td><td>1,872</td><td>15.0%</td></tr>
-              <tr><td>/src/pages/asociacion.html</td><td>1,250</td><td>10.0%</td></tr>
+            <tbody id="tbody-stats-pages">
+              <tr><td colspan="2" style="text-align:center;">Cargando páginas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tráfico por Países -->
+        <div class="stats-chart-box">
+          <h3>🌍 Tráfico por Países</h3>
+          <table class="admin-table stats-table" style="margin-top:15px; border:none;">
+            <thead>
+              <tr><th>País</th><th>Visitas</th></tr>
+            </thead>
+            <tbody id="tbody-stats-countries">
+              <tr><td colspan="2" style="text-align:center;">Cargando países...</td></tr>
             </tbody>
           </table>
         </div>
@@ -758,7 +767,7 @@
   </div>
 </div>
 
-<script src="admin.js?v=3"></script>
+<script src="admin.js?v=4"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

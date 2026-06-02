@@ -172,3 +172,21 @@ WHERE NOT EXISTS (SELECT 1 FROM settings WHERE key = 'lecturas_recomendadas_url'
 INSERT INTO settings (key, value)
 SELECT 'divulgadores_url', 'https://www.youtube.com/@SomosHispanidadTorrelodones'
 WHERE NOT EXISTS (SELECT 1 FROM settings WHERE key = 'divulgadores_url');
+
+
+-- 6. TABLA DE TRACKING DE VISITAS REALES (ESTADÍSTICAS)
+CREATE TABLE IF NOT EXISTS page_views (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  page_path TEXT NOT NULL,
+  referrer TEXT,
+  country TEXT DEFAULT 'España',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Insertar visitas" ON page_views;
+CREATE POLICY "Insertar visitas" ON page_views FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Admin ALL Visits" ON page_views;
+CREATE POLICY "Admin ALL Visits" ON page_views TO authenticated USING (true) WITH CHECK (true);

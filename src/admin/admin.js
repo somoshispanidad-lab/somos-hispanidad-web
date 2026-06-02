@@ -204,7 +204,12 @@ document.addEventListener('DOMContentLoaded', async function () {
       // Mostrar el panel correspondiente
       panels.forEach(p => p.classList.remove('active'));
       const panelEl = document.getElementById('panel-' + panelId);
-      if (panelEl) panelEl.classList.add('active');
+      if (panelEl) {
+        panelEl.classList.add('active');
+        if (panelId === 'estadisticas') {
+          loadRealStatistics();
+        }
+      }
 
       // Actualizar el título del topbar
       if (panelTitle && titulos[panelId]) {
@@ -252,6 +257,31 @@ document.addEventListener('DOMContentLoaded', async function () {
         msgEl.style.background = '#ffebee';
         msgEl.style.color = '#c62828';
         msgEl.textContent = 'Error: ' + err.message;
+    });
+  }
+
+  // ── RESETEAR ESTADÍSTICAS ──────────────────────────
+  const btnResetStats = document.getElementById('btn-reset-stats');
+  if (btnResetStats) {
+    btnResetStats.addEventListener('click', async function () {
+      if (!confirm('⚠️ ¿Estás completamente seguro de que deseas restablecer y borrar a 0 todas las estadísticas de visitas reales? Esta acción no se puede deshacer.')) return;
+      
+      btnResetStats.textContent = 'Borrando...';
+      btnResetStats.disabled = true;
+      
+      const { error } = await supabaseClient
+        .from('page_views')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Borra todo
+        
+      btnResetStats.textContent = '⚠️ Restablecer Datos';
+      btnResetStats.disabled = false;
+      
+      if (error) {
+        alert('Error al restablecer las estadísticas: ' + error.message);
+      } else {
+        alert('✦ Estadísticas restablecidas correctamente a 0.');
+        await loadRealStatistics();
       }
     });
   }
@@ -280,6 +310,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     try { await loadSupporters(); } catch(e) { console.error('Error simpatizantes:', e); }
     try { await loadMessages(); } catch(e) { console.error('Error mensajes:', e); }
     try { await loadSettings(); } catch(e) { console.error('Error settings:', e); }
+    try { await loadRealStatistics(); } catch(e) { console.error('Error real stats:', e); }
   }
 
   async function loadEvents() {
@@ -412,6 +443,82 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (divulgadoresInput && settingsMap['divulgadores_url']) {
       divulgadoresInput.value = settingsMap['divulgadores_url'];
     }
+  }
+
+  async function loadRealStatistics() {
+    console.log('📊 Cargando estadísticas reales desde Supabase...');
+    const { data: views, error } = await supabaseClient
+      .from('page_views')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error Supabase (page_views):', error);
+      return;
+    }
+    
+    const pageviewsVal = document.getElementById('real-stats-pageviews');
+    const uniquePagesVal = document.getElementById('real-stats-unique-pages');
+    const referrersVal = document.getElementById('real-stats-referrers');
+    const countriesVal = document.getElementById('real-stats-countries-count');
+    
+    if (!views || views.length === 0) {
+      if (pageviewsVal) pageviewsVal.textContent = '0';
+      if (uniquePagesVal) uniquePagesVal.textContent = '0';
+      if (referrersVal) referrersVal.textContent = '0';
+      if (countriesVal) countriesVal.textContent = '0';
+      
+      document.getElementById('tbody-stats-channels').innerHTML = '<tr><td colspan="2" style="text-align:center; padding:20px; color:#999;">No hay visitas registradas aún.</td></tr>';
+      document.getElementById('tbody-stats-pages').innerHTML = '<tr><td colspan="2" style="text-align:center; padding:20px; color:#999;">No hay visitas registradas aún.</td></tr>';
+      document.getElementById('tbody-stats-countries').innerHTML = '<tr><td colspan="2" style="text-align:center; padding:20px; color:#999;">No hay visitas registradas aún.</td></tr>';
+      return;
+    }
+    
+    // 1. Totales
+    const totalViews = views.length;
+    const uniquePages = new Set(views.map(v => v.page_path));
+    const uniqueReferrers = new Set(views.map(v => v.referrer || 'Directo'));
+    const uniqueCountries = new Set(views.map(v => v.country || 'España'));
+    
+    if (pageviewsVal) pageviewsVal.textContent = totalViews.toLocaleString();
+    if (uniquePagesVal) uniquePagesVal.textContent = uniquePages.size.toString();
+    if (referrersVal) referrersVal.textContent = uniqueReferrers.size.toString();
+    if (countriesVal) countriesVal.textContent = uniqueCountries.size.toString();
+    
+    // 2. Agregaciones
+    const channelCounts = {};
+    const pageCounts = {};
+    const countryCounts = {};
+    
+    views.forEach(v => {
+      const ref = v.referrer || 'Directo';
+      channelCounts[ref] = (channelCounts[ref] || 0) + 1;
+      
+      const path = v.page_path || '/';
+      pageCounts[path] = (pageCounts[path] || 0) + 1;
+      
+      const country = v.country || 'España';
+      countryCounts[country] = (countryCounts[country] || 0) + 1;
+    });
+    
+    // Canales
+    const sortedChannels = Object.entries(channelCounts).sort((a,b) => b[1] - a[1]);
+    document.getElementById('tbody-stats-channels').innerHTML = sortedChannels.map(([ref, count]) => {
+      return `<tr><td><strong>${ref}</strong></td><td>${count} visitas</td></tr>`;
+    }).join('');
+    
+    // Páginas
+    const sortedPages = Object.entries(pageCounts).sort((a,b) => b[1] - a[1]);
+    document.getElementById('tbody-stats-pages').innerHTML = sortedPages.map(([path, count]) => {
+      const displayPath = path.replace('/src/pages/', '/');
+      return `<tr><td><code>${displayPath}</code></td><td>${count} vistas</td></tr>`;
+    }).join('');
+    
+    // Países
+    const sortedCountries = Object.entries(countryCounts).sort((a,b) => b[1] - a[1]);
+    document.getElementById('tbody-stats-countries').innerHTML = sortedCountries.map(([country, count]) => {
+      return `<tr><td>🌍 <strong>${country}</strong></td><td>${count} visitas</td></tr>`;
+    }).join('');
   }
 
   // ── ELIMINAR ELEMENTOS ───────────────────────────

@@ -170,6 +170,33 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
       });
     }
+
+    // ── REGISTRAR VISITA EN SUPABASE (DATOS REALES) ──────
+    (async function registrarVisita() {
+      try {
+        let country = 'España';
+        try {
+          const geoRes = await fetch('https://ipapi.co/json/');
+          if (geoRes.ok) {
+            const geoData = await geoRes.json();
+            if (geoData.country_name) country = geoData.country_name;
+          }
+        } catch (e) {
+          // Fallback silencioso
+        }
+
+        const path = window.location.pathname;
+        const referrer = document.referrer ? new URL(document.referrer).hostname : 'Directo';
+
+        await supabaseClient
+          .from('page_views')
+          .insert([{ page_path: path, referrer: referrer, country: country }]);
+        console.log('📊 Visita registrada en Supabase:', path, country);
+      } catch (err) {
+        console.warn('⚠ Error registrando visita:', err.message);
+      }
+    })();
+
   } catch (err) {
     console.warn('⚠ Error cargando enlaces dinámicos del pie de página:', err.message);
   }

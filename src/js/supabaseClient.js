@@ -203,3 +203,36 @@ async function registrarSimpatizante(nombre, email, source) {
     return false;
   }
 }
+
+/**
+ * Obtener todos los ajustes desde la tabla "settings"
+ */
+async function getSettings() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('settings')
+      .select('*');
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.error('❌ Error obteniendo settings:', err.message);
+    return [];
+  }
+}
+
+/**
+ * Guardar o actualizar un ajuste en la tabla "settings"
+ */
+async function saveSetting(key, value) {
+  try {
+    const { error } = await supabaseClient
+      .from('settings')
+      .upsert({ key, value, updated_at: new Date() });
+    if (error) throw error;
+    console.log(`✅ Ajuste ${key} guardado con éxito`);
+    return true;
+  } catch (err) {
+    console.error(`❌ Error guardando ajuste ${key}:`, err.message);
+    return false;
+  }
+}

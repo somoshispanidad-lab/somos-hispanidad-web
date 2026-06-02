@@ -67,6 +67,13 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- 2. ACTUALIZACIÓN DE COLUMNAS (SI YA EXISTÍAN LAS TABLAS)
 -- Añadir columnas nuevas de forma segura
 DO $$ 
@@ -93,6 +100,7 @@ ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE event_registrations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supporters ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 
 -- 4. POLÍTICAS (ELIMINAR SI EXISTEN Y RE-CREAR)
 -- Lectura pública
@@ -134,6 +142,12 @@ CREATE POLICY "Admin ALL Supporters" ON supporters TO authenticated USING (true)
 DROP POLICY IF EXISTS "Admin ALL Messages" ON contact_messages;
 CREATE POLICY "Admin ALL Messages" ON contact_messages TO authenticated USING (true) WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Lectura pública settings" ON settings;
+CREATE POLICY "Lectura pública settings" ON settings FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admin ALL Settings" ON settings;
+CREATE POLICY "Admin ALL Settings" ON settings TO authenticated USING (true) WITH CHECK (true);
+
 -- 5. DATOS DE EJEMPLO (Opcional, solo si están vacíos)
 INSERT INTO authors (name, cargo, bio, published) 
 SELECT 'César Pérez Guevara', 'Historiador', 'Especialista en la historia del derecho en la América colonial.', true
@@ -150,3 +164,11 @@ WHERE NOT EXISTS (SELECT 1 FROM contents WHERE title = 'Justicia Real en la Amé
 INSERT INTO events (title, description, event_date, location, event_type, published)
 SELECT 'Visita al Museo de América', 'Recorrido por el legado hispánico.', '2026-06-20 10:00:00', 'Madrid', 'Visita Cultural', true
 WHERE NOT EXISTS (SELECT 1 FROM events WHERE title = 'Visita al Museo de América');
+
+INSERT INTO settings (key, value)
+SELECT 'lecturas_recomendadas_url', 'https://protocolodesantapola.es/'
+WHERE NOT EXISTS (SELECT 1 FROM settings WHERE key = 'lecturas_recomendadas_url');
+
+INSERT INTO settings (key, value)
+SELECT 'divulgadores_url', 'https://www.youtube.com/@SomosHispanidadTorrelodones'
+WHERE NOT EXISTS (SELECT 1 FROM settings WHERE key = 'divulgadores_url');

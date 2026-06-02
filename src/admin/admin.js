@@ -186,7 +186,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     contenidos: 'Gestión de Contenidos',
     autores: 'Gestión de Autores',
     simpatizantes: 'Simpatizantes',
-    mensajes: 'Mensajes Recibidos'
+    mensajes: 'Mensajes Recibidos',
+    marketing: 'Marketing & Comunicaciones',
+    estadisticas: 'Estadísticas Web (Vercel)',
+    ajustes: 'Configuración General'
   };
 
   navLinks.forEach(function (link) {
@@ -210,6 +213,48 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   });
 
+  // ── LÓGICA DE FORMULARIO DE AJUSTES ────────────────
+  const formAjustesFooter = document.getElementById('form-ajustes-footer');
+  if (formAjustesFooter) {
+    formAjustesFooter.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const lecturasUrl = document.getElementById('ajuste-lecturas-url').value;
+      const divulgadoresUrl = document.getElementById('ajuste-divulgadores-url').value;
+      const msgEl = document.getElementById('ajustes-save-msg');
+      
+      const btn = formAjustesFooter.querySelector('button[type="submit"]');
+      btn.textContent = 'Guardando...';
+      btn.disabled = true;
+      
+      msgEl.style.display = 'none';
+      
+      try {
+        const ok1 = await saveSetting('lecturas_recomendadas_url', lecturasUrl);
+        const ok2 = await saveSetting('divulgadores_url', divulgadoresUrl);
+        
+        btn.textContent = '💾 Guardar enlaces del pie de página';
+        btn.disabled = false;
+        
+        msgEl.style.display = 'block';
+        if (ok1 && ok2) {
+          msgEl.style.background = '#e8f5e9';
+          msgEl.style.color = '#2e7d32';
+          msgEl.textContent = '✦ Ajustes guardados correctamente y aplicados en toda la web.';
+        } else {
+          msgEl.style.background = '#ffebee';
+          msgEl.style.color = '#c62828';
+          msgEl.textContent = 'Error guardando algunos ajustes en Supabase.';
+        }
+      } catch (err) {
+        btn.textContent = '💾 Guardar enlaces del pie de página';
+        btn.disabled = false;
+        msgEl.style.display = 'block';
+        msgEl.style.background = '#ffebee';
+        msgEl.style.color = '#c62828';
+        msgEl.textContent = 'Error: ' + err.message;
+      }
+    });
+  }
 
   // ── BOTONES DE ACCIÓN (simulados) ────────────────
   document.addEventListener('click', function (e) {
@@ -234,6 +279,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     try { await loadAuthors(); } catch(e) { console.error('Error autores:', e); }
     try { await loadSupporters(); } catch(e) { console.error('Error simpatizantes:', e); }
     try { await loadMessages(); } catch(e) { console.error('Error mensajes:', e); }
+    try { await loadSettings(); } catch(e) { console.error('Error settings:', e); }
   }
 
   async function loadEvents() {
@@ -349,6 +395,23 @@ document.addEventListener('DOMContentLoaded', async function () {
       const d = new Date(m.created_at).toLocaleDateString('es-ES');
       return `<tr><td>${d}</td><td>${m.name}</td><td>${m.email}</td><td>${m.subject || '-'}</td><td><span class="admin-badge yellow">Nuevo</span></td><td><button class="admin-btn-sm delete-btn" data-table="contact_messages" data-id="${m.id}">Borrar</button></td></tr>`;
     }).join('');
+  }
+
+  async function loadSettings() {
+    console.log('⚙️ Cargando ajustes del pie de página...');
+    const settings = await getSettings();
+    const settingsMap = {};
+    settings.forEach(s => settingsMap[s.key] = s.value);
+    
+    const lecturasInput = document.getElementById('ajuste-lecturas-url');
+    const divulgadoresInput = document.getElementById('ajuste-divulgadores-url');
+    
+    if (lecturasInput && settingsMap['lecturas_recomendadas_url']) {
+      lecturasInput.value = settingsMap['lecturas_recomendadas_url'];
+    }
+    if (divulgadoresInput && settingsMap['divulgadores_url']) {
+      divulgadoresInput.value = settingsMap['divulgadores_url'];
+    }
   }
 
   // ── ELIMINAR ELEMENTOS ───────────────────────────

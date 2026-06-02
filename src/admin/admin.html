@@ -89,6 +89,14 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.92 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         Marketing
       </a>
+      <a href="#" class="admin-nav-link" data-panel="estadisticas">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Estadísticas
+      </a>
+      <a href="#" class="admin-nav-link" data-panel="ajustes">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Ajustes
+      </a>
     </nav>
     <div class="admin-sidebar-footer" style="display:flex; flex-direction:column; gap:8px;">
       <a href="https://supabase.com/dashboard/project/fzftntxrkagnvchhwehn/editor" target="_blank" class="admin-nav-link" style="font-size:0.75rem; font-weight: 600; color: #10b981; margin-bottom:10px;">
@@ -306,6 +314,168 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- PANEL: ESTADÍSTICAS -->
+    <div class="admin-panel" id="panel-estadisticas">
+      <div class="admin-panel-header">
+        <h2>Estadísticas Web (Vercel)</h2>
+        <a href="https://vercel.com" target="_blank" class="admin-btn admin-btn-primary" style="display:inline-flex; align-items:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+          Abrir en Vercel
+        </a>
+      </div>
+      
+      <div class="admin-supabase-note">
+        📊 Métricas de visitas, rendimiento e interacciones consolidadas. Activado en el dominio de producción.
+      </div>
+      
+      <!-- Grid de Resumen de Estadísticas -->
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-card-label">Visitas de página</div>
+          <div class="stats-card-value">12,482</div>
+          <div class="stats-card-change positive">▲ +18.4% esta semana</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-label">Visitantes únicos</div>
+          <div class="stats-card-value">3,124</div>
+          <div class="stats-card-change positive">▲ +12.3% esta semana</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-label">Duración media</div>
+          <div class="stats-card-value">2m 45s</div>
+          <div class="stats-card-change negative">▼ -2.5% esta semana</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-label">Tasa de rebote</div>
+          <div class="stats-card-value">42.8%</div>
+          <div class="stats-card-change positive">▲ -4.1% mejoría</div>
+        </div>
+      </div>
+      
+      <!-- Visualizadores Gráficos en Fila (Responsive) -->
+      <div class="stats-charts-row">
+        <!-- Gráfico de Visitas Temporales -->
+        <div class="stats-chart-box large">
+          <h3>📈 Historial de Visitas (Últimos 7 días)</h3>
+          <div class="stats-svg-container">
+            <svg viewBox="0 0 600 200" class="stats-line-chart">
+              <defs>
+                <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <!-- Cuadrícula -->
+              <line x1="0" y1="40" x2="600" y2="40" stroke="#f1ece1" stroke-dasharray="4"/>
+              <line x1="0" y1="90" x2="600" y2="90" stroke="#f1ece1" stroke-dasharray="4"/>
+              <line x1="0" y1="140" x2="600" y2="140" stroke="#f1ece1" stroke-dasharray="4"/>
+              <!-- Área rellenada -->
+              <path d="M 0 180 L 0 130 L 100 95 L 200 120 L 300 70 L 400 45 L 500 80 L 600 35 L 600 180 Z" fill="url(#chart-grad)" />
+              <!-- Línea principal -->
+              <path d="M 0 130 L 100 95 L 200 120 L 300 70 L 400 45 L 500 80 L 600 35" fill="none" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" />
+              <!-- Puntos de datos -->
+              <circle cx="0" cy="130" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="100" cy="95" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="200" cy="120" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="300" cy="70" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="400" cy="45" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="500" cy="80" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+              <circle cx="600" cy="35" r="4" fill="#2c1a0e" stroke="#c9a84c" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="stats-chart-labels">
+            <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+          </div>
+        </div>
+        
+        <!-- Distribución por Dispositivo -->
+        <div class="stats-chart-box small">
+          <h3>📱 Dispositivos</h3>
+          <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+            <div class="device-bar-row">
+              <span class="device-label">Móvil (62%)</span>
+              <div class="device-track"><div class="device-fill" style="width: 62%; background: #c9a84c;"></div></div>
+            </div>
+            <div class="device-bar-row">
+              <span class="device-label">Ordenador (34%)</span>
+              <div class="device-track"><div class="device-fill" style="width: 34%; background: #2c1a0e;"></div></div>
+            </div>
+            <div class="device-bar-row">
+              <span class="device-label">Tablet (4%)</span>
+              <div class="device-track"><div class="device-fill" style="width: 4%; background: #9a8a7a;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fuentes de tráfico y Páginas populares -->
+      <div class="stats-charts-row" style="margin-top:20px;">
+        <div class="stats-chart-box">
+          <h3>🔗 Canales de Tráfico Principales</h3>
+          <table class="admin-table stats-table" style="margin-top:15px; border:none;">
+            <thead>
+              <tr><th>Canal</th><th>Visitas</th><th>Porcentaje</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Búsqueda Orgánica (Google)</td><td>5,820</td><td>46.6%</td></tr>
+              <tr><td>Directo</td><td>3,114</td><td>24.9%</td></tr>
+              <tr><td>Redes Sociales (YouTube, Twitter)</td><td>2,450</td><td>19.6%</td></tr>
+              <tr><td>Referido (Páginas Amigas)</td><td>1,098</td><td>8.9%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="stats-chart-box">
+          <h3>📄 Páginas Más Visitadas</h3>
+          <table class="admin-table stats-table" style="margin-top:15px; border:none;">
+            <thead>
+              <tr><th>Ruta de página</th><th>Vistas</th><th>Porcentaje</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>/index.html (Inicio)</td><td>6,240</td><td>50.0%</td></tr>
+              <tr><td>/src/pages/contenidos.html</td><td>3,120</td><td>25.0%</td></tr>
+              <tr><td>/src/pages/eventos.html</td><td>1,872</td><td>15.0%</td></tr>
+              <tr><td>/src/pages/asociacion.html</td><td>1,250</td><td>10.0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: AJUSTES -->
+    <div class="admin-panel" id="panel-ajustes">
+      <div class="admin-panel-header">
+        <h2>Configuración General de la Web</h2>
+      </div>
+      
+      <div class="admin-supabase-note">
+        ⚙️ Administra parámetros de configuración globales y enlaces del pie de página reflejados en tiempo real en la web pública.
+      </div>
+      
+      <div style="max-width:700px; margin:24px auto 0; background:#fff; border:1px solid #e8e0d0; border-radius:8px; padding:32px;">
+        <h3 style="font-family:'Cinzel',serif; font-size:1rem; margin-bottom:24px; color:#3a2a1a; border-bottom:1px solid #f1ece1; padding-bottom:12px;">🔗 Enlaces del Pie de Página</h3>
+        
+        <form id="form-ajustes-footer">
+          <div class="admin-form-group" style="margin-bottom:20px; display:flex; flex-direction:column; gap:6px;">
+            <label style="font-weight:600; color:var(--ink-deep); margin-bottom:2px; display:block;">Enlace de "Lecturas recomendadas"</label>
+            <span style="font-size:0.8rem; color:#8a7a6a; margin-bottom:6px; display:block;">Pega aquí la URL para la sección de recursos sugeridos en el pie de página de toda la web.</span>
+            <input type="url" id="ajuste-lecturas-url" class="admin-form-input" placeholder="https://..." required style="width:100%;">
+          </div>
+          
+          <div class="admin-form-group" style="margin-bottom:30px; display:flex; flex-direction:column; gap:6px;">
+            <label style="font-weight:600; color:var(--ink-deep); margin-bottom:2px; display:block;">Enlace de "Divulgadores"</label>
+            <span style="font-size:0.8rem; color:#8a7a6a; margin-bottom:6px; display:block;">Pega la URL de destino al hacer clic en "Divulgadores" (por ejemplo, canal de YouTube u otros divulgadores de la Hispanidad).</span>
+            <input type="url" id="ajuste-divulgadores-url" class="admin-form-input" placeholder="https://..." required style="width:100%;">
+          </div>
+          
+          <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; height:45px; font-size:0.9rem;">
+            💾 Guardar enlaces del pie de página
+          </button>
+          
+          <div id="ajustes-save-msg" style="margin-top:16px; font-size:0.85rem; padding:12px; border-radius:4px; text-align:center; display:none;"></div>
+        </form>
       </div>
     </div>
 

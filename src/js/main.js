@@ -120,3 +120,57 @@ function marcarPaginaActiva() {
     }
   });
 }
+
+// ── INJECT VERCEL WEB ANALYTICS ──────────────────────
+(function injectVercelAnalytics() {
+  if (window.va) return;
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  const script = document.createElement('script');
+  script.defer = true;
+  script.src = '/_vercel/insights/script.js';
+  document.head.appendChild(script);
+})();
+
+// ── CARGA DINÁMICA DE ENLACES DEL PIE DE PÁGINA ───────
+document.addEventListener('DOMContentLoaded', async function () {
+  try {
+    if (typeof supabaseClient === 'undefined') {
+      console.warn('ℹ supabaseClient no está definido. Los enlaces del pie de página usarán los valores estáticos.');
+      return;
+    }
+    
+    // Consultar tabla settings para las dos URLs
+    const { data, error } = await supabaseClient
+      .from('settings')
+      .select('*')
+      .in('key', ['lecturas_recomendadas_url', 'divulgadores_url']);
+      
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      const settingsMap = {};
+      data.forEach(item => {
+        settingsMap[item.key] = item.value;
+      });
+      
+      const lecturasUrl = settingsMap['lecturas_recomendadas_url'];
+      const divulgadoresUrl = settingsMap['divulgadores_url'];
+      
+      document.querySelectorAll('footer a').forEach(link => {
+        const text = link.textContent.trim();
+        if (text === 'Lecturas recomendadas' && lecturasUrl) {
+          link.href = lecturasUrl;
+          link.classList.remove('link-disabled');
+          link.target = '_blank';
+        }
+        if (text === 'Divulgadores' && divulgadoresUrl) {
+          link.href = divulgadoresUrl;
+          link.classList.remove('link-disabled');
+          link.target = '_blank';
+        }
+      });
+    }
+  } catch (err) {
+    console.warn('⚠ Error cargando enlaces dinámicos del pie de página:', err.message);
+  }
+});

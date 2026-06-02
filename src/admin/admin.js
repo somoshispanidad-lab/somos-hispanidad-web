@@ -282,6 +282,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         msgEl.style.background = '#ffebee';
         msgEl.style.color = '#c62828';
         msgEl.textContent = 'Error: ' + err.message;
+      }
     });
   }
 

@@ -769,7 +769,7 @@
 
 <script src="admin.js?v=5"></script>
 <script>
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && !window.location.search.includes('force_logout=true')) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')
         .then(registration => {

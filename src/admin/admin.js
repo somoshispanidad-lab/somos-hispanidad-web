@@ -20,6 +20,16 @@ document.addEventListener('DOMContentLoaded', async function () {
       await supabaseClient.auth.signOut();
       localStorage.clear();
       sessionStorage.clear();
+      
+      // Eliminar el Service Worker registrado inmediatamente para evitar interceptación errónea de caché antigua
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (let registration of registrations) {
+          await registration.unregister();
+          console.log('🗑️ SW antiguo desregistrado con éxito.');
+        }
+      }
+      
       window.history.replaceState({}, document.title, window.location.pathname);
       console.log('✅ Sesiones locales y remotas totalmente limpias.');
     } catch (e) {

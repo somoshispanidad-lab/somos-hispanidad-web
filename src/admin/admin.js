@@ -12,6 +12,21 @@ document.addEventListener('DOMContentLoaded', async function () {
   
   let editingId = null;
 
+  // ── DETECTAR FUERZA DE CIERRE DE SESIÓN ──────────────
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('force_logout') === 'true') {
+    console.log('🧹 Forzando el cierre de todas las sesiones activas...');
+    try {
+      await supabaseClient.auth.signOut();
+      localStorage.clear();
+      sessionStorage.clear();
+      window.history.replaceState({}, document.title, window.location.pathname);
+      console.log('✅ Sesiones locales y remotas totalmente limpias.');
+    } catch (e) {
+      console.error('Error al forzar el cierre de sesión:', e);
+    }
+  }
+
   const loginWrapper = document.getElementById('login-wrapper');
   const recoveryWrapper = document.getElementById('recovery-wrapper');
   const updatePasswordWrapper = document.getElementById('update-password-wrapper');

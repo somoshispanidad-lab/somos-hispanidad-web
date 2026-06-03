@@ -37,9 +37,14 @@ async function getEventos() {
 
     if (error) throw error;
 
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
     if (data && data.length > 0) {
+      // Filtrar eventos futuros o que se realicen hoy
+      const activeEvents = data.filter(ev => new Date(ev.event_date) >= todayStart);
       const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-      return data.map(ev => {
+      return activeEvents.map(ev => {
         const d = new Date(ev.event_date);
         return {
           id: ev.id,
@@ -59,10 +64,14 @@ async function getEventos() {
     }
 
     console.info('ℹ Tabla "events" vacía → datos simulados');
-    return typeof EVENTOS_SIMULADOS !== 'undefined' ? EVENTOS_SIMULADOS : [];
+    const simulados = typeof EVENTOS_SIMULADOS !== 'undefined' ? EVENTOS_SIMULADOS : [];
+    return simulados.filter(ev => new Date(ev.fecha || ev.event_date) >= todayStart);
   } catch (err) {
     console.warn('⚠ Supabase (events):', err.message, '→ datos simulados');
-    return typeof EVENTOS_SIMULADOS !== 'undefined' ? EVENTOS_SIMULADOS : [];
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const simulados = typeof EVENTOS_SIMULADOS !== 'undefined' ? EVENTOS_SIMULADOS : [];
+    return simulados.filter(ev => new Date(ev.fecha || ev.event_date) >= todayStart);
   }
 }
 

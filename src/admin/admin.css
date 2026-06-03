@@ -114,15 +114,143 @@ body { font-family:'Lato',sans-serif; background:var(--cream); color:var(--ink);
 
 @media (max-width:768px) {
   .admin-layout { display: flex; flex-direction: column; min-height: 100vh; }
-  .admin-sidebar { position:static; height:auto; padding: 16px; border-bottom: 1px solid var(--cream-dark); width: 100%; }
-  .admin-nav { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; white-space: nowrap; -webkit-overflow-scrolling: touch; border-bottom: 1px solid rgba(184,146,106,0.2); }
-  .admin-nav-link { padding: 8px 16px; border-left: none; border-bottom: 3px solid transparent; background: transparent !important; }
-  .admin-nav-link:hover, .admin-nav-link.active { border-bottom-color: var(--gold); border-left-color: transparent; }
-  .admin-sidebar-footer { flex-direction: row !important; gap: 16px !important; overflow-x: auto; white-space: nowrap; }
-  .admin-topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .admin-topbar-actions { width: 100%; justify-content: space-between; }
+  
+  .admin-sidebar { 
+    position: static; 
+    height: auto; 
+    padding: 20px; 
+    border-bottom: 1px solid var(--cream-dark); 
+    width: 100%; 
+  }
+  
+  .admin-logo {
+    padding: 0 0 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  .admin-nav { 
+    display: flex; 
+    overflow-x: auto; 
+    gap: 8px; 
+    padding-bottom: 12px; 
+    white-space: nowrap; 
+    -webkit-overflow-scrolling: touch; 
+    border-bottom: 1px solid rgba(184,146,106,0.15); 
+  }
+  
+  .admin-nav-link { 
+    padding: 8px 16px; 
+    border-left: none; 
+    border: 1px solid rgba(184,146,106,0.2);
+    border-radius: 20px;
+    font-size: 0.72rem; 
+    background: rgba(255,255,255,0.03) !important;
+  }
+  
+  .admin-nav-link:hover, .admin-nav-link.active { 
+    border-color: var(--gold); 
+    background: var(--gold) !important;
+    color: var(--ink) !important;
+  }
+  
+  .admin-sidebar-footer { 
+    display: flex !important;
+    flex-direction: row !important; 
+    gap: 16px !important; 
+    justify-content: space-between;
+    padding: 12px 0 0;
+    margin-top: 12px;
+  }
+  .admin-sidebar-footer .admin-nav-link {
+    border: none;
+    background: transparent !important;
+    font-size: 0.65rem !important;
+    padding: 4px 8px;
+    color: var(--sepia-light);
+  }
+  .admin-sidebar-footer .admin-nav-link:hover {
+    color: var(--gold-light);
+  }
+  
+  .admin-topbar { 
+    padding: 12px 20px; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    align-items: center; 
+  }
+  .admin-topbar-title { font-size: 0.9rem; }
+  .admin-topbar-actions { gap: 8px; width: auto; justify-content: flex-end; }
+  .admin-user { display: none; }
+  
   .admin-main { width: 100%; display: block; overflow-x: hidden; }
-  .admin-panel { padding: 16px; width: 100%; box-sizing: border-box; }
+  
+  .admin-panel { padding: 20px 16px; width: 100%; box-sizing: border-box; }
+  
+  .admin-panel-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .admin-panel-header h2 { font-size: 1.2rem; }
+  .admin-panel-header .admin-btn { width: 100%; text-align: center; justify-content: center; }
+
+  /* TABLAS RESPONSIVAS EN FORMATO TARJETA (MÓVIL VERTICAL) */
+  .admin-table thead { display: none; }
+  .admin-table tr { 
+    display: block; 
+    background: white; 
+    border: 1px solid var(--cream-dark); 
+    border-radius: 8px; 
+    margin-bottom: 16px; 
+    padding: 16px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+  }
+  .admin-table td { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 0; 
+    border-bottom: 1px solid #f5efe6; 
+    font-size: 0.95rem;
+    text-align: right;
+  }
+  .admin-table td:last-child {
+    border-bottom: none;
+    padding-top: 12px;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sepia-dark);
+    text-align: left;
+  }
+
+  /* MODALES RESPONSIVOS */
+  .admin-modal-content {
+    width: 95%;
+    padding: 20px 16px;
+    margin: 10px;
+  }
+
+  /* ESTADÍSTICAS EN CUADRÍCULA COMPACTA DE 2 COLUMNAS */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+  .stats-card {
+    padding: 14px;
+  }
+  .stats-card-value {
+    font-size: 1.4rem;
+  }
 }
 
 /* LOGIN STYLES */

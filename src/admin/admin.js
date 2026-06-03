@@ -354,17 +354,17 @@ document.addEventListener('DOMContentLoaded', async function () {
       const badgePub = ev.published ? '<span class="admin-badge green">Visible</span>' : '<span class="admin-badge red" style="background:#fee2e2; color:#b91c1c;">Oculto</span>';
       const evTitleEsc = (ev.title || '').replace(/'/g, "\\'");
       return `<tr>
-        <td>${d}</td>
-        <td>${ev.title}</td>
-        <td>${ev.event_type}</td>
-        <td>${ev.location}</td>
-        <td>${badgePub} ${badgeReg}</td>
-        <td>
+        <td data-label="Fecha">${d}</td>
+        <td data-label="Título">${ev.title}</td>
+        <td data-label="Tipo">${ev.event_type}</td>
+        <td data-label="Lugar">${ev.location}</td>
+        <td data-label="Estado">${badgePub} ${badgeReg}</td>
+        <td data-label="Inscritos">
           <button class="admin-btn-sm inscritos-btn" data-id="${ev.id}" data-titulo="${evTitleEsc}" style="background:#e0f2fe; color:#0369a1; border-color:#7dd3fc;">
             👥 Ver inscritos
           </button>
         </td>
-        <td>
+        <td data-label="Acciones">
           <button class="admin-btn-sm edit-btn" data-table="events" data-id="${ev.id}">Editar</button>
           <button class="admin-btn-sm red delete-btn" data-table="events" data-id="${ev.id}">Eliminar</button>
         </td>
@@ -402,12 +402,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         : '<span class="admin-badge red" style="background:#fee2e2; color:#b91c1c;">Oculto</span>';
       
       return `<tr>
-        <td>${d}</td>
-        <td>${c.title}</td>
-        <td>${c.content_type}</td>
-        <td>${autor}</td>
-        <td>${statusBadge}</td>
-        <td>
+        <td data-label="Fecha">${d}</td>
+        <td data-label="Título">${c.title}</td>
+        <td data-label="Tipo">${c.content_type}</td>
+        <td data-label="Autor">${autor}</td>
+        <td data-label="Estado">${statusBadge}</td>
+        <td data-label="Acciones">
           <button class="admin-btn-sm edit-btn" data-table="contents" data-id="${c.id}">Editar</button> 
           <button class="admin-btn-sm red delete-btn" data-table="contents" data-id="${c.id}">Eliminar</button>
         </td>
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     tbody.innerHTML = data.map(a => {
       const badgePub = a.published ? '<span class="admin-badge green">Visible</span>' : '<span class="admin-badge red" style="background:#fee2e2; color:#b91c1c;">Oculto</span>';
-      return `<tr><td>${a.name}</td><td>${a.cargo || '-'}</td><td>${badgePub}</td><td><button class="admin-btn-sm edit-btn" data-table="authors" data-id="${a.id}">Editar</button> <button class="admin-btn-sm red delete-btn" data-table="authors" data-id="${a.id}">Eliminar</button></td></tr>`;
+      return `<tr><td data-label="Nombre">${a.name}</td><td data-label="Cargo">${a.cargo || '-'}</td><td data-label="Estado">${badgePub}</td><td data-label="Acciones"><button class="admin-btn-sm edit-btn" data-table="authors" data-id="${a.id}">Editar</button> <button class="admin-btn-sm red delete-btn" data-table="authors" data-id="${a.id}">Eliminar</button></td></tr>`;
     }).join('');
   }
 
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     tbody.innerHTML = data.map(s => {
       const d = new Date(s.created_at).toLocaleDateString('es-ES');
-      return `<tr><td>${s.name}</td><td>${s.email}</td><td>${s.source || '-'}</td><td>${d}</td><td><button class="admin-btn-sm red delete-btn" data-table="supporters" data-id="${s.id}">Eliminar</button></td></tr>`;
+      return `<tr><td data-label="Nombre">${s.name}</td><td data-label="Correo">${s.email}</td><td data-label="Origen">${s.source || '-'}</td><td data-label="Fecha">${d}</td><td data-label="Acciones"><button class="admin-btn-sm red delete-btn" data-table="supporters" data-id="${s.id}">Eliminar</button></td></tr>`;
     }).join('');
   }
 
@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     tbody.innerHTML = data.map(m => {
       const d = new Date(m.created_at).toLocaleDateString('es-ES');
-      return `<tr><td>${d}</td><td>${m.name}</td><td>${m.email}</td><td>${m.subject || '-'}</td><td><span class="admin-badge yellow">Nuevo</span></td><td><button class="admin-btn-sm delete-btn" data-table="contact_messages" data-id="${m.id}">Borrar</button></td></tr>`;
+      return `<tr><td data-label="Fecha">${d}</td><td data-label="Nombre">${m.name}</td><td data-label="Correo">${m.email}</td><td data-label="Asunto">${m.subject || '-'}</td><td data-label="Estado"><span class="admin-badge yellow">Nuevo</span></td><td data-label="Acciones"><button class="admin-btn-sm delete-btn" data-table="contact_messages" data-id="${m.id}">Borrar</button></td></tr>`;
     }).join('');
   }
 
@@ -1236,12 +1236,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     tbodyInscritos.innerHTML = inscritosCache.map(r => {
       const fecha = new Date(r.created_at).toLocaleDateString('es-ES');
       return `<tr>
-        <td>${r.name || '-'}</td>
-        <td><a href="mailto:${r.email}" style="color:#0369a1;">${r.email || '-'}</a></td>
-        <td>${r.phone || '-'}</td>
-        <td style="max-width:180px; white-space:normal; font-size:0.83rem;">${r.comments || '-'}</td>
-        <td>${fecha}</td>
-        <td><button class="admin-btn-sm red delete-btn" data-table="event_registrations" data-id="${r.id}">Borrar</button></td>
+        <td data-label="Nombre">${r.name || '-'}</td>
+        <td data-label="Correo"><a href="mailto:${r.email}" style="color:#0369a1;">${r.email || '-'}</a></td>
+        <td data-label="Teléfono">${r.phone || '-'}</td>
+        <td data-label="Comentarios" style="max-width:180px; white-space:normal; font-size:0.83rem;">${r.comments || '-'}</td>
+        <td data-label="Fecha">${fecha}</td>
+        <td data-label="Acciones"><button class="admin-btn-sm red delete-btn" data-table="event_registrations" data-id="${r.id}">Borrar</button></td>
       </tr>`;
     }).join('');
   }

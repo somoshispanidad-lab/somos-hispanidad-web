@@ -1257,6 +1257,9 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (!asunto || !cuerpo) { alert('Completa el asunto y el cuerpo del mensaje antes de enviar la prueba.'); return; }
       if (!testEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testEmail)) { alert('Introduce un email de prueba válido.'); return; }
 
+      // Adjuntar la firma al final del cuerpo del mensaje
+      const cuerpoConFirma = cuerpo + '\n\n' + firma;
+
       btnPrueba.disabled = true;
       btnPrueba.textContent = 'Enviando...';
 
@@ -1265,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           from_name: firma,
           from_email: 'contacto@somoshispanidad.es',
           subject: '[PRUEBA] ' + asunto,
-          message: cuerpo,
+          message: cuerpoConFirma,
           to_email: testEmail
         });
         if (resultEl) { resultEl.style.display = 'block'; resultEl.style.background = '#f0fdf4'; resultEl.style.color = '#166534'; resultEl.textContent = '✅ Email de prueba enviado a ' + testEmail; }
@@ -1303,6 +1306,9 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (!asunto || !cuerpo) { alert('Completa el asunto y el cuerpo del mensaje.'); return; }
       if (simpatizantesCache.length === 0) { alert('No hay simpatizantes a quienes enviar.'); return; }
 
+      // Adjuntar la firma al final del cuerpo del mensaje
+      const cuerpoConFirma = cuerpo + '\n\n' + firma;
+
       if (!confirm(`¿Confirmas el envío masivo a ${simpatizantesCache.length} simpatizantes?\n\nAsunto: "${asunto}"\n\nEsta acción no se puede deshacer.`)) return;
 
       btnMasivo.disabled = true;
@@ -1315,7 +1321,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             from_name: firma,
             from_email: 'contacto@somoshispanidad.es',
             subject: asunto,
-            message: cuerpo,
+            message: cuerpoConFirma,
             to_email: s.email,
             to_name: s.name
           });

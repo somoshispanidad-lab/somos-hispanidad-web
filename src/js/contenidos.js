@@ -16,6 +16,7 @@ const CONTENIDOS_SIMULADOS = [
     titulo: "Justicia Real en la América Española",
     autor: "César Pérez Guevara",
     fecha: "21 Abr 2026",
+    created_at: "2026-04-21T10:00:00Z",
     imagen: null,
     imagen_texto: "ESCRITO",
     descripcion: "Un análisis riguroso del sistema judicial que España desplegó en el Nuevo Mundo.",
@@ -28,6 +29,7 @@ const CONTENIDOS_SIMULADOS = [
     titulo: "El papel de los indígenas en la conquista de América",
     autor: "José J. Laorden",
     fecha: "8 Abr 2026",
+    created_at: "2026-04-08T10:00:00Z",
     imagen: null,
     imagen_texto: "VÍDEO",
     descripcion: "Revisión histórica del papel activo de los pueblos mesoamericanos como aliados.",
@@ -40,6 +42,7 @@ const CONTENIDOS_SIMULADOS = [
     titulo: "Barómetro de la Hispanidad 2026 — Informe Completo",
     autor: "Equipo Investigador",
     fecha: "18 Mar 2026",
+    created_at: "2026-03-18T10:00:00Z",
     imagen: null,
     imagen_texto: "BARÓMETRO",
     descripcion: "Resultados completos del estudio anual sobre la percepción de la Hispanidad.",
@@ -97,6 +100,13 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
   if (!contenedor) return;
 
   let lista = await getContenidos();
+
+  // Ordenar explícitamente de más reciente a más lejana por created_at
+  lista.sort((a, b) => {
+    const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+    const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+    return dateB - dateA;
+  });
 
   if (filtroTipo) {
     lista = lista.filter(c => c.tipo === filtroTipo);

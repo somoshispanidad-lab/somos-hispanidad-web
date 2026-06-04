@@ -243,30 +243,108 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   });
 
-  // ── LÓGICA DE FORMULARIO DE AJUSTES ────────────────
-  const formAjustesFooter = document.getElementById('form-ajustes-footer');
-  if (formAjustesFooter) {
-    formAjustesFooter.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const lecturasUrl = document.getElementById('ajuste-lecturas-url').value;
-      const divulgadoresUrl = document.getElementById('ajuste-divulgadores-url').value;
+  // ── LÓGICA DE FORMULARIO DE AJUSTES (LISTAS DE ENLACES) ──
+  let listLecturas = [];
+  let listPaginas = [];
+  let listDivulgadores = [];
+
+  function renderAdminLinkList(containerId, list, type) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    if (list.length === 0) {
+      container.innerHTML = '<div style="color:#8a7a6a; font-size:0.85rem; padding:8px;">No hay enlaces en esta sección.</div>';
+      return;
+    }
+    container.innerHTML = list.map((item, index) => `
+      <div class="admin-link-item" style="display:flex; justify-content:space-between; align-items:center; background:#f9f6f0; border:1px solid #e8e0d0; padding:8px 12px; margin-bottom:8px; border-radius:4px;">
+        <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-right:12px; text-align:left;">
+          <strong style="color:var(--sepia-deep); font-size:0.85rem;">${item.title}</strong>
+          <span style="font-size:0.75rem; color:#8a7a6a; display:block;">${item.url}</span>
+        </div>
+        <button type="button" class="admin-btn-sm red delete-link-btn" data-type="${type}" data-index="${index}" style="padding:2px 8px; font-size:0.6rem;">Eliminar</button>
+      </div>
+    `).join('');
+  }
+
+  // Listener Añadir Lectura
+  document.getElementById('btn-add-lectura')?.addEventListener('click', () => {
+    const titleInput = document.getElementById('add-lectura-title');
+    const urlInput = document.getElementById('add-lectura-url');
+    const title = titleInput.value.trim();
+    const url = urlInput.value.trim();
+    if (!title || !url) return alert('Por favor, introduce el nombre y la URL.');
+    if (!url.startsWith('http')) return alert('La URL debe empezar por http:// o https://');
+    listLecturas.push({ title, url });
+    titleInput.value = '';
+    urlInput.value = '';
+    renderAdminLinkList('admin-list-lecturas', listLecturas, 'lecturas');
+  });
+
+  // Listener Añadir Página Amiga
+  document.getElementById('btn-add-pagina')?.addEventListener('click', () => {
+    const titleInput = document.getElementById('add-pagina-title');
+    const urlInput = document.getElementById('add-pagina-url');
+    const title = titleInput.value.trim();
+    const url = urlInput.value.trim();
+    if (!title || !url) return alert('Por favor, introduce el nombre y la URL.');
+    if (!url.startsWith('http')) return alert('La URL debe empezar por http:// o https://');
+    listPaginas.push({ title, url });
+    titleInput.value = '';
+    urlInput.value = '';
+    renderAdminLinkList('admin-list-paginas', listPaginas, 'paginas');
+  });
+
+  // Listener Añadir Divulgador
+  document.getElementById('btn-add-divulgador')?.addEventListener('click', () => {
+    const titleInput = document.getElementById('add-divulgador-title');
+    const urlInput = document.getElementById('add-divulgador-url');
+    const title = titleInput.value.trim();
+    const url = urlInput.value.trim();
+    if (!title || !url) return alert('Por favor, introduce el nombre y la URL.');
+    if (!url.startsWith('http')) return alert('La URL debe empezar por http:// o https://');
+    listDivulgadores.push({ title, url });
+    titleInput.value = '';
+    urlInput.value = '';
+    renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
+  });
+
+  // Event Delegation para Borrar enlaces
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-link-btn')) {
+      const type = e.target.getAttribute('data-type');
+      const index = parseInt(e.target.getAttribute('data-index'));
+      
+      if (type === 'lecturas') {
+        listLecturas.splice(index, 1);
+        renderAdminLinkList('admin-list-lecturas', listLecturas, 'lecturas');
+      } else if (type === 'paginas') {
+        listPaginas.splice(index, 1);
+        renderAdminLinkList('admin-list-paginas', listPaginas, 'paginas');
+      } else if (type === 'divulgadores') {
+        listDivulgadores.splice(index, 1);
+        renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
+      }
+    }
+  });
+
+  const btnGuardarAjustes = document.getElementById('btn-guardar-ajustes');
+  if (btnGuardarAjustes) {
+    btnGuardarAjustes.addEventListener('click', async function () {
       const msgEl = document.getElementById('ajustes-save-msg');
-      
-      const btn = formAjustesFooter.querySelector('button[type="submit"]');
-      btn.textContent = 'Guardando...';
-      btn.disabled = true;
-      
+      btnGuardarAjustes.textContent = 'Guardando...';
+      btnGuardarAjustes.disabled = true;
       msgEl.style.display = 'none';
       
       try {
-        const ok1 = await saveSetting('lecturas_recomendadas_url', lecturasUrl);
-        const ok2 = await saveSetting('divulgadores_url', divulgadoresUrl);
+        const ok1 = await saveSetting('lecturas_recomendadas', JSON.stringify(listLecturas));
+        const ok2 = await saveSetting('paginas_amigas', JSON.stringify(listPaginas));
+        const ok3 = await saveSetting('divulgadores', JSON.stringify(listDivulgadores));
         
-        btn.textContent = '💾 Guardar enlaces del pie de página';
-        btn.disabled = false;
+        btnGuardarAjustes.textContent = '💾 Guardar todos los ajustes';
+        btnGuardarAjustes.disabled = false;
         
         msgEl.style.display = 'block';
-        if (ok1 && ok2) {
+        if (ok1 && ok2 && ok3) {
           msgEl.style.background = '#e8f5e9';
           msgEl.style.color = '#2e7d32';
           msgEl.textContent = '✦ Ajustes guardados correctamente y aplicados en toda la web.';
@@ -276,8 +354,8 @@ document.addEventListener('DOMContentLoaded', async function () {
           msgEl.textContent = 'Error guardando algunos ajustes en Supabase.';
         }
       } catch (err) {
-        btn.textContent = '💾 Guardar enlaces del pie de página';
-        btn.disabled = false;
+        btnGuardarAjustes.textContent = '💾 Guardar todos los ajustes';
+        btnGuardarAjustes.disabled = false;
         msgEl.style.display = 'block';
         msgEl.style.background = '#ffebee';
         msgEl.style.color = '#c62828';
@@ -455,20 +533,37 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   async function loadSettings() {
-    console.log('⚙️ Cargando ajustes del pie de página...');
+    console.log('⚙️ Cargando ajustes de la sección De Interés...');
     const settings = await getSettings();
     const settingsMap = {};
     settings.forEach(s => settingsMap[s.key] = s.value);
     
-    const lecturasInput = document.getElementById('ajuste-lecturas-url');
-    const divulgadoresInput = document.getElementById('ajuste-divulgadores-url');
+    const parseLinks = (val, fallbackTitle, fallbackUrl) => {
+      if (!val) {
+        return fallbackUrl ? [{ title: fallbackTitle, url: fallbackUrl }] : [];
+      }
+      try {
+        const parsed = JSON.parse(val);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {
+        // Si no es JSON pero es una URL simple, la migramos
+        if (val.startsWith('http')) {
+          return [{ title: fallbackTitle, url: val }];
+        }
+      }
+      return [];
+    };
     
-    if (lecturasInput && settingsMap['lecturas_recomendadas_url']) {
-      lecturasInput.value = settingsMap['lecturas_recomendadas_url'];
-    }
-    if (divulgadoresInput && settingsMap['divulgadores_url']) {
-      divulgadoresInput.value = settingsMap['divulgadores_url'];
-    }
+    // Migrar o cargar lecturas recomendadas
+    listLecturas = parseLinks(settingsMap['lecturas_recomendadas'], 'Protocolo de Santa Pola', settingsMap['lecturas_recomendadas_url'] || 'https://protocolodesantapola.es/');
+    // Migrar o cargar páginas amigas
+    listPaginas = parseLinks(settingsMap['paginas_amigas'], 'Protocolo de Santa Pola', 'https://protocolodesantapola.es/');
+    // Migrar o cargar divulgadores
+    listDivulgadores = parseLinks(settingsMap['divulgadores'], 'Somos Hispanidad Torrelodones', settingsMap['divulgadores_url'] || 'https://www.youtube.com/@SomosHispanidadTorrelodones');
+    
+    renderAdminLinkList('admin-list-lecturas', listLecturas, 'lecturas');
+    renderAdminLinkList('admin-list-paginas', listPaginas, 'paginas');
+    renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
   }
 
   async function loadRealStatistics() {

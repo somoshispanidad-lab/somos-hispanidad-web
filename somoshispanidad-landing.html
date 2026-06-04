@@ -989,7 +989,7 @@
 
   .footer-top {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr 1fr;
     gap: 40px;
     padding-bottom: 48px;
     border-bottom: 1px solid rgba(184,146,106,0.2);
@@ -1160,6 +1160,167 @@
   @media (max-width: 600px) {
     .hero-title { font-size: 2.4rem; }
     .btn-primary, .btn-outline { display: block; text-align: center; margin: 8px 0; }
+  }
+
+  /* YouTube con etiqueta de texto - ENFATIZADO */
+  .social-icon-yt {
+    width: auto !important;
+    padding: 0 18px 0 14px !important;
+    gap: 10px;
+    border-radius: 4px;
+    background: var(--gold) !important;
+    color: var(--ink) !important;
+    border-color: var(--gold) !important;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    transition: transform 0.2s, background 0.25s, box-shadow 0.25s !important;
+    display: inline-flex !important;
+    align-items: center;
+    height: 40px;
+  }
+
+  .social-icon-yt:hover {
+    background: var(--gold-light) !important;
+    color: var(--ink) !important;
+    border-color: var(--gold-light) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
+  }
+
+  .social-yt-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── DE INTERÉS ── */
+  #de-interes {
+    background: var(--cream);
+    padding: 80px 0;
+  }
+
+  .interes-tabs-nav {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .btn-interes-tab {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sepia-deep);
+    background: transparent;
+    padding: 12px 28px;
+    border: 1px solid var(--sepia-light);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .btn-interes-tab:hover {
+    background: var(--cream-dark);
+    border-color: var(--gold);
+    transform: translateY(-1px);
+  }
+
+  .btn-interes-tab.active {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+    box-shadow: 0 4px 15px rgba(201, 168, 76, 0.25);
+    font-weight: 600;
+  }
+
+  .interes-tabs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    min-height: 150px;
+  }
+
+  .interes-tab-panel {
+    display: none;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  .interes-tab-panel.active {
+    display: block;
+  }
+
+  .interes-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 0;
+  }
+
+  .interes-link-item {
+    background: var(--warm-white);
+    border: 1px solid var(--cream-dark);
+    border-left: 3px solid var(--gold);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+
+  .interes-link-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.08);
+  }
+
+  .interes-link-anchor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    color: var(--sepia-deep);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .interes-link-icon {
+    color: var(--gold);
+    margin-right: 12px;
+    font-size: 0.9rem;
+  }
+
+  .interes-link-text {
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .interes-link-arrow {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.8rem;
+    color: var(--sepia);
+    margin-left: 12px;
+    transition: transform 0.25s;
+  }
+
+  .interes-link-item:hover .interes-link-arrow {
+    transform: translateX(4px);
+    color: var(--gold);
+  }
+
+  .interes-link-item.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 24px;
+    color: var(--ink-soft);
+    font-family: 'Lato', sans-serif;
+    font-size: 0.85rem;
+    background: transparent;
+    border-left: none;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
@@ -1498,6 +1659,44 @@
   </div>
 </section>
 
+  <!-- ── DE INTERÉS ── -->
+  <section id="de-interes">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Enlaces Sugeridos</span>
+        <h2 class="section-title">De Interés</h2>
+        <div class="ornament">
+          <div class="ornament-diamond"></div>
+          <div class="ornament-line"></div>
+        </div>
+      </div>
+
+      <div class="interes-tabs-nav reveal">
+        <button class="btn-interes-tab active" data-tab="lecturas">Lecturas Recomendadas</button>
+        <button class="btn-interes-tab" data-tab="paginas">Páginas amigas</button>
+        <button class="btn-interes-tab" data-tab="divulgadores">Divulgadores</button>
+      </div>
+
+      <div class="interes-tabs-content reveal">
+        <div class="interes-tab-panel active" id="tab-lecturas">
+          <ul class="interes-list" id="list-lecturas">
+            <!-- Enlaces dinámicos -->
+          </ul>
+        </div>
+        <div class="interes-tab-panel" id="tab-paginas">
+          <ul class="interes-list" id="list-paginas">
+            <!-- Enlaces dinámicos -->
+          </ul>
+        </div>
+        <div class="interes-tab-panel" id="tab-divulgadores">
+          <ul class="interes-list" id="list-divulgadores">
+            <!-- Enlaces dinámicos -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
 <!-- ── CONTACTO ── -->
 <section id="contacto">
   <div class="section-inner">
@@ -1591,14 +1790,6 @@
             <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
           </ul>
         </div>
-        <div>
-          <p class="footer-col-title">Más</p>
-          <ul class="footer-links">
-            <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
-            <li><a href="#" class="link-disabled">Lecturas recomendadas</a></li>
-            <li><a href="#" class="link-disabled">Divulgadores</a></li>
-          </ul>
-        </div>
       </div>
       <div class="footer-bottom">
         <p class="footer-copy">© 2026 Somos Hispanidad · Todos los derechos reservados</p>
@@ -1666,12 +1857,98 @@
     const currentUrl = encodeURIComponent(window.location.href);
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentUrl}&color=2c1a0e&bgcolor=faf6f0`;
   }
+  // ── LOGICA DE SECCIÓN DE INTERÉS ──
+  (async function initDeInteres() {
+    const deInteresSection = document.getElementById('de-interes');
+    if (!deInteresSection) return;
+
+    // Control de pestañas/tabs
+    const tabs = deInteresSection.querySelectorAll('.btn-interes-tab');
+    const panels = deInteresSection.querySelectorAll('.interes-tab-panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        
+        tab.classList.add('active');
+        const targetId = 'tab-' + tab.getAttribute('data-tab');
+        document.getElementById(targetId)?.classList.add('active');
+      });
+    });
+
+    // Cargar enlaces desde Supabase
+    try {
+      if (typeof supabaseClient === 'undefined') {
+        throw new Error('Supabase client not loaded');
+      }
+      
+      const { data, error } = await supabaseClient
+        .from('settings')
+        .select('*')
+        .in('key', ['lecturas_recomendadas', 'paginas_amigas', 'divulgadores']);
+        
+      if (error) throw error;
+      
+      const settingsMap = {};
+      data?.forEach(item => {
+        settingsMap[item.key] = item.value;
+      });
+      
+      const parseLinks = (val, def) => {
+        if (!val) return def;
+        try {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+          if (val.startsWith('http')) return [{ title: 'Enlace', url: val }];
+        }
+        return def;
+      };
+
+      const lecturas = parseLinks(settingsMap['lecturas_recomendadas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      const paginas = parseLinks(settingsMap['paginas_amigas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      const divulgadores = parseLinks(settingsMap['divulgadores'], [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+
+      renderList('list-lecturas', lecturas);
+      renderList('list-paginas', paginas);
+      renderList('list-divulgadores', divulgadores);
+
+    } catch (e) {
+      console.warn('Error cargando enlaces de interés:', e);
+      // Fallbacks
+      renderList('list-lecturas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      renderList('list-paginas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      renderList('list-divulgadores', [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+    }
+
+    function renderList(id, links) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!links || links.length === 0) {
+        el.innerHTML = '<li class="interes-link-item empty">No hay enlaces disponibles.</li>';
+        return;
+      }
+      el.innerHTML = links.map(l => `
+        <li class="interes-link-item">
+          <a href="${l.url}" target="_blank" rel="noopener" class="interes-link-anchor">
+            <span class="interes-link-icon">✦</span>
+            <span class="interes-link-text">${l.title}</span>
+            <span class="interes-link-arrow">→</span>
+          </a>
+        </li>
+      `).join('');
+    }
+  })();
 </script>
 <!-- Vercel Web Analytics -->
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="src/js/supabaseClient.js"></script>
 
 <!-- EmailJS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>

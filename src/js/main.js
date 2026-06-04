@@ -131,47 +131,90 @@ function marcarPaginaActiva() {
   document.head.appendChild(script);
 })();
 
-// ── CARGA DINÁMICA DE ENLACES DEL PIE DE PÁGINA ───────
+// ── CARGA DINÁMICA DE LA SECCIÓN "DE INTERÉS" Y VISITAS ───────
 document.addEventListener('DOMContentLoaded', async function () {
-  try {
-    if (typeof supabaseClient === 'undefined') {
-      console.warn('ℹ supabaseClient no está definido. Los enlaces del pie de página usarán los valores estáticos.');
+  const deInteresSection = document.getElementById('de-interes');
+  
+  if (deInteresSection) {
+    // Control de pestañas/tabs
+    const tabs = deInteresSection.querySelectorAll('.btn-interes-tab');
+    const panels = deInteresSection.querySelectorAll('.interes-tab-panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        
+        tab.classList.add('active');
+        const targetId = 'tab-' + tab.getAttribute('data-tab');
+        document.getElementById(targetId)?.classList.add('active');
+      });
+    });
+
+    // Cargar enlaces desde Supabase
+    try {
+      if (typeof supabaseClient !== 'undefined') {
+        const { data, error } = await supabaseClient
+          .from('settings')
+          .select('*')
+          .in('key', ['lecturas_recomendadas', 'paginas_amigas', 'divulgadores']);
+          
+        if (error) throw error;
+        
+        const settingsMap = {};
+        data?.forEach(item => {
+          settingsMap[item.key] = item.value;
+        });
+        
+        const parseLinks = (val, def) => {
+          if (!val) return def;
+          try {
+            const parsed = JSON.parse(val);
+            if (Array.isArray(parsed)) return parsed;
+          } catch (e) {
+            if (val.startsWith('http')) return [{ title: 'Enlace', url: val }];
+          }
+          return def;
+        };
+
+        const lecturas = parseLinks(settingsMap['lecturas_recomendadas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        const paginas = parseLinks(settingsMap['paginas_amigas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        const divulgadores = parseLinks(settingsMap['divulgadores'], [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+
+        renderList('list-lecturas', lecturas);
+        renderList('list-paginas', paginas);
+        renderList('list-divulgadores', divulgadores);
+      } else {
+        throw new Error('supabaseClient is not defined');
+      }
+    } catch (err) {
+      console.warn('⚠ Error cargando enlaces de la sección De Interés:', err.message);
+      // Fallbacks
+      renderList('list-lecturas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      renderList('list-paginas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      renderList('list-divulgadores', [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+    }
+  }
+
+  function renderList(id, links) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!links || links.length === 0) {
+      el.innerHTML = '<li class="interes-link-item empty">No hay enlaces disponibles.</li>';
       return;
     }
-    
-    // Consultar tabla settings para las dos URLs
-    const { data, error } = await supabaseClient
-      .from('settings')
-      .select('*')
-      .in('key', ['lecturas_recomendadas_url', 'divulgadores_url']);
-      
-    if (error) throw error;
-    
-    if (data && data.length > 0) {
-      const settingsMap = {};
-      data.forEach(item => {
-        settingsMap[item.key] = item.value;
-      });
-      
-      const lecturasUrl = settingsMap['lecturas_recomendadas_url'];
-      const divulgadoresUrl = settingsMap['divulgadores_url'];
-      
-      document.querySelectorAll('footer a').forEach(link => {
-        const text = link.textContent.trim();
-        if (text === 'Lecturas recomendadas' && lecturasUrl) {
-          link.href = lecturasUrl;
-          link.classList.remove('link-disabled');
-          link.target = '_blank';
-        }
-        if (text === 'Divulgadores' && divulgadoresUrl) {
-          link.href = divulgadoresUrl;
-          link.classList.remove('link-disabled');
-          link.target = '_blank';
-        }
-      });
-    }
+    el.innerHTML = links.map(l => `
+      <li class="interes-link-item">
+        <a href="${l.url}" target="_blank" rel="noopener" class="interes-link-anchor">
+          <span class="interes-link-icon">✦</span>
+          <span class="interes-link-text">${l.title}</span>
+          <span class="interes-link-arrow">→</span>
+        </a>
+      </li>
+    `).join('');
+  }
 
-    // ── REGISTRAR VISITA EN SUPABASE (DATOS REALES) ──────
+  // ── REGISTRAR VISITA EN SUPABASE (DATOS REALES) ──────
+  if (typeof supabaseClient !== 'undefined') {
     (async function registrarVisita() {
       try {
         let country = 'España';
@@ -196,8 +239,5 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.warn('⚠ Error registrando visita:', err.message);
       }
     })();
-
-  } catch (err) {
-    console.warn('⚠ Error cargando enlaces dinámicos del pie de página:', err.message);
   }
 });

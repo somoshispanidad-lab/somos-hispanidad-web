@@ -49,14 +49,6 @@ const footerRoot = `<footer>
             <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
           </ul>
         </div>
-        <div>
-          <p class="footer-col-title">Más</p>
-          <ul class="footer-links">
-            <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
-            <li><a href="#" class="link-disabled">Lecturas recomendadas</a></li>
-            <li><a href="#" class="link-disabled">Divulgadores</a></li>
-          </ul>
-        </div>
       </div>
       <div class="footer-bottom">
         <p class="footer-copy">© 2026 Somos Hispanidad · Todos los derechos reservados</p>
@@ -105,14 +97,6 @@ const footerInner = `<footer>
           <li><a href="contenidos.html">Contenidos</a></li>
           <li><a href="eventos.html">Próximos Eventos</a></li>
           <li><a href="mailto:contacto@somoshispanidad.es">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="footer-col-title">Más</p>
-        <ul class="footer-links">
-          <li><a href="https://protocolodesantapola.es/" target="_blank">Páginas Amigas</a></li>
-          <li><a href="#" class="link-disabled">Lecturas recomendadas</a></li>
-          <li><a href="#" class="link-disabled">Divulgadores</a></li>
         </ul>
       </div>
     </div>

@@ -616,7 +616,7 @@ footer {
 
 .footer-top {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr;
   gap: 40px;
   padding-bottom: 48px;
   border-bottom: 1px solid rgba(184,146,106,0.2);
@@ -768,12 +768,26 @@ footer {
   border-color: var(--gold);
 }
 
-/* YouTube con etiqueta de texto */
+/* YouTube con etiqueta de texto - ENFATIZADO */
 .social-icon-yt {
   width: auto;
-  padding: 0 16px 0 12px;
+  padding: 0 18px 0 14px;
   gap: 10px;
-  border-radius: 2px;
+  border-radius: 4px;
+  background: var(--gold) !important;
+  color: var(--ink) !important;
+  border-color: var(--gold) !important;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+  transition: transform 0.2s, background 0.25s, box-shadow 0.25s !important;
+}
+
+.social-icon-yt:hover {
+  background: var(--gold-light) !important;
+  color: var(--ink) !important;
+  border-color: var(--gold-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
 }
 
 .social-yt-label {
@@ -1562,4 +1576,132 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   .hero-title { font-size: 2.4rem; }
   .virreinatos-inner { padding: 60px 24px; }
   .escorial-content { padding: 60px 24px; }
+}
+
+/* ── DE INTERÉS ── */
+#de-interes {
+  background: var(--cream);
+  padding: 80px 0;
+}
+
+.interes-tabs-nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+
+.btn-interes-tab {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sepia-deep);
+  background: transparent;
+  padding: 12px 28px;
+  border: 1px solid var(--sepia-light);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-interes-tab:hover {
+  background: var(--cream-dark);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.btn-interes-tab.active {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold);
+  box-shadow: 0 4px 15px rgba(201, 168, 76, 0.25);
+  font-weight: 600;
+}
+
+.interes-tabs-content {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 150px;
+}
+
+.interes-tab-panel {
+  display: none;
+  animation: fadeIn 0.4s ease both;
+}
+
+.interes-tab-panel.active {
+  display: block;
+}
+
+.interes-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  padding: 0;
+}
+
+.interes-link-item {
+  background: var(--warm-white);
+  border: 1px solid var(--cream-dark);
+  border-left: 3px solid var(--gold);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.interes-link-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(44, 26, 14, 0.08);
+}
+
+.interes-link-anchor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  color: var(--sepia-deep);
+  text-decoration: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.interes-link-icon {
+  color: var(--gold);
+  margin-right: 12px;
+  font-size: 0.9rem;
+}
+
+.interes-link-text {
+  flex: 1;
+  line-height: 1.3;
+}
+
+.interes-link-arrow {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.8rem;
+  color: var(--sepia);
+  margin-left: 12px;
+  transition: transform 0.25s;
+}
+
+.interes-link-item:hover .interes-link-arrow {
+  transform: translateX(4px);
+  color: var(--gold);
+}
+
+.interes-link-item.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 24px;
+  color: var(--ink-soft);
+  font-family: 'Lato', sans-serif;
+  font-size: 0.85rem;
+  background: transparent;
+  border-left: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

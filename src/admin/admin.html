@@ -460,31 +460,55 @@
       </div>
       
       <div class="admin-supabase-note">
-        ⚙️ Administra parámetros de configuración globales y enlaces del pie de página reflejados en tiempo real en la web pública.
+        ⚙️ Administra parámetros de configuración globales y enlaces de la sección "De interés" reflejados en tiempo real en la web pública.
       </div>
       
-      <div style="max-width:700px; margin:24px auto 0; background:#fff; border:1px solid #e8e0d0; border-radius:8px; padding:32px;">
-        <h3 style="font-family:'Cinzel',serif; font-size:1rem; margin-bottom:24px; color:#3a2a1a; border-bottom:1px solid #f1ece1; padding-bottom:12px;">🔗 Enlaces del Pie de Página</h3>
+      <div style="max-width:700px; margin:24px auto 0; display:flex; flex-direction:column; gap:24px;">
         
-        <form id="form-ajustes-footer">
-          <div class="admin-form-group" style="margin-bottom:20px; display:flex; flex-direction:column; gap:6px;">
-            <label style="font-weight:600; color:var(--ink-deep); margin-bottom:2px; display:block;">Enlace de "Lecturas recomendadas"</label>
-            <span style="font-size:0.8rem; color:#8a7a6a; margin-bottom:6px; display:block;">Pega aquí la URL para la sección de recursos sugeridos en el pie de página de toda la web.</span>
-            <input type="url" id="ajuste-lecturas-url" class="admin-form-input" placeholder="https://..." required style="width:100%;">
+        <!-- LECTURAS RECOMENDADAS -->
+        <div class="ajuste-seccion-card">
+          <h3>📚 Lecturas Recomendadas</h3>
+          <div class="links-list-container" id="admin-list-lecturas">
+            <!-- Renderizado dinámico de enlaces con botón de borrar -->
           </div>
-          
-          <div class="admin-form-group" style="margin-bottom:30px; display:flex; flex-direction:column; gap:6px;">
-            <label style="font-weight:600; color:var(--ink-deep); margin-bottom:2px; display:block;">Enlace de "Divulgadores"</label>
-            <span style="font-size:0.8rem; color:#8a7a6a; margin-bottom:6px; display:block;">Pega la URL de destino al hacer clic en "Divulgadores" (por ejemplo, canal de YouTube u otros divulgadores de la Hispanidad).</span>
-            <input type="url" id="ajuste-divulgadores-url" class="admin-form-input" placeholder="https://..." required style="width:100%;">
+          <div class="add-link-form">
+            <input type="text" id="add-lectura-title" placeholder="Nombre de la lectura" class="admin-form-input-sm">
+            <input type="url" id="add-lectura-url" placeholder="https://..." class="admin-form-input-sm">
+            <button type="button" id="btn-add-lectura" class="admin-btn admin-btn-sm">+ Añadir</button>
           </div>
-          
-          <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; height:45px; font-size:0.9rem;">
-            💾 Guardar enlaces del pie de página
-          </button>
-          
-          <div id="ajustes-save-msg" style="margin-top:16px; font-size:0.85rem; padding:12px; border-radius:4px; text-align:center; display:none;"></div>
-        </form>
+        </div>
+
+        <!-- PÁGINAS AMIGAS -->
+        <div class="ajuste-seccion-card">
+          <h3>🤝 Páginas Amigas</h3>
+          <div class="links-list-container" id="admin-list-paginas">
+            <!-- Renderizado dinámico de enlaces -->
+          </div>
+          <div class="add-link-form">
+            <input type="text" id="add-pagina-title" placeholder="Nombre del sitio" class="admin-form-input-sm">
+            <input type="url" id="add-pagina-url" placeholder="https://..." class="admin-form-input-sm">
+            <button type="button" id="btn-add-pagina" class="admin-btn admin-btn-sm">+ Añadir</button>
+          </div>
+        </div>
+
+        <!-- DIVULGADORES -->
+        <div class="ajuste-seccion-card">
+          <h3>📣 Divulgadores</h3>
+          <div class="links-list-container" id="admin-list-divulgadores">
+            <!-- Renderizado dinámico de enlaces -->
+          </div>
+          <div class="add-link-form">
+            <input type="text" id="add-divulgador-title" placeholder="Nombre del divulgador" class="admin-form-input-sm">
+            <input type="url" id="add-divulgador-url" placeholder="https://..." class="admin-form-input-sm">
+            <button type="button" id="btn-add-divulgador" class="admin-btn admin-btn-sm">+ Añadir</button>
+          </div>
+        </div>
+
+        <button id="btn-guardar-ajustes" class="admin-btn admin-btn-primary" style="width:100%; height:45px; font-size:0.9rem;">
+          💾 Guardar todos los ajustes
+        </button>
+        
+        <div id="ajustes-save-msg" style="margin-top:16px; font-size:0.85rem; padding:12px; border-radius:4px; text-align:center; display:none;"></div>
       </div>
     </div>
 

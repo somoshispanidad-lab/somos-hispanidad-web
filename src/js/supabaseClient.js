@@ -103,6 +103,7 @@ async function getContenidos() {
         fecha: c.created_at
           ? new Date(c.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
           : '',
+        created_at: c.created_at || null,
         imagen: c.image_url || null,
         imagen_texto: c.image_url ? null : (c.content_type || 'CONTENIDO').toUpperCase(),
         descripcion: c.summary || '',

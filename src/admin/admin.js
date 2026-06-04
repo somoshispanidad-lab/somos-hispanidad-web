@@ -266,50 +266,103 @@ document.addEventListener('DOMContentLoaded', async function () {
     `).join('');
   }
 
+  async function autoSaveSetting(key, list, statusBadgeId) {
+    const badge = document.getElementById(statusBadgeId);
+    if (badge) {
+      badge.textContent = '💾 Guardando...';
+      badge.style.display = 'inline-block';
+      badge.style.opacity = '1';
+      badge.style.background = '#fff3e0';
+      badge.style.color = '#e65100';
+    }
+    
+    const ok = await saveSetting(key, JSON.stringify(list));
+    
+    if (badge) {
+      if (ok) {
+        badge.textContent = '✓ Guardado';
+        badge.style.background = '#e8f5e9';
+        badge.style.color = '#2e7d32';
+        setTimeout(() => {
+          badge.style.opacity = '0';
+          setTimeout(() => {
+            badge.style.display = 'none';
+            badge.style.opacity = '1';
+          }, 300);
+        }, 1500);
+      } else {
+        badge.textContent = '✗ Error';
+        badge.style.background = '#ffebee';
+        badge.style.color = '#c62828';
+      }
+    }
+  }
+
   // Listener Añadir Lectura
-  document.getElementById('btn-add-lectura')?.addEventListener('click', () => {
+  document.getElementById('btn-add-lectura')?.addEventListener('click', async () => {
     const titleInput = document.getElementById('add-lectura-title');
     const urlInput = document.getElementById('add-lectura-url');
     const title = titleInput.value.trim();
-    const url = urlInput.value.trim();
+    let url = urlInput.value.trim();
     if (!title || !url) return alert('Por favor, introduce el nombre y la URL.');
-    if (!url.startsWith('http')) return alert('La URL debe empezar por http:// o https://');
+    if (!url.startsWith('http')) {
+      if (url.startsWith('www.')) {
+        url = 'https://' + url;
+      } else {
+        return alert('La URL debe empezar por http:// o https://');
+      }
+    }
     listLecturas.push({ title, url });
     titleInput.value = '';
     urlInput.value = '';
     renderAdminLinkList('admin-list-lecturas', listLecturas, 'lecturas');
+    await autoSaveSetting('lecturas_recomendadas', listLecturas, 'save-status-lecturas');
   });
 
   // Listener Añadir Página Amiga
-  document.getElementById('btn-add-pagina')?.addEventListener('click', () => {
+  document.getElementById('btn-add-pagina')?.addEventListener('click', async () => {
     const titleInput = document.getElementById('add-pagina-title');
     const urlInput = document.getElementById('add-pagina-url');
     const title = titleInput.value.trim();
-    const url = urlInput.value.trim();
+    let url = urlInput.value.trim();
     if (!title || !url) return alert('Por favor, introduce el nombre y la URL.');
-    if (!url.startsWith('http')) return alert('La URL debe empezar por http:// o https://');
+    if (!url.startsWith('http')) {
+      if (url.startsWith('www.')) {
+        url = 'https://' + url;
+      } else {
+        return alert('La URL debe empezar por http:// o https://');
+      }
+    }
     listPaginas.push({ title, url });
     titleInput.value = '';
     urlInput.value = '';
     renderAdminLinkList('admin-list-paginas', listPaginas, 'paginas');
+    await autoSaveSetting('paginas_amigas', listPaginas, 'save-status-paginas');
   });
 
   // Listener Añadir Divulgador
-  document.getElementById('btn-add-divulgador')?.addEventListener('click', () => {
+  document.getElementById('btn-add-divulgador')?.addEventListener('click', async () => {
     const titleInput = document.getElementById('add-divulgador-title');
     const urlInput = document.getElementById('add-divulgador-url');
     const title = titleInput.value.trim();
-    const url = urlInput.value.trim();
+    let url = urlInput.value.trim();
     if (!title || !url) return alert('Por favor, introduce el nombre y la URL.');
-    if (!url.startsWith('http')) return alert('La URL debe empezar por http:// o https://');
+    if (!url.startsWith('http')) {
+      if (url.startsWith('www.')) {
+        url = 'https://' + url;
+      } else {
+        return alert('La URL debe empezar por http:// o https://');
+      }
+    }
     listDivulgadores.push({ title, url });
     titleInput.value = '';
     urlInput.value = '';
     renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
+    await autoSaveSetting('divulgadores', listDivulgadores, 'save-status-divulgadores');
   });
 
   // Event Delegation para Borrar enlaces
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', async (e) => {
     if (e.target.classList.contains('delete-link-btn')) {
       const type = e.target.getAttribute('data-type');
       const index = parseInt(e.target.getAttribute('data-index'));
@@ -317,15 +370,33 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (type === 'lecturas') {
         listLecturas.splice(index, 1);
         renderAdminLinkList('admin-list-lecturas', listLecturas, 'lecturas');
+        await autoSaveSetting('lecturas_recomendadas', listLecturas, 'save-status-lecturas');
       } else if (type === 'paginas') {
         listPaginas.splice(index, 1);
         renderAdminLinkList('admin-list-paginas', listPaginas, 'paginas');
+        await autoSaveSetting('paginas_amigas', listPaginas, 'save-status-paginas');
       } else if (type === 'divulgadores') {
         listDivulgadores.splice(index, 1);
         renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
+        await autoSaveSetting('divulgadores', listDivulgadores, 'save-status-divulgadores');
       }
     }
   });
+
+  // Enviar con Enter en los inputs
+  const setupEnterKey = (titleId, urlId, btnId) => {
+    const handler = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById(btnId)?.click();
+      }
+    };
+    document.getElementById(titleId)?.addEventListener('keydown', handler);
+    document.getElementById(urlId)?.addEventListener('keydown', handler);
+  };
+  setupEnterKey('add-lectura-title', 'add-lectura-url', 'btn-add-lectura');
+  setupEnterKey('add-pagina-title', 'add-pagina-url', 'btn-add-pagina');
+  setupEnterKey('add-divulgador-title', 'add-divulgador-url', 'btn-add-divulgador');
 
   const btnGuardarAjustes = document.getElementById('btn-guardar-ajustes');
   if (btnGuardarAjustes) {

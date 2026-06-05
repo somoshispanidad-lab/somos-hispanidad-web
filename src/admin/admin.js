@@ -11,12 +11,27 @@
 document.addEventListener('DOMContentLoaded', async function () {
   
   let editingId = null;
+  let heartbeatInterval = null;
+
+  // Generar o recuperar session_id único para la pestaña actual
+  let mySessionId = sessionStorage.getItem('admin_session_id');
+  if (!mySessionId) {
+    mySessionId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
+    sessionStorage.setItem('admin_session_id', mySessionId);
+  }
 
   // ── DETECTAR FUERZA DE CIERRE DE SESIÓN ──────────────
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('force_logout') === 'true') {
     console.log('🧹 Forzando el cierre de todas las sesiones activas...');
     try {
+      if (mySessionId) {
+        await supabaseClient.from('active_admin_sessions').delete().eq('session_id', mySessionId);
+      }
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
       await supabaseClient.auth.signOut();
       localStorage.clear();
       sessionStorage.clear();
@@ -57,6 +72,75 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (isRecoveryMode) return; // No hacer checkAuth normal si estamos en modo recuperación
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
+      const allowedAdmins = [
+        'javier@iaparaseniors.org',
+        'somoshispanidad@gmail.com',
+        'adelaida.pm@gmail.com',
+        'muygines@gmail.com',
+        'chemillorente@gmail.com'
+      ];
+      
+      if (!allowedAdmins.includes(session.user.email)) {
+        console.warn('Acceso denegado: el correo no está en la lista de administradores autorizados:', session.user.email);
+        loginError.textContent = 'Acceso denegado: este correo no tiene permisos de administrador.';
+        loginError.style.display = 'block';
+        await supabaseClient.auth.signOut();
+        return;
+      }
+
+      // Comprobar si hay otro administrador activo conectado (latido en los últimos 45 segundos)
+      const threshold = new Date(Date.now() - 45000).toISOString();
+      const { data: activeSessions, error: sessionErr } = await supabaseClient
+        .from('active_admin_sessions')
+        .select('*')
+        .neq('session_id', mySessionId)
+        .gt('last_heartbeat', threshold);
+
+      if (sessionErr) {
+        console.error('Error al comprobar sesiones activas:', sessionErr.message);
+      } else if (activeSessions && activeSessions.length > 0) {
+        console.warn('Acceso denegado: ya hay otro administrador conectado:', activeSessions[0].user_email);
+        loginError.textContent = 'Acceso denegado: Administrador ya conectado.';
+        loginError.style.display = 'block';
+        
+        // Limpiamos el heartbeat y cerramos sesión
+        if (heartbeatInterval) {
+          clearInterval(heartbeatInterval);
+          heartbeatInterval = null;
+        }
+        await supabaseClient.auth.signOut();
+        return;
+      }
+
+      // Registrar o actualizar nuestra sesión
+      const { error: upsertErr } = await supabaseClient
+        .from('active_admin_sessions')
+        .upsert({
+          session_id: mySessionId,
+          user_email: session.user.email,
+          last_heartbeat: new Date().toISOString()
+        });
+
+      if (upsertErr) {
+        console.error('Error al registrar sesión activa:', upsertErr.message);
+      }
+
+      // Iniciar el latido de sesión (heartbeat) cada 15 segundos
+      if (!heartbeatInterval) {
+        heartbeatInterval = setInterval(async () => {
+          const { error } = await supabaseClient
+            .from('active_admin_sessions')
+            .upsert({
+              session_id: mySessionId,
+              user_email: session.user.email,
+              last_heartbeat: new Date().toISOString()
+            });
+          if (error) {
+            console.error('Error enviando latido de sesión:', error.message);
+          }
+        }, 15000);
+      }
+
       // Mostrar dashboard
       loginWrapper.style.display = 'none';
       recoveryWrapper.style.display = 'none';
@@ -179,6 +263,21 @@ document.addEventListener('DOMContentLoaded', async function () {
   if (btnLogout) {
     btnLogout.addEventListener('click', async function(e) {
       e.preventDefault();
+      
+      // Limpiar sesión activa en base de datos
+      if (mySessionId) {
+        try {
+          await supabaseClient.from('active_admin_sessions').delete().eq('session_id', mySessionId);
+        } catch (err) {
+          console.error('Error al eliminar sesión de la base de datos:', err);
+        }
+      }
+      
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+
       await supabaseClient.auth.signOut();
       await checkAuth();
     });
@@ -196,7 +295,14 @@ document.addEventListener('DOMContentLoaded', async function () {
       dashboardWrapper.style.display = 'none';
       recoveryWrapper.style.display = 'none';
       updatePasswordWrapper.style.display = 'flex';
-    } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+    } else if (event === 'SIGNED_OUT') {
+      // Aseguramos limpieza al cerrar sesión
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+      if (!isRecoveryMode) checkAuth();
+    } else if (event === 'SIGNED_IN') {
       if (!isRecoveryMode) checkAuth();
     }
   });

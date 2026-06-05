@@ -123,30 +123,44 @@ CREATE POLICY "Insertar supporters" ON supporters FOR INSERT WITH CHECK (true);
 DROP POLICY IF EXISTS "Insertar mensajes" ON contact_messages;
 CREATE POLICY "Insertar mensajes" ON contact_messages FOR INSERT WITH CHECK (true);
 
--- Acceso total Admin (Authenticated)
+-- Acceso total Admin (Authenticated con email restringido)
 DROP POLICY IF EXISTS "Admin ALL Authors" ON authors;
-CREATE POLICY "Admin ALL Authors" ON authors TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Authors" ON authors TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 DROP POLICY IF EXISTS "Admin ALL Contents" ON contents;
-CREATE POLICY "Admin ALL Contents" ON contents TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Contents" ON contents TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 DROP POLICY IF EXISTS "Admin ALL Events" ON events;
-CREATE POLICY "Admin ALL Events" ON events TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Events" ON events TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 DROP POLICY IF EXISTS "Admin ALL Registrations" ON event_registrations;
-CREATE POLICY "Admin ALL Registrations" ON event_registrations TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Registrations" ON event_registrations TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 DROP POLICY IF EXISTS "Admin ALL Supporters" ON supporters;
-CREATE POLICY "Admin ALL Supporters" ON supporters TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Supporters" ON supporters TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 DROP POLICY IF EXISTS "Admin ALL Messages" ON contact_messages;
-CREATE POLICY "Admin ALL Messages" ON contact_messages TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Messages" ON contact_messages TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 DROP POLICY IF EXISTS "Lectura pública settings" ON settings;
 CREATE POLICY "Lectura pública settings" ON settings FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Admin ALL Settings" ON settings;
-CREATE POLICY "Admin ALL Settings" ON settings TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Settings" ON settings TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
 
 -- 5. DATOS DE EJEMPLO (Opcional, solo si están vacíos)
 INSERT INTO authors (name, cargo, bio, published) 
@@ -189,4 +203,21 @@ DROP POLICY IF EXISTS "Insertar visitas" ON page_views;
 CREATE POLICY "Insertar visitas" ON page_views FOR INSERT WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admin ALL Visits" ON page_views;
-CREATE POLICY "Admin ALL Visits" ON page_views TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin ALL Visits" ON page_views TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));
+
+
+-- 7. TABLA DE SESIONES ACTIVAS DE ADMINISTRADOR (PREVENCIÓN DE INICIOS DE SESIÓN SIMULTÁNEOS)
+CREATE TABLE IF NOT EXISTS active_admin_sessions (
+  session_id TEXT PRIMARY KEY,
+  user_email TEXT NOT NULL,
+  last_heartbeat TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE active_admin_sessions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Permitir todo a usuarios autenticados en sesiones" ON active_admin_sessions;
+CREATE POLICY "Permitir todo a usuarios autenticados en sesiones" ON active_admin_sessions TO authenticated 
+USING (true) WITH CHECK (true);

@@ -33,6 +33,7 @@
       <li><a href="index.html">Inicio</a></li>
       <li><a href="src/pages/asociacion.html">La Asociación</a></li>
       <li><a href="src/pages/eventos.html">Eventos</a></li>
+      <li><a href="#actos-culturales">Visitas</a></li>
       <li><a href="src/pages/contenidos.html">Contenidos</a></li>
       <li><a href="src/pages/autores.html">Autores</a></li>
       <li><a href="#de-interes">De Interés</a></li>
@@ -47,6 +48,7 @@
     <a href="index.html" onclick="closeMobile()">Inicio</a>
     <a href="src/pages/asociacion.html" onclick="closeMobile()">La Asociación</a>
     <a href="src/pages/eventos.html" onclick="closeMobile()">Eventos</a>
+    <a href="#actos-culturales" onclick="closeMobile()">Visitas</a>
     <a href="src/pages/contenidos.html" onclick="closeMobile()">Contenidos</a>
     <a href="src/pages/autores.html" onclick="closeMobile()">Autores</a>
     <a href="#de-interes" onclick="closeMobile()">De Interés</a>
@@ -265,19 +267,9 @@
         </p>
       </div>
 
-      <!-- Bloque de Visita -->
-      <div class="reveal" style="margin-top: 80px;">
-        <div class="acto-card">
-          <img src="assets/images/escorial.jpg" alt="Visita al Museo de América" class="acto-image">
-          <div class="acto-content">
-            <h3 class="acto-title">Visita al Museo de América</h3>
-            <p class="acto-text">Un recorrido por las salas del Museo de América de Madrid, redescubriendo el legado
-              común y las raíces culturales que definen nuestra identidad hispánica compartida.</p>
-            <a href="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Escritos/Primera%20visita%20de%20Somos%20Hispanidad.pdf"
-              target="_blank" class="btn-primary"
-              style="display: inline-block; margin-top: 25px; font-size: 0.75rem;">Saber más →</a>
-          </div>
-        </div>
+      <!-- Contenedor Dinámico de Visitas -->
+      <div id="visitas-container" style="margin-top: 80px; display: flex; flex-direction: column; gap: 40px;">
+        <!-- Las visitas cargadas desde Supabase aparecerán aquí -->
       </div>
       <!-- Bloque de Visita El Escorial -->
       <div class="reveal" style="margin-top: 40px;">

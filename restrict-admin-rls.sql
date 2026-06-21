@@ -64,3 +64,9 @@ ALTER TABLE active_admin_sessions ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Permitir todo a usuarios autenticados en sesiones" ON active_admin_sessions;
 CREATE POLICY "Permitir todo a usuarios autenticados en sesiones" ON active_admin_sessions TO authenticated 
 USING (true) WITH CHECK (true);
+
+-- 10. Políticas para la tabla 'cultural_visits'
+DROP POLICY IF EXISTS "Admin ALL Cultural Visits" ON cultural_visits;
+CREATE POLICY "Admin ALL Cultural Visits" ON cultural_visits TO authenticated 
+USING (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'))
+WITH CHECK (auth.jwt() ->> 'email' IN ('javier@iaparaseniors.org', 'somoshispanidad@gmail.com', 'adelaida.pm@gmail.com', 'muygines@gmail.com', 'chemillorente@gmail.com'));

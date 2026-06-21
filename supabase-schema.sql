@@ -67,6 +67,18 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS cultural_visits (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  visit_date TIMESTAMPTZ NOT NULL,
+  synopsis TEXT,
+  video_url TEXT,
+  pdf_url TEXT,
+  cover_image_url TEXT,
+  published BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL,
@@ -101,6 +113,7 @@ ALTER TABLE event_registrations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supporters ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE cultural_visits ENABLE ROW LEVEL SECURITY;
 
 -- 4. POLÍTICAS (ELIMINAR SI EXISTEN Y RE-CREAR)
 -- Lectura pública
@@ -111,7 +124,8 @@ DROP POLICY IF EXISTS "Lectura pública contents" ON contents;
 CREATE POLICY "Lectura pública contents" ON contents FOR SELECT USING (published = true);
 
 DROP POLICY IF EXISTS "Lectura pública events" ON events;
-CREATE POLICY "Lectura pública events" ON events FOR SELECT USING (published = true);
+CREATE POLICY "Public can view published events" ON events FOR SELECT USING (published = true);
+CREATE POLICY "Public can view published cultural visits" ON cultural_visits FOR SELECT USING (published = true);
 
 -- Inserción pública
 DROP POLICY IF EXISTS "Insertar inscripciones" ON event_registrations;

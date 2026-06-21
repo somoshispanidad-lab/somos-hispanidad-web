@@ -93,6 +93,10 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Estadísticas
       </a>
+      <a href="#" class="admin-nav-link" data-panel="visitas">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        Visitas
+      </a>
       <a href="#" class="admin-nav-link" data-panel="ajustes">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Ajustes
@@ -453,6 +457,27 @@
       </div>
     </div>
 
+    <!-- PANEL: VISITAS -->
+    <div class="admin-panel" id="panel-visitas">
+      <div class="admin-panel-header">
+        <h2>Visitas Culturales</h2>
+        <button id="btn-nueva-visita" class="admin-btn admin-btn-primary">+ Nueva visita</button>
+      </div>
+      <div class="admin-supabase-note">
+        📌 En producción, esta tabla se cargará desde la tabla <code>cultural_visits</code> de Supabase.
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Fecha</th><th>Título</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="tbody-visitas">
+            <tr><td colspan="4" style="text-align:center;">Cargando visitas...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- PANEL: AJUSTES -->
     <div class="admin-panel" id="panel-ajustes">
       <div class="admin-panel-header">
@@ -628,6 +653,47 @@
         <label for="ev-publicado" style="margin:0; font-weight: 600;">Visible en la web</label>
       </div>
       <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; margin-top:15px;">Guardar Evento</button>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL NUEVA VISITA -->
+<div id="modal-visita" class="admin-modal" style="display:none;">
+  <div class="admin-modal-content">
+    <div class="admin-modal-header">
+      <h2>Añadir Visita Cultural</h2>
+      <button class="admin-close-modal" id="btn-cerrar-modal-visita">&times;</button>
+    </div>
+    <form id="form-nueva-visita">
+      <div class="admin-form-group">
+        <label>Título de la Visita *</label>
+        <input type="text" id="vis-titulo" class="admin-form-input" required>
+      </div>
+      <div class="admin-form-group">
+        <label>Fecha *</label>
+        <input type="date" id="vis-fecha" class="admin-form-input" required>
+      </div>
+      <div class="admin-form-group">
+        <label>Sinopsis / Descripción</label>
+        <textarea id="vis-sinopsis" class="admin-form-input" rows="3"></textarea>
+      </div>
+      <div class="admin-form-group">
+        <label>URL Imagen de Portada (Opcional)</label>
+        <input type="url" id="vis-imagen" class="admin-form-input" placeholder="https://...">
+      </div>
+      <div class="admin-form-group">
+        <label>URL del Vídeo (Opcional)</label>
+        <input type="url" id="vis-video" class="admin-form-input" placeholder="https://youtube.com/...">
+      </div>
+      <div class="admin-form-group">
+        <label>URL del texto PDF (Reseña) (Opcional)</label>
+        <input type="url" id="vis-pdf" class="admin-form-input" placeholder="https://.../archivo.pdf">
+      </div>
+      <div class="admin-form-group" style="flex-direction:row; align-items:center;">
+        <input type="checkbox" id="vis-publicado" checked style="margin-right:10px;">
+        <label for="vis-publicado" style="margin:0; font-weight: 600;">Visible en la web</label>
+      </div>
+      <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; margin-top:15px;">Guardar Visita</button>
     </form>
   </div>
 </div>

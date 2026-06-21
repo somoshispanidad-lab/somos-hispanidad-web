@@ -592,6 +592,33 @@ document.addEventListener('DOMContentLoaded', async function () {
     try { await loadMessages(); } catch(e) { console.error('Error mensajes:', e); }
     try { await loadSettings(); } catch(e) { console.error('Error settings:', e); }
     try { await loadRealStatistics(); } catch(e) { console.error('Error real stats:', e); }
+    try { await loadVisitas(); } catch(e) { console.error('Error visitas:', e); }
+  }
+
+  async function loadVisitas() {
+    const { data, error } = await supabaseClient.from('cultural_visits').select('*').order('visit_date', { ascending: false });
+    const tbody = document.querySelector('#panel-visitas tbody');
+    if (error) {
+      console.error('Error Supabase (Visitas):', error);
+      return tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:20px;">Error cargando visitas: ${error.message}</td></tr>`;
+    }
+    if (!data || data.length === 0) return tbody.innerHTML = '<tr><td colspan="4" style="padding:20px;">No hay visitas registradas.</td></tr>';
+    
+    tbody.innerHTML = data.map(v => {
+      const d = new Date(v.visit_date).toLocaleDateString('es-ES');
+      const badgePub = v.published ? '<span class="admin-badge green">Visible</span>' : '<span class="admin-badge red" style="background:#fee2e2; color:#b91c1c;">Oculto</span>';
+      return `
+        <tr>
+          <td>${d}</td>
+          <td><strong>${v.title}</strong></td>
+          <td>${badgePub}</td>
+          <td>
+            <button class="admin-btn-sm" onclick="editVisita('${v.id}')">Editar</button>
+            <button class="admin-btn-sm red" onclick="deleteVisita('${v.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   async function loadEvents() {
@@ -1038,6 +1065,86 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     });
   }
+
+  // ── MODAL NUEVA VISITA ─────────────────────────────
+  const btnNuevaVisita = document.getElementById('btn-nueva-visita');
+  const modalVisita = document.getElementById('modal-visita');
+  const btnCerrarModalVisita = document.getElementById('btn-cerrar-modal-visita');
+  const formVisita = document.getElementById('form-nueva-visita');
+
+  if (btnNuevaVisita && modalVisita) {
+    btnNuevaVisita.addEventListener('click', () => {
+      editingId = null;
+      document.querySelector('#modal-visita h2').textContent = 'Añadir Nueva Visita';
+      formVisita.reset();
+      modalVisita.style.display = 'flex';
+    });
+
+    btnCerrarModalVisita.addEventListener('click', () => {
+      modalVisita.style.display = 'none';
+      formVisita.reset();
+    });
+
+    formVisita.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('vis-titulo').value;
+      const visit_date = document.getElementById('vis-fecha').value;
+      const synopsis = document.getElementById('vis-sinopsis').value;
+      const cover_image_url = document.getElementById('vis-imagen').value;
+      const video_url = document.getElementById('vis-video').value;
+      const pdf_url = document.getElementById('vis-pdf').value;
+      const published = document.getElementById('vis-publicado').checked;
+
+      const btnSubmit = formVisita.querySelector('button[type="submit"]');
+      btnSubmit.textContent = 'Guardando...';
+      btnSubmit.disabled = true;
+
+      const payload = { title, visit_date, synopsis, cover_image_url, video_url, pdf_url, published };
+
+      let result;
+      if (editingId) {
+        result = await supabaseClient.from('cultural_visits').update(payload).eq('id', editingId);
+      } else {
+        result = await supabaseClient.from('cultural_visits').insert([payload]);
+      }
+
+      btnSubmit.textContent = 'Guardar Visita';
+      btnSubmit.disabled = false;
+
+      if (result.error) {
+        alert('Error guardando visita: ' + result.error.message);
+      } else {
+        modalVisita.style.display = 'none';
+        formVisita.reset();
+        loadVisitas();
+      }
+    });
+  }
+
+  window.editVisita = async function(id) {
+    editingId = id;
+    const { data, error } = await supabaseClient.from('cultural_visits').select('*').eq('id', id).single();
+    if (data) {
+      document.getElementById('vis-titulo').value = data.title;
+      document.getElementById('vis-fecha').value = data.visit_date ? data.visit_date.substring(0,10) : '';
+      document.getElementById('vis-sinopsis').value = data.synopsis || '';
+      document.getElementById('vis-imagen').value = data.cover_image_url || '';
+      document.getElementById('vis-video').value = data.video_url || '';
+      document.getElementById('vis-pdf').value = data.pdf_url || '';
+      document.getElementById('vis-publicado').checked = data.published;
+
+      document.querySelector('#modal-visita h2').textContent = 'Editar Visita';
+      document.getElementById('modal-visita').style.display = 'flex';
+    }
+  };
+
+  window.deleteVisita = async function(id) {
+    if (confirm('¿Seguro que deseas eliminar esta visita?')) {
+      const { error } = await supabaseClient.from('cultural_visits').delete().eq('id', id);
+      if (!error) loadVisitas();
+      else alert('Error: ' + error.message);
+    }
+  };
 
   // ── MODAL NUEVO EVENTO ─────────────────────────────
   const btnNuevoEvento = document.getElementById('btn-nuevo-evento');

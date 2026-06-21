@@ -243,7 +243,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // ── REPRODUCTOR DE VÍDEO EL ESCORIAL ───────────────────
   const fotosEscorial = [
-    'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2016.05.08.jpeg',
     'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2016.05.09.jpeg',
     'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2016.05.10%20(1).jpeg',
     'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2016.05.10.jpeg',
@@ -262,7 +261,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/IMG_6016.jpeg',
     'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/IMG_6017.jpeg',
     'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/IMG_6018.jpeg',
-    'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/IMG_6019.jpeg'
+    'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/IMG_6019.jpeg',
+    'https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2016.05.08.jpeg'
   ];
   const btnEscorial = document.getElementById('btn-escorial-video');
   const modalEscorial = document.getElementById('escorial-video-modal');

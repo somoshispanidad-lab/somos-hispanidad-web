@@ -283,7 +283,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         container.innerHTML += `
           <div class="video-slide" data-duration="7000">
             <img src="${url}" alt="Contraportada">
-            <div class="video-slide-caption">Próxima visita el 29 de septiembre:<br>Museo del ejército de Hoyo de Manzanares</div>
+            <div class="video-slide-caption">
+              Próxima visita el 29 de septiembre:<br>Museo del ejército de Hoyo de Manzanares<br>
+              <a href="#actos-culturales" class="btn-primary video-close-link" style="margin-top: 20px; display: inline-flex; font-size: 0.9rem; text-decoration: none; padding: 12px 24px; pointer-events: auto; align-items: center; justify-content: center; font-family: 'Lato', sans-serif;">Volver a visitas culturales →</a>
+            </div>
           </div>
         `;
       } else {
@@ -302,6 +305,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     const progressBarFill = modalEscorial.querySelector('.video-progress-fill');
     const timeIndicator = modalEscorial.querySelector('.video-time-indicator');
     const slides = modalEscorial.querySelectorAll('.video-slide');
+    
+    // Si pulsan el botón de "Volver a visitas culturales", cerramos el modal
+    container.addEventListener('click', (e) => {
+      if (e.target.closest('.video-close-link')) {
+        closeModal();
+      }
+    });
     
     let currentSlide = 0;
     let isPlaying = false;

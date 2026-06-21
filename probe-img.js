@@ -20,23 +20,12 @@ async function checkUrl(filename) {
 async function run() {
   const promises = [];
   
-  // Specific files from screenshot
   const specific = [
     'Cesar Perez Guevara.JPG', 'download.jpg', 'IMG_1979.JPG', 'Moctezuma.png',
     'Gemini_Generated_Image.jpeg', 'Gemini_Generated_Image (1).jpeg'
   ];
-  for (const f of specific) promises.push(checkUrl(f));
-
-  // Probe IMG_xxxx.jpeg and .JPG
-  for (let i = 1900; i <= 2100; i++) {
-    promises.push(checkUrl(`IMG_${i}.jpeg`));
-    promises.push(checkUrl(`IMG_${i}.JPG`));
-    promises.push(checkUrl(`IMG_${i}.jpg`));
-  }
-  for (let i = 6000; i <= 6050; i++) {
-    promises.push(checkUrl(`IMG_${i}.jpeg`));
-    promises.push(checkUrl(`IMG_${i}.JPG`));
-    promises.push(checkUrl(`IMG_${i}.jpg`));
+  for (const f of specific) {
+    promises.push(checkUrl(f));
   }
 
   console.log(`Probing ${promises.length} possibilities...`);

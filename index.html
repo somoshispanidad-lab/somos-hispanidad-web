@@ -70,7 +70,8 @@
         <a href="src/pages/contenidos.html" class="btn-outline">Ver contenidos</a>
       </div>
       <!-- Aviso próximo evento (rellenado dinámicamente por JS) -->
-      <a id="hero-next-event" href="src/pages/eventos.html" class="hero-next-event" style="display:none;" aria-label="Próximo evento">
+      <a id="hero-next-event" href="src/pages/eventos.html" class="hero-next-event" style="display:none;"
+        aria-label="Próximo evento">
         <span class="hero-next-event-dot"></span>
         <span id="hero-next-event-label">Próximo evento</span>
       </a>
@@ -281,6 +282,22 @@
     </div>
   </section>
 
+  <!-- Bloque de Visita El Escorial -->
+  <section id="actos-culturales-escorial" style="padding-top: 0; background: var(--bg-color);">
+    <div class="actos-culturales-inner" style="padding-top: 0;">
+      <div class="reveal">
+        <div class="acto-card">
+          <img src="assets/images/escorial-cover.png" alt="Visita al Monasterio de El Escorial" class="acto-image">
+          <div class="acto-content">
+            <h3 class="acto-title">Visita al Monasterio de El Escorial</h3>
+            <p class="acto-text">Una jornada especial en uno de los monumentos más emblemáticos del imperio español. Disfruta del vídeo resumen con los recuerdos de nuestra visita del 20 de Junio de 2026.</p>
+            <button id="btn-escorial-video" class="btn-primary" style="display: inline-block; margin-top: 25px; font-size: 0.75rem; border: none; cursor: pointer; font-family: 'Lato', sans-serif;">Ver vídeo →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── CONTENIDOS ── -->
   <section id="contenidos">
     <div class="section-inner">
@@ -483,8 +500,8 @@
               promover los lazos culturales entre España y el mundo hispano a través de la investigación y la difusión.
             </p>
             <div class="social-row">
-              <a href="https://www.youtube.com/@SomosHispanidadTorrelodones" target="_blank" class="social-icon social-icon-yt"
-                aria-label="Nuestro canal de Youtube">
+              <a href="https://www.youtube.com/@SomosHispanidadTorrelodones" target="_blank"
+                class="social-icon social-icon-yt" aria-label="Nuestro canal de Youtube">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                   <path
                     d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -535,6 +552,60 @@
       <path d="M12 19V5M5 12l7-7 7 7" />
     </svg>
   </a>
+
+
+  <!-- ── MODAL REPRODUCTOR DE VÍDEO (EL ESCORIAL) ── -->
+  <div id="escorial-video-modal" class="video-modal">
+    <div class="video-modal-overlay"></div>
+    <div class="video-modal-content">
+      <button class="video-modal-close" aria-label="Cerrar">&times;</button>
+      
+      <div class="video-player">
+        <div class="video-slides-container">
+          <!-- Slide 1: Portada -->
+          <div class="video-slide active" data-duration="7000">
+            <img src="assets/images/escorial-cover.png" alt="Portada El Escorial">
+          </div>
+          <!-- Slide 2: Foto 12.36.42 -->
+          <div class="video-slide" data-duration="7000">
+            <img src="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2012.36.42.jpeg" alt="Foto 1">
+          </div>
+          <!-- Slide 3: Foto 12.40.08 -->
+          <div class="video-slide" data-duration="7000">
+            <img src="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2012.40.08.jpeg" alt="Foto 2">
+          </div>
+          <!-- Slide 4: Foto 21.11.30 -->
+          <div class="video-slide" data-duration="7000">
+            <img src="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2021.11.30.jpeg" alt="Foto 3">
+          </div>
+          <!-- Slide 5: Foto 21.11.31 -->
+          <div class="video-slide" data-duration="7000">
+            <img src="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2021.11.31.jpeg" alt="Foto 4">
+          </div>
+          <!-- Slide 6: Contraportada -->
+          <div class="video-slide" data-duration="7000">
+            <img src="https://fzftntxrkagnvchhwehn.supabase.co/storage/v1/object/public/Documentos/Fotos/El%20Escorial/WhatsApp%20Image%202026-06-20%20at%2016.05.08.jpeg" alt="Contraportada El Escorial">
+            <div class="video-slide-overlay-text">
+              <p>Nuestra próxima visita cultural:<br>Museo de la Marina. Madrid</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="video-controls">
+          <div class="video-progress-bar">
+            <div class="video-progress-fill"></div>
+          </div>
+          <div class="video-controls-bar">
+            <button class="video-play-pause" aria-label="Pausar">
+              <svg class="icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+              <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <span class="video-time-indicator">0:00 / 0:42</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Vercel Web Analytics -->
   <script>

@@ -240,4 +240,131 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     })();
   }
+
+  // ── REPRODUCTOR DE VÍDEO EL ESCORIAL ───────────────────
+  const btnEscorial = document.getElementById('btn-escorial-video');
+  const modalEscorial = document.getElementById('escorial-video-modal');
+  
+  if (btnEscorial && modalEscorial) {
+    const btnClose = modalEscorial.querySelector('.video-modal-close');
+    const btnPlayPause = modalEscorial.querySelector('.video-play-pause');
+    const iconPlay = modalEscorial.querySelector('.icon-play');
+    const iconPause = modalEscorial.querySelector('.icon-pause');
+    const progressBarFill = modalEscorial.querySelector('.video-progress-fill');
+    const timeIndicator = modalEscorial.querySelector('.video-time-indicator');
+    const slides = modalEscorial.querySelectorAll('.video-slide');
+    
+    let currentSlide = 0;
+    let isPlaying = false;
+    let progressTimer = null;
+    let slideStartTime = 0;
+    let timeElapsedInSlide = 0;
+    const defaultDuration = 7000;
+    
+    function updateProgress() {
+      if (!isPlaying) return;
+      const now = Date.now();
+      const dt = now - slideStartTime;
+      const totalElapsed = timeElapsedInSlide + dt;
+      let percent = (totalElapsed / defaultDuration) * 100;
+      if (percent > 100) percent = 100;
+      
+      const totalDuration = slides.length * defaultDuration;
+      const globalElapsed = (currentSlide * defaultDuration) + totalElapsed;
+      const globalPercent = (globalElapsed / totalDuration) * 100;
+      
+      progressBarFill.style.width = `${globalPercent}%`;
+      
+      const secElapsed = Math.floor(globalElapsed / 1000);
+      const totalSec = Math.floor(totalDuration / 1000);
+      timeIndicator.textContent = `0:${secElapsed.toString().padStart(2, '0')} / 0:${totalSec}`;
+      
+      if (totalElapsed >= defaultDuration) {
+        nextSlide();
+      } else {
+        progressTimer = requestAnimationFrame(updateProgress);
+      }
+    }
+    
+    function nextSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide++;
+      timeElapsedInSlide = 0;
+      
+      if (currentSlide >= slides.length) {
+        // Al final, pausar en la última foto
+        pauseVideo();
+        currentSlide = slides.length - 1;
+        slides[currentSlide].classList.add('active');
+        return;
+      }
+      
+      slides[currentSlide].classList.add('active');
+      slideStartTime = Date.now();
+      if (isPlaying) {
+        progressTimer = requestAnimationFrame(updateProgress);
+      }
+    }
+    
+    function playVideo() {
+      // Reiniciar si estábamos en el final
+      if (currentSlide >= slides.length - 1 && timeElapsedInSlide >= defaultDuration - 100) {
+        currentSlide = 0;
+        timeElapsedInSlide = 0;
+        slides.forEach(s => s.classList.remove('active'));
+        slides[0].classList.add('active');
+      }
+      isPlaying = true;
+      slideStartTime = Date.now();
+      iconPlay.style.display = 'none';
+      iconPause.style.display = 'block';
+      modalEscorial.querySelector('.video-player').classList.remove('paused');
+      progressTimer = requestAnimationFrame(updateProgress);
+    }
+    
+    function pauseVideo() {
+      isPlaying = false;
+      if (slideStartTime > 0) {
+        timeElapsedInSlide += Date.now() - slideStartTime;
+        slideStartTime = 0;
+      }
+      cancelAnimationFrame(progressTimer);
+      iconPlay.style.display = 'block';
+      iconPause.style.display = 'none';
+      modalEscorial.querySelector('.video-player').classList.add('paused');
+    }
+    
+    function togglePlayPause() {
+      if (isPlaying) pauseVideo();
+      else playVideo();
+    }
+    
+    function openModal() {
+      modalEscorial.classList.add('open');
+      document.body.style.overflow = 'hidden'; // Evitar scroll
+      
+      currentSlide = 0;
+      timeElapsedInSlide = 0;
+      slides.forEach(s => s.classList.remove('active'));
+      slides[0].classList.add('active');
+      progressBarFill.style.width = '0%';
+      
+      const totalSec = Math.floor((slides.length * defaultDuration) / 1000);
+      timeIndicator.textContent = `0:00 / 0:${totalSec}`;
+      
+      setTimeout(() => {
+        playVideo();
+      }, 500); // dar tiempo a la transición de apertura
+    }
+    
+    function closeModal() {
+      modalEscorial.classList.remove('open');
+      document.body.style.overflow = '';
+      pauseVideo();
+    }
+    
+    btnEscorial.addEventListener('click', openModal);
+    btnClose.addEventListener('click', closeModal);
+    btnPlayPause.addEventListener('click', togglePlayPause);
+  }
 });

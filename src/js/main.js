@@ -320,6 +320,56 @@ document.addEventListener('DOMContentLoaded', async function () {
     let timeElapsedInSlide = 0;
     const defaultDuration = 7000;
     
+    const btnPrev = modalEscorial.querySelector('.video-prev-btn');
+    const btnNext = modalEscorial.querySelector('.video-next-btn');
+    const progressBar = modalEscorial.querySelector('.video-progress-bar');
+    
+    if (btnPrev) {
+      btnPrev.addEventListener('click', () => {
+        if (currentSlide > 0) {
+          slides[currentSlide].classList.remove('active');
+          currentSlide--;
+          timeElapsedInSlide = 0;
+          slides[currentSlide].classList.add('active');
+          if (isPlaying) slideStartTime = Date.now();
+        }
+      });
+    }
+    
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        if (currentSlide < slides.length - 1) {
+          slides[currentSlide].classList.remove('active');
+          currentSlide++;
+          timeElapsedInSlide = 0;
+          slides[currentSlide].classList.add('active');
+          if (isPlaying) slideStartTime = Date.now();
+        }
+      });
+    }
+    
+    if (progressBar) {
+      progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        let percent = clickX / rect.width;
+        if (percent < 0) percent = 0;
+        if (percent > 1) percent = 1;
+        
+        const totalDuration = slides.length * defaultDuration;
+        const targetTime = percent * totalDuration;
+        
+        slides[currentSlide].classList.remove('active');
+        currentSlide = Math.floor(targetTime / defaultDuration);
+        if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+        timeElapsedInSlide = targetTime % defaultDuration;
+        slides[currentSlide].classList.add('active');
+        if (isPlaying) slideStartTime = Date.now();
+        
+        progressBarFill.style.width = `${percent * 100}%`;
+      });
+    }
+    
     function updateProgress() {
       if (!isPlaying) return;
       const now = Date.now();

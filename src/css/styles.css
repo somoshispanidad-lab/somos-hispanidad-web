@@ -1760,6 +1760,7 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.5), transparent);
   padding: 40px 20px 20px;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  z-index: 10;
 }
 
 .video-modal-close {

@@ -21,7 +21,7 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="src/css/styles.css?v=1782061000000">
+  <link rel="stylesheet" href="src/css/styles.css?v=1782062500000">
 </head>
 
 <body>
@@ -566,10 +566,16 @@
           <div class="video-progress-bar">
             <div class="video-progress-fill"></div>
           </div>
-          <div class="video-controls-bar">
+          <div class="video-controls-bar" style="display: flex; align-items: center;">
+            <button class="video-prev-btn" aria-label="Anterior" style="background: none; border: none; color: #fff; cursor: pointer; margin-right: 15px; padding: 5px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+            </button>
             <button class="video-play-pause" aria-label="Pausar">
               <svg class="icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
               <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="video-next-btn" aria-label="Siguiente" style="background: none; border: none; color: #fff; cursor: pointer; margin-left: 15px; padding: 5px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
             </button>
             <span class="video-time-indicator">0:00 / 0:42</span>
           </div>
@@ -584,7 +590,7 @@
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
 
-  <script src="src/js/main.js?v=1782062000000"></script>
+  <script src="src/js/main.js?v=1782062500000"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="src/js/supabaseClient.js"></script>
   <script src="src/js/eventos.js"></script>

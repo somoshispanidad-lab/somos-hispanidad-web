@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         container.innerHTML += `
           <div class="video-slide" data-duration="7000">
             <img src="${url}" alt="Contraportada">
-            <div class="video-slide-caption">Nuestra próxima visita cultural:<br>Museo de la Marina. Madrid</div>
+            <div class="video-slide-caption">Próxima visita el 29 de septiembre:<br>Museo del ejército de Hoyo de Manzanares</div>
           </div>
         `;
       } else {

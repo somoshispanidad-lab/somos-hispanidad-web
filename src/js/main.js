@@ -271,6 +271,30 @@ document.addEventListener('DOMContentLoaded', async function () {
   const modalEscorial = document.getElementById('escorial-video-modal');
   
   if (btnEscorial && modalEscorial) {
+    const container = modalEscorial.querySelector('.video-slides-container');
+    container.innerHTML = `
+      <div class="video-slide active" data-duration="7000">
+        <img src="assets/images/escorial-cover.png" alt="Portada El Escorial">
+      </div>
+    `;
+    
+    fotosEscorial.forEach((url, i) => {
+      if (i === fotosEscorial.length - 1) {
+        container.innerHTML += `
+          <div class="video-slide" data-duration="7000">
+            <img src="${url}" alt="Contraportada">
+            <div class="video-slide-caption">Nuestra próxima visita cultural:<br>Museo de la Marina. Madrid</div>
+          </div>
+        `;
+      } else {
+        container.innerHTML += `
+          <div class="video-slide" data-duration="7000">
+            <img src="${url}" alt="Foto ${i+1}">
+          </div>
+        `;
+      }
+    });
+
     const btnClose = modalEscorial.querySelector('.video-modal-close');
     const btnPlayPause = modalEscorial.querySelector('.video-play-pause');
     const iconPlay = modalEscorial.querySelector('.icon-play');

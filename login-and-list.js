@@ -19,16 +19,16 @@ async function run() {
   // Set the session token just in case
   supabase.auth.setSession(authData.session);
 
-  console.log('Listing files in Fotos/El Escorial...');
-  const { data: filesData, error: filesError } = await supabase.storage.from('Documentos').list('Fotos/El Escorial', {
-    limit: 100
+  console.log('Listing files in Fotos/...');
+  const { data: filesData, error: filesError } = await supabase.storage.from('Documentos').list('Fotos', {
+    limit: 1000
   });
 
   if (filesError) {
     console.error('Error listing files:', filesError);
   } else {
     console.log('Files:');
-    console.log(JSON.stringify(filesData, null, 2));
+    console.log(JSON.stringify(filesData.map(f => f.name), null, 2));
   }
 }
 

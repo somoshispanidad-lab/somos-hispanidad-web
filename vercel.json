@@ -2,5 +2,11 @@
   "version": 2,
   "outputDirectory": ".",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/src/admin/admin"
+    }
+  ]
 }

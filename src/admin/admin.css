@@ -189,6 +189,7 @@ body { font-family:'Lato',sans-serif; background:var(--cream); color:var(--ink);
   
   .admin-dashboard {
     flex-direction: column;
+  }
 
   /* TABLAS RESPONSIVAS EN FORMATO TARJETA (MÓVIL VERTICAL) */
   .admin-table thead { display: none; }

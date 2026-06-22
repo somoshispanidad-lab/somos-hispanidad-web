@@ -98,4 +98,49 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnLoadMore) {
     btnLoadMore.addEventListener('click', loadVisitas);
   }
+
+  // ── PRÓXIMA VISITA EN BANNER ESCORIAL ──
+  async function loadNextVisit() {
+    const btnNextVisit = document.getElementById('btn-next-visit');
+    const nextVisitInfo = document.getElementById('next-visit-info');
+    const nextVisitSynopsis = document.getElementById('next-visit-synopsis');
+    
+    if (!btnNextVisit && !nextVisitInfo) return;
+    
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabaseClient
+        .from('cultural_visits')
+        .select('*')
+        .gte('visit_date', today)
+        .order('visit_date', { ascending: true })
+        .limit(1);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const nextVisit = data[0];
+        if (nextVisit.published) {
+          // Si está visible, botón normal
+          if (btnNextVisit) btnNextVisit.style.display = 'inline-block';
+          if (nextVisitInfo) nextVisitInfo.style.display = 'none';
+        } else {
+          // Si está oculta, mostrar sinopsis y "prevista"
+          if (btnNextVisit) btnNextVisit.style.display = 'none';
+          if (nextVisitInfo && nextVisitSynopsis) {
+            nextVisitSynopsis.textContent = nextVisit.synopsis || nextVisit.title;
+            nextVisitInfo.style.display = 'block';
+          }
+        }
+      } else {
+        // No hay próxima visita
+        if (btnNextVisit) btnNextVisit.style.display = 'none';
+        if (nextVisitInfo) nextVisitInfo.style.display = 'none';
+      }
+    } catch (err) {
+      console.error("Error loading next visit:", err);
+    }
+  }
+
+  loadNextVisit();
 });

@@ -1092,19 +1092,23 @@ document.addEventListener('DOMContentLoaded', async function () {
   if (btnNuevaVisita && modalVisita) {
     btnNuevaVisita.addEventListener('click', () => {
       editingId = null;
-      document.querySelector('#modal-visita h2').textContent = 'Añadir Nueva Visita';
-      formVisita.reset();
+      const titleEl = document.querySelector('#modal-visita h2');
+      if (titleEl) titleEl.textContent = 'Añadir Nueva Visita';
+      if (formVisita) formVisita.reset();
       if (visitaImgNombre) visitaImgNombre.textContent = '';
       modalVisita.style.display = 'flex';
     });
 
-    btnCerrarModalVisita.addEventListener('click', () => {
-      modalVisita.style.display = 'none';
-      formVisita.reset();
-      if (visitaImgNombre) visitaImgNombre.textContent = '';
-    });
+    if (btnCerrarModalVisita) {
+      btnCerrarModalVisita.addEventListener('click', () => {
+        modalVisita.style.display = 'none';
+        if (formVisita) formVisita.reset();
+        if (visitaImgNombre) visitaImgNombre.textContent = '';
+      });
+    }
 
-    formVisita.addEventListener('submit', async (e) => {
+    if (formVisita) {
+      formVisita.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('vis-titulo').value;
       const visit_date = document.getElementById('vis-fecha').value;
@@ -1151,6 +1155,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         loadVisitas();
       }
     });
+    }
   }
 
   window.editVisita = async function(id) {

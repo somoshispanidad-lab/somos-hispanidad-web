@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (data && data.length > 0) {
         const html = data.map(v => {
           let buttonsHtml = '';
-          if (v.video_url) {
-            buttonsHtml += `<a href="${v.video_url}" target="_blank" class="btn-primary" style="font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; margin-right:15px; margin-bottom:15px;">Ver vídeo →</a>`;
-          }
           if (v.pdf_url) {
-            buttonsHtml += `<a href="${v.pdf_url}" target="_blank" class="btn-primary" style="font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; margin-bottom:15px;">Saber más →</a>`;
+            buttonsHtml += `<div style="margin-top: 25px;"><a href="${v.pdf_url}" target="_blank" class="btn-primary" style="font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Leer Reseña de la Visita →</a></div>`;
+          }
+          if (v.video_url) {
+            buttonsHtml += `<div style="margin-top: 20px;"><a href="${v.video_url}" target="_blank" class="btn-primary" style="font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Ver Vídeo del Acto →</a></div>`;
           }
 
           const imgTag = v.cover_image_url 
@@ -42,9 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="acto-content">
                   <h3 class="acto-title">${v.title}</h3>
                   <p class="acto-text">${v.synopsis || ''}</p>
-                  <div style="margin-top: 25px; display: flex; flex-wrap: wrap;">
-                    ${buttonsHtml}
-                  </div>
+                  ${buttonsHtml}
                 </div>
               </div>
             </div>
@@ -60,22 +58,30 @@ document.addEventListener('DOMContentLoaded', async () => {
           paginationDiv.style.display = 'block';
           if (btnLoadMore) btnLoadMore.textContent = 'Ver visitas más antiguas';
         } else if (paginationDiv) {
-          paginationDiv.style.display = 'block';
-          if (btnLoadMore) {
-            btnLoadMore.textContent = 'Has llegado al final del historial';
-            btnLoadMore.disabled = true;
-            btnLoadMore.style.opacity = '0.6';
-            btnLoadMore.style.cursor = 'default';
+          if (visitasOffset > VISITAS_LIMIT) {
+            paginationDiv.style.display = 'block';
+            if (btnLoadMore) {
+              btnLoadMore.textContent = 'Has llegado al final del historial';
+              btnLoadMore.disabled = true;
+              btnLoadMore.style.opacity = '0.6';
+              btnLoadMore.style.cursor = 'default';
+            }
+          } else {
+            paginationDiv.style.display = 'none';
           }
         }
       } else {
         if (paginationDiv) {
-          paginationDiv.style.display = 'block';
-          if (btnLoadMore) {
-            btnLoadMore.textContent = 'Has llegado al final del historial';
-            btnLoadMore.disabled = true;
-            btnLoadMore.style.opacity = '0.6';
-            btnLoadMore.style.cursor = 'default';
+          if (visitasOffset > 0) {
+            paginationDiv.style.display = 'block';
+            if (btnLoadMore) {
+              btnLoadMore.textContent = 'Has llegado al final del historial';
+              btnLoadMore.disabled = true;
+              btnLoadMore.style.opacity = '0.6';
+              btnLoadMore.style.cursor = 'default';
+            }
+          } else {
+            paginationDiv.style.display = 'none';
           }
         }
       }

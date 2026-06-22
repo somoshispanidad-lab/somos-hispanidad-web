@@ -975,7 +975,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   async function uploadFileToSupabase(file) {
     const timestamp = Date.now();
-    const safeName = file.name.replace(/\s+/g, '_');
+    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const path = `${timestamp}_${safeName}`;
     const { data, error } = await supabaseClient.storage
       .from('Documentos')
@@ -1075,6 +1075,10 @@ document.addEventListener('DOMContentLoaded', async function () {
   const inputArchivoVisita = document.getElementById('vis-archivo-imagen');
   const btnSeleccionarImgVisita = document.getElementById('btn-seleccionar-img-visita');
   const visitaImgNombre = document.getElementById('visita-img-nombre');
+  
+  const inputArchivoPdfVisita = document.getElementById('vis-archivo-pdf');
+  const btnSeleccionarPdfVisita = document.getElementById('btn-seleccionar-pdf-visita');
+  const visitaPdfNombre = document.getElementById('visita-pdf-nombre');
 
   if (btnSeleccionarImgVisita && inputArchivoVisita) {
     btnSeleccionarImgVisita.addEventListener('click', () => {
@@ -1089,6 +1093,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   }
 
+  if (btnSeleccionarPdfVisita && inputArchivoPdfVisita) {
+    btnSeleccionarPdfVisita.addEventListener('click', () => {
+      inputArchivoPdfVisita.click();
+    });
+    inputArchivoPdfVisita.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        visitaPdfNombre.textContent = e.target.files[0].name;
+      } else {
+        visitaPdfNombre.textContent = '';
+      }
+    });
+  }
+
   if (btnNuevaVisita && modalVisita) {
     btnNuevaVisita.addEventListener('click', () => {
       editingId = null;
@@ -1096,6 +1113,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (titleEl) titleEl.textContent = 'Añadir Nueva Visita';
       if (formVisita) formVisita.reset();
       if (visitaImgNombre) visitaImgNombre.textContent = '';
+      if (visitaPdfNombre) visitaPdfNombre.textContent = '';
       modalVisita.style.display = 'flex';
     });
 
@@ -1104,57 +1122,63 @@ document.addEventListener('DOMContentLoaded', async function () {
         modalVisita.style.display = 'none';
         if (formVisita) formVisita.reset();
         if (visitaImgNombre) visitaImgNombre.textContent = '';
+        if (visitaPdfNombre) visitaPdfNombre.textContent = '';
       });
     }
 
     if (formVisita) {
       formVisita.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('vis-titulo').value;
-      const visit_date = document.getElementById('vis-fecha').value;
-      const synopsis = document.getElementById('vis-sinopsis').value;
-      let cover_image_url = document.getElementById('vis-imagen').value;
-      const video_url = document.getElementById('vis-video').value;
-      const pdf_url = document.getElementById('vis-pdf').value;
-      const published = document.getElementById('vis-publicado').checked;
+        e.preventDefault();
+        const title = document.getElementById('vis-titulo').value;
+        const visit_date = document.getElementById('vis-fecha').value;
+        const synopsis = document.getElementById('vis-sinopsis').value;
+        let cover_image_url = document.getElementById('vis-imagen').value;
+        const video_url = document.getElementById('vis-video').value;
+        let pdf_url = document.getElementById('vis-pdf').value;
+        const published = document.getElementById('vis-publicado').checked;
 
-      const btnSubmit = formVisita.querySelector('button[type="submit"]');
-      btnSubmit.textContent = 'Guardando...';
-      btnSubmit.disabled = true;
+        const btnSubmit = formVisita.querySelector('button[type="submit"]');
+        btnSubmit.textContent = 'Guardando...';
+        btnSubmit.disabled = true;
 
-      try {
-        if (inputArchivoVisita && inputArchivoVisita.files && inputArchivoVisita.files[0]) {
-          btnSubmit.textContent = 'Subiendo imagen...';
-          cover_image_url = await uploadFileToSupabase(inputArchivoVisita.files[0]);
+        try {
+          if (inputArchivoVisita && inputArchivoVisita.files && inputArchivoVisita.files[0]) {
+            btnSubmit.textContent = 'Subiendo imagen...';
+            cover_image_url = await uploadFileToSupabase(inputArchivoVisita.files[0]);
+          }
+          if (inputArchivoPdfVisita && inputArchivoPdfVisita.files && inputArchivoPdfVisita.files[0]) {
+            btnSubmit.textContent = 'Subiendo reseña...';
+            pdf_url = await uploadFileToSupabase(inputArchivoPdfVisita.files[0]);
+          }
+        } catch (err) {
+          alert("Error subiendo el archivo: " + err.message);
+          btnSubmit.textContent = 'Guardar Visita';
+          btnSubmit.disabled = false;
+          return;
         }
-      } catch (err) {
-        alert("Error subiendo la imagen: " + err.message);
+
+        const payload = { title, visit_date, synopsis, cover_image_url, video_url, pdf_url, published };
+
+        let result;
+        if (editingId) {
+          result = await supabaseClient.from('cultural_visits').update(payload).eq('id', editingId);
+        } else {
+          result = await supabaseClient.from('cultural_visits').insert([payload]);
+        }
+
         btnSubmit.textContent = 'Guardar Visita';
         btnSubmit.disabled = false;
-        return;
-      }
 
-      const payload = { title, visit_date, synopsis, cover_image_url, video_url, pdf_url, published };
-
-      let result;
-      if (editingId) {
-        result = await supabaseClient.from('cultural_visits').update(payload).eq('id', editingId);
-      } else {
-        result = await supabaseClient.from('cultural_visits').insert([payload]);
-      }
-
-      btnSubmit.textContent = 'Guardar Visita';
-      btnSubmit.disabled = false;
-
-      if (result.error) {
-        alert('Error guardando visita: ' + result.error.message);
-      } else {
-        modalVisita.style.display = 'none';
-        formVisita.reset();
-        if (visitaImgNombre) visitaImgNombre.textContent = '';
-        loadVisitas();
-      }
-    });
+        if (result.error) {
+          alert('Error guardando visita: ' + result.error.message);
+        } else {
+          modalVisita.style.display = 'none';
+          formVisita.reset();
+          if (visitaImgNombre) visitaImgNombre.textContent = '';
+          if (visitaPdfNombre) visitaPdfNombre.textContent = '';
+          loadVisitas();
+        }
+      });
     }
   }
 
@@ -1168,8 +1192,12 @@ document.addEventListener('DOMContentLoaded', async function () {
       document.getElementById('vis-imagen').value = data.cover_image_url || '';
       if (visitaImgNombre) visitaImgNombre.textContent = '';
       if (inputArchivoVisita) inputArchivoVisita.value = '';
+      
       document.getElementById('vis-video').value = data.video_url || '';
       document.getElementById('vis-pdf').value = data.pdf_url || '';
+      if (visitaPdfNombre) visitaPdfNombre.textContent = '';
+      if (inputArchivoPdfVisita) inputArchivoPdfVisita.value = '';
+      
       document.getElementById('vis-publicado').checked = data.published;
 
       document.querySelector('#modal-visita h2').textContent = 'Editar Visita';

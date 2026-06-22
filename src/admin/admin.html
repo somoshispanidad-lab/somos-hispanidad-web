@@ -747,8 +747,13 @@
         <input type="url" id="vis-video" class="admin-form-input" placeholder="https://youtube.com/...">
       </div>
       <div class="admin-form-group">
-        <label>URL del texto PDF (Reseña) (Opcional)</label>
-        <input type="url" id="vis-pdf" class="admin-form-input" placeholder="https://.../archivo.pdf">
+        <label>Texto de la Reseña (Archivo local o enlace web) (Opcional)</label>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom: 8px;">
+          <input type="file" id="vis-archivo-pdf" accept=".pdf,.doc,.docx" style="display:none;">
+          <button id="btn-seleccionar-pdf-visita" class="admin-btn admin-btn-outline" type="button" style="padding:5px 12px; font-size:0.75rem;">📁 Subir Reseña del Ordenador</button>
+          <span id="visita-pdf-nombre" style="font-size:0.8rem; color:#555;"></span>
+        </div>
+        <input type="url" id="vis-pdf" class="admin-form-input" placeholder="O pega directamente un enlace de internet (https://...)">
       </div>
       <div class="admin-form-group" style="flex-direction:row; align-items:center;">
         <input type="checkbox" id="vis-publicado" checked style="margin-right:10px;">

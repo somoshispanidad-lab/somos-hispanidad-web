@@ -732,8 +732,13 @@
         <textarea id="vis-sinopsis" class="admin-form-input" rows="3"></textarea>
       </div>
       <div class="admin-form-group">
-        <label>URL Imagen de Portada (Opcional)</label>
-        <input type="url" id="vis-imagen" class="admin-form-input" placeholder="https://...">
+        <label>Imagen de Portada (Archivo local o enlace web) (Opcional)</label>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom: 8px;">
+          <input type="file" id="vis-archivo-imagen" accept=".png,.jpg,.jpeg,.webp" style="display:none;">
+          <button id="btn-seleccionar-img-visita" class="admin-btn admin-btn-outline" type="button" style="padding:5px 12px; font-size:0.75rem;">📁 Subir Foto del Ordenador</button>
+          <span id="visita-img-nombre" style="font-size:0.8rem; color:#555;"></span>
+        </div>
+        <input type="url" id="vis-imagen" class="admin-form-input" placeholder="O pega directamente un enlace de internet (https://...)">
       </div>
       <div class="admin-form-group">
         <label>URL del Vídeo (Opcional)</label>

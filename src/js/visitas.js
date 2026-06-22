@@ -58,14 +58,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Mostrar botón sólo si supuestamente quedan más (es decir, devolvió el límite máximo de esta tirada)
         if (data.length === VISITAS_LIMIT && paginationDiv) {
           paginationDiv.style.display = 'block';
+          if (btnLoadMore) btnLoadMore.textContent = 'Ver visitas más antiguas';
         } else if (paginationDiv) {
-          paginationDiv.style.display = 'none'; // No quedan más
+          paginationDiv.style.display = 'block';
+          if (btnLoadMore) {
+            btnLoadMore.textContent = 'Has llegado al final del historial';
+            btnLoadMore.disabled = true;
+            btnLoadMore.style.opacity = '0.6';
+            btnLoadMore.style.cursor = 'default';
+          }
         }
       } else {
-        if (paginationDiv) paginationDiv.style.display = 'none';
+        if (paginationDiv) {
+          paginationDiv.style.display = 'block';
+          if (btnLoadMore) {
+            btnLoadMore.textContent = 'Has llegado al final del historial';
+            btnLoadMore.disabled = true;
+            btnLoadMore.style.opacity = '0.6';
+            btnLoadMore.style.cursor = 'default';
+          }
+        }
       }
-
-      if (btnLoadMore) btnLoadMore.textContent = 'Ver visitas más antiguas';
     } catch (err) {
       console.error("Error cargando visitas dinámicas:", err);
       if (btnLoadMore) btnLoadMore.textContent = 'Error al cargar';

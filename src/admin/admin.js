@@ -320,7 +320,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     mensajes: 'Mensajes Recibidos',
     marketing: 'Marketing & Comunicaciones',
     estadisticas: 'Estadísticas Web (Vercel)',
-    ajustes: 'Configuración General'
+    ajustes: 'Configuración General',
+    manual: 'Manual de Uso del Panel'
   };
 
   navLinks.forEach(function (link) {
@@ -1071,18 +1072,36 @@ document.addEventListener('DOMContentLoaded', async function () {
   const modalVisita = document.getElementById('modal-visita');
   const btnCerrarModalVisita = document.getElementById('btn-cerrar-modal-visita');
   const formVisita = document.getElementById('form-nueva-visita');
+  const inputArchivoVisita = document.getElementById('vis-archivo-imagen');
+  const btnSeleccionarImgVisita = document.getElementById('btn-seleccionar-img-visita');
+  const visitaImgNombre = document.getElementById('visita-img-nombre');
+
+  if (btnSeleccionarImgVisita && inputArchivoVisita) {
+    btnSeleccionarImgVisita.addEventListener('click', () => {
+      inputArchivoVisita.click();
+    });
+    inputArchivoVisita.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        visitaImgNombre.textContent = e.target.files[0].name;
+      } else {
+        visitaImgNombre.textContent = '';
+      }
+    });
+  }
 
   if (btnNuevaVisita && modalVisita) {
     btnNuevaVisita.addEventListener('click', () => {
       editingId = null;
       document.querySelector('#modal-visita h2').textContent = 'Añadir Nueva Visita';
       formVisita.reset();
+      if (visitaImgNombre) visitaImgNombre.textContent = '';
       modalVisita.style.display = 'flex';
     });
 
     btnCerrarModalVisita.addEventListener('click', () => {
       modalVisita.style.display = 'none';
       formVisita.reset();
+      if (visitaImgNombre) visitaImgNombre.textContent = '';
     });
 
     formVisita.addEventListener('submit', async (e) => {
@@ -1090,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const title = document.getElementById('vis-titulo').value;
       const visit_date = document.getElementById('vis-fecha').value;
       const synopsis = document.getElementById('vis-sinopsis').value;
-      const cover_image_url = document.getElementById('vis-imagen').value;
+      let cover_image_url = document.getElementById('vis-imagen').value;
       const video_url = document.getElementById('vis-video').value;
       const pdf_url = document.getElementById('vis-pdf').value;
       const published = document.getElementById('vis-publicado').checked;
@@ -1098,6 +1117,18 @@ document.addEventListener('DOMContentLoaded', async function () {
       const btnSubmit = formVisita.querySelector('button[type="submit"]');
       btnSubmit.textContent = 'Guardando...';
       btnSubmit.disabled = true;
+
+      try {
+        if (inputArchivoVisita && inputArchivoVisita.files && inputArchivoVisita.files[0]) {
+          btnSubmit.textContent = 'Subiendo imagen...';
+          cover_image_url = await uploadFileToSupabase(inputArchivoVisita.files[0]);
+        }
+      } catch (err) {
+        alert("Error subiendo la imagen: " + err.message);
+        btnSubmit.textContent = 'Guardar Visita';
+        btnSubmit.disabled = false;
+        return;
+      }
 
       const payload = { title, visit_date, synopsis, cover_image_url, video_url, pdf_url, published };
 
@@ -1116,6 +1147,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       } else {
         modalVisita.style.display = 'none';
         formVisita.reset();
+        if (visitaImgNombre) visitaImgNombre.textContent = '';
         loadVisitas();
       }
     });
@@ -1129,6 +1161,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       document.getElementById('vis-fecha').value = data.visit_date ? data.visit_date.substring(0,10) : '';
       document.getElementById('vis-sinopsis').value = data.synopsis || '';
       document.getElementById('vis-imagen').value = data.cover_image_url || '';
+      if (visitaImgNombre) visitaImgNombre.textContent = '';
+      if (inputArchivoVisita) inputArchivoVisita.value = '';
       document.getElementById('vis-video').value = data.video_url || '';
       document.getElementById('vis-pdf').value = data.pdf_url || '';
       document.getElementById('vis-publicado').checked = data.published;

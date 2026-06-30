@@ -53,6 +53,7 @@ async function getEventos() {
           dia: String(d.getDate()).padStart(2, '0'),
           mes: meses[d.getMonth()],
           anio: String(d.getFullYear()),
+          hora: String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'),
           lugar: ev.location || '',
           tipo: ev.event_type || 'Evento',
           descripcion: ev.description || '',

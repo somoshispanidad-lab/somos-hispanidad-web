@@ -21,7 +21,7 @@ const EVENTOS_SIMULADOS = [
     dia: "20",
     mes: "Jun",
     anio: "2026",
-    hora: "10:00",
+    hora: "18:00",
     lugar: "Real Monasterio de San Lorenzo de El Escorial, Madrid",
     tipo: "Visita Cultural",
     descripcion: "Una jornada especial en uno de los monumentos más emblemáticos del imperio español. Incluye visita guiada y comida de hermandad con los socios.",
@@ -69,7 +69,7 @@ async function renderizarEventos(contenedorId, limite = 0) {
       <div class="evento-date">
         <div class="evento-day">${ev.dia}</div>
         <div class="evento-month">${ev.mes} · ${ev.anio}</div>
-        <div class="evento-time" style="font-size:0.8rem; margin-top:5px; color:var(--gold); font-family:'Lato', sans-serif;">${ev.hora || '10:00'} h</div>
+        <div class="evento-time" style="font-size:0.8rem; margin-top:5px; color:var(--gold); font-family:'Lato', sans-serif;">${ev.hora || '18:00'} h</div>
       </div>
       <div class="evento-info">
         <p class="evento-tipo">${ev.tipo}</p>

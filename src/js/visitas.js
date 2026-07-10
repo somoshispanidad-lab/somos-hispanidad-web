@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (error) throw error;
 
       if (data && data.length > 0) {
+        // Aseguramos el orden cronológico inverso por si Supabase devuelve strings mal ordenados
+        data.sort((a, b) => new Date(b.visit_date) - new Date(a.visit_date));
+        
         const html = data.map(v => {
           let buttonsHtml = '';
           if (v.pdf_url) {
@@ -31,9 +34,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             buttonsHtml += `<div style="margin-top: 20px;"><a href="${v.video_url}" target="_blank" class="btn-primary" style="font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Ver Vídeo del Acto →</a></div>`;
           }
 
-          const imgTag = v.cover_image_url 
-            ? `<img src="${v.cover_image_url}" alt="${v.title}" class="acto-image">`
-            : `<img src="assets/images/escorial.jpg" alt="${v.title}" class="acto-image">`;
+          const fallbackUrl = 'assets/images/escorial.jpg';
+          const imgUrl = v.cover_image_url || fallbackUrl;
+          
+          const imgTag = `
+            <img src="${imgUrl}" alt="${v.title}" class="acto-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <img src="${fallbackUrl}" alt="${v.title}" class="acto-image" style="display:none;" loading="lazy">
+          `;
 
           return `
             <div class="reveal" style="margin-top: 40px; opacity: 1; transform: none;">

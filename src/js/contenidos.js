@@ -139,8 +139,8 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
     return `
     <article class="post-card reveal" id="${c.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
       ${imgSrc
-        ? `<img src="${imgSrc}" alt="${c.titulo}" class="post-thumb" loading="lazy"
-            onerror="this.outerHTML='<div class=\\'post-thumb-placeholder\\'>${placeholderText}</div>'">`
+        ? `<img src="${imgSrc}" alt="${c.titulo}" class="post-thumb" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <div class="post-thumb-placeholder" style="display:none;">${placeholderText}</div>`
         : placeholderHtml
       }
       <div class="post-body">
@@ -170,8 +170,9 @@ async function renderizarAutores(contenedorId) {
     <div class="post-card reveal">
       <div class="post-thumb-placeholder" style="aspect-ratio:1/1;">
         ${a.imagen
-          ? `<img src="${a.imagen}" alt="${a.nombre}" style="width:100%;height:100%;object-fit:cover;">`
-          : '<span style="font-size:2rem;">👤</span>'
+          ? `<img src="${a.imagen}" alt="${a.nombre}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <span style="font-size:2rem; display:none; align-items:center; justify-content:center; width:100%; height:100%;">👤</span>`
+          : '<span style="font-size:2rem; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">👤</span>'
         }
       </div>
       <div class="post-body">

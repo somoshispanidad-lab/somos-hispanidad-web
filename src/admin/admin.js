@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     mensajes: 'Mensajes Recibidos',
     marketing: 'Marketing & Comunicaciones',
     estadisticas: 'Estadísticas Web (Vercel)',
-    ajustes: 'Configuración General',
+    ajustes: 'De interés',
     manual: 'Manual de Uso del Panel'
   };
 

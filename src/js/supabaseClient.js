@@ -91,7 +91,19 @@ async function getContenidos() {
     if (error) throw error;
 
     if (data && data.length > 0) {
-      return data.map(c => ({
+      return data.map(c => {
+        // Auto-generar miniatura de YouTube si no hay image_url
+        let imageUrl = c.image_url || null;
+        if (!imageUrl && c.youtube_url) {
+          const ytMatch = c.youtube_url.match(
+            /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/
+          );
+          if (ytMatch) {
+            imageUrl = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+          }
+        }
+
+        return {
         id: c.id,
         tipo: c.content_type === 'escrito' || c.content_type === 'Escrito' ? 'Escrito'
             : c.content_type === 'acta' || c.content_type === 'Acta' ? 'Acta'
@@ -105,12 +117,13 @@ async function getContenidos() {
           ? new Date(c.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
           : '',
         created_at: c.created_at || null,
-        imagen: c.image_url || null,
-        imagen_texto: c.image_url ? null : (c.content_type || 'CONTENIDO').toUpperCase(),
+        imagen: imageUrl,
+        imagen_texto: imageUrl ? null : (c.content_type || 'CONTENIDO').toUpperCase(),
         descripcion: c.summary || '',
         url: c.youtube_url || '#',
         etiquetas: c.tags || []
-      }));
+      };
+      });
     }
 
     console.info('ℹ Tabla "contents" vacía → datos simulados');

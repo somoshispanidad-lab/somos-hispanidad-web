@@ -121,11 +121,27 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
     return;
   }
 
-  contenedor.innerHTML = lista.map(c => `
+  contenedor.innerHTML = lista.map(c => {
+    // Auto-generar miniatura de YouTube si no hay imagen pero hay URL de YouTube
+    let imgSrc = c.imagen;
+    if (!imgSrc && c.url) {
+      const ytMatch = c.url.match(
+        /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/
+      );
+      if (ytMatch) {
+        imgSrc = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+      }
+    }
+
+    const placeholderText = c.imagen_texto || c.tipo.toUpperCase();
+    const placeholderHtml = `<div class="post-thumb-placeholder">${placeholderText}</div>`;
+
+    return `
     <article class="post-card reveal" id="${c.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
-      ${c.imagen
-        ? `<img src="${c.imagen}" alt="${c.titulo}" class="post-thumb" loading="lazy">`
-        : `<div class="post-thumb-placeholder">${c.imagen_texto || c.tipo.toUpperCase()}</div>`
+      ${imgSrc
+        ? `<img src="${imgSrc}" alt="${c.titulo}" class="post-thumb" loading="lazy"
+            onerror="this.outerHTML='<div class=\\'post-thumb-placeholder\\'>${placeholderText}</div>'">`
+        : placeholderHtml
       }
       <div class="post-body">
         <p class="post-meta">${c.fecha} · ${c.tipo} · ${c.autor}</p>
@@ -137,7 +153,7 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
         </a>` : ''}
       </div>
     </article>
-  `).join('');
+  `}).join('');
 
   activarReveal();
 }

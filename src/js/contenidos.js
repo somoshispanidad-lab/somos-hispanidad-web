@@ -140,7 +140,7 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
     <article class="post-card reveal" id="${c.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
       ${imgSrc
         ? `<img src="${imgSrc}" alt="${c.titulo}" class="post-thumb" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-           <div class="post-thumb-placeholder" style="display:none;">${placeholderText}</div>`
+           <div class="post-thumb-placeholder" style="display:none; min-height:180px;">${placeholderText}</div>`
         : placeholderHtml
       }
       <div class="post-body">

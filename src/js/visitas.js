@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           
           const imgTag = `
             <img src="${imgUrl}" alt="${v.title}" class="acto-image" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <img src="${fallbackUrl}" alt="${v.title}" class="acto-image" style="display:none;" loading="lazy">
+            <img src="${fallbackUrl}" alt="${v.title}" class="acto-image" style="display:none;" loading="lazy" onerror="this.outerHTML='<div style=&quot;width:100%;min-height:200px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-family:Lato,sans-serif;font-size:0.85rem;&quot;>Imagen no disponible</div>'">
           `;
 
           return `

@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (i === fotosEscorial.length - 1) {
         container.innerHTML += `
           <div class="video-slide" data-duration="7000">
-            <img src="${url}" alt="Contraportada">
+            <img src="${url}" alt="Contraportada" onerror="this.closest('.video-slide').style.display='none'">
             <div class="video-slide-caption">
               Próxima visita el 29 de septiembre:<br>Museo del ejército de Hoyo de Manzanares<br>
               <a href="#actos-culturales" class="btn-primary video-close-link" style="margin-top: 20px; display: inline-flex; font-size: 0.9rem; text-decoration: none; padding: 12px 24px; pointer-events: auto; align-items: center; justify-content: center; font-family: 'Lato', sans-serif;">Volver a visitas culturales →</a>
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       } else {
         container.innerHTML += `
           <div class="video-slide" data-duration="7000">
-            <img src="${url}" alt="Foto ${i+1}">
+            <img src="${url}" alt="Foto ${i+1}" onerror="this.closest('.video-slide').style.display='none'">
           </div>
         `;
       }

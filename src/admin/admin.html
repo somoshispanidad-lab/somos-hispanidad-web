@@ -932,13 +932,14 @@
   </div>
 </div>
 
-<script src="admin.js?v=5"></script>
+<script src="admin.js?v=6.0.1"></script>
 <script>
   if ('serviceWorker' in navigator && !window.location.search.includes('force_logout=true')) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')
         .then(registration => {
           console.log('SW registrado con éxito:', registration.scope);
+          registration.update();
         })
         .catch(error => {
           console.log('Fallo al registrar SW:', error);

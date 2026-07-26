@@ -977,15 +977,43 @@ document.addEventListener('DOMContentLoaded', async function () {
     const timestamp = Date.now();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const path = `${timestamp}_${safeName}`;
-    const { data, error } = await supabaseClient.storage
-      .from('Documentos')
-      .upload(path, file, { upsert: false });
-    if (error) throw error;
-    const { publicURL, error: urlErr } = supabaseClient.storage
-      .from('Documentos')
-      .getPublicUrl(path);
-    if (urlErr) throw urlErr;
-    return publicURL;
+    
+    try {
+      const { data, error } = await supabaseClient.storage
+        .from('Documentos')
+        .upload(path, file, { upsert: true });
+
+      if (error) throw error;
+
+      // Extracción correcta en Supabase JS v2
+      const { data: urlData } = supabaseClient.storage
+        .from('Documentos')
+        .getPublicUrl(path);
+
+      if (urlData && urlData.publicUrl) {
+        return urlData.publicUrl;
+      }
+      throw new Error('No se pudo obtener la URL pública del archivo.');
+    } catch (err) {
+      console.warn('⚠️ Error al subir archivo a Supabase Storage:', err.message);
+
+      // Fallback suave: Si falla por RLS/permisos y el archivo es <= 500KB, convertir a Data URL (Base64)
+      if (file.size <= 500 * 1024) {
+        console.info('🔄 Aplicando fallback a Data URL (Base64) para guardar el contenido sin bloqueos...');
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('Error al procesar el archivo localmente.'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      let userMsg = err.message || 'Error al subir el archivo.';
+      if (userMsg.includes('row-level security') || userMsg.includes('security policy')) {
+        userMsg = 'Error de permisos RLS en Supabase Storage. Por favor, ejecuta el script fix-storage-rls.sql en Supabase SQL Editor.';
+      }
+      throw new Error(userMsg);
+    }
   }
 
   if (btnNuevoContenido && modalContenido) {

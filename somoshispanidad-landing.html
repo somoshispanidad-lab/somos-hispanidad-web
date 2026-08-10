@@ -1654,21 +1654,8 @@
         <div class="ornament-line"></div>
       </div>
     </div>
-    <div class="eventos-layout" style="margin-top: 60px;">
-      <div>
-        <div class="evento-card reveal">
-          <div class="evento-date">
-            <div class="evento-day">20</div>
-            <div class="evento-month">Jun · 2026</div>
-            <div class="evento-time" style="font-size:0.8rem; margin-top:5px; color:var(--gold); font-family:'Lato', sans-serif;">18:00 h</div>
-          </div>
-          <div class="evento-info">
-            <h3 class="evento-title">Visita guiada al Monasterio del Escorial con comida de hermandad</h3>
-            <p class="evento-loc">📍 Real Monasterio de San Lorenzo de El Escorial</p>
-            <a href="https://www.somoshispanidad.es/detalles-y-registro/visita-guiada-al-monasterio-del-escorial-con-comida-de-hermandad" target="_blank" class="btn-primary" style="font-size: 0.7rem; padding: 10px 22px;">Reservar plaza</a>
-          </div>
-        </div>
-      </div>
+    <div id="landing-eventos-list" class="eventos-layout" style="margin-top: 60px;">
+      <!-- Eventos cargados dinámicamente desde Supabase con sus folletos PDF -->
     </div>
   </div>
 </section>
@@ -1960,6 +1947,14 @@
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="src/js/supabaseClient.js"></script>
+<script src="src/js/eventos.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof renderizarEventos === 'function') {
+      renderizarEventos('landing-eventos-list');
+    }
+  });
+</script>
 
 <!-- EmailJS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>

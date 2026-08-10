@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS events (
   location TEXT,
   event_type TEXT DEFAULT 'Evento',
   image_url TEXT,
+  pdf_url TEXT,
+  pdf_visible BOOLEAN DEFAULT true,
   registration_open BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -101,6 +103,12 @@ BEGIN
     -- Eventos
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='events' AND column_name='published') THEN
         ALTER TABLE events ADD COLUMN published BOOLEAN DEFAULT true;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='events' AND column_name='pdf_url') THEN
+        ALTER TABLE events ADD COLUMN pdf_url TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='events' AND column_name='pdf_visible') THEN
+        ALTER TABLE events ADD COLUMN pdf_visible BOOLEAN DEFAULT true;
     END IF;
 END $$;
 

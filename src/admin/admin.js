@@ -635,10 +635,11 @@ document.addEventListener('DOMContentLoaded', async function () {
       const d = new Date(ev.event_date).toLocaleDateString('es-ES');
       const badgeReg = ev.registration_open ? '<span class="admin-badge green">Abierto</span>' : '<span class="admin-badge yellow">Cerrado</span>';
       const badgePub = ev.published ? '<span class="admin-badge green">Visible</span>' : '<span class="admin-badge red" style="background:#fee2e2; color:#b91c1c;">Oculto</span>';
+      const badgePdf = ev.pdf_url ? (ev.pdf_visible !== false ? '<span class="admin-badge green" style="background:#e0e7ff; color:#3730a3;" title="Folleto PDF disponible">📄 Folleto PDF</span>' : '<span class="admin-badge yellow" style="background:#fef3c7; color:#92400e;" title="Folleto PDF oculto">📄 Folleto (Oculto)</span>') : '';
       const evTitleEsc = (ev.title || '').replace(/'/g, "\\'");
       return `<tr>
         <td data-label="Fecha">${d}</td>
-        <td data-label="Título">${ev.title}</td>
+        <td data-label="Título">${ev.title} ${badgePdf}</td>
         <td data-label="Tipo">${ev.event_type}</td>
         <td data-label="Lugar">${ev.location}</td>
         <td data-label="Estado">${badgePub} ${badgeReg}</td>
@@ -912,6 +913,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('ev-lugar').value = data.location || '';
         document.getElementById('ev-tipo').value = data.event_type;
         document.getElementById('ev-imagen').value = data.image_url || '';
+        document.getElementById('ev-pdf-url').value = data.pdf_url || '';
+        const evPdfName = document.getElementById('ev-pdf-nombre');
+        if (evPdfName) evPdfName.textContent = data.pdf_url ? '📄 PDF cargado' : '';
+        document.getElementById('ev-pdf-visible').checked = data.pdf_visible !== false;
         document.getElementById('ev-descripcion').value = data.description || '';
         document.getElementById('ev-registro').checked = data.registration_open;
         document.getElementById('ev-publicado').checked = data.published;
@@ -973,10 +978,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   });
 
-  async function uploadFileToSupabase(file) {
+  async function uploadFileToSupabase(file, folder = '') {
     const timestamp = Date.now();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const path = `${timestamp}_${safeName}`;
+    const path = folder ? `${folder}/${timestamp}_${safeName}` : `${timestamp}_${safeName}`;
     
     try {
       const { data, error } = await supabaseClient.storage
@@ -1242,16 +1247,51 @@ document.addEventListener('DOMContentLoaded', async function () {
   const formEvento = document.getElementById('form-nuevo-evento');
 
   if (btnNuevoEvento && modalEvento) {
+    // File upload for event PDF brochure
+    const evPdfInput = document.getElementById('ev-pdf-archivo');
+    const btnSelectEvPdf = document.getElementById('btn-seleccionar-pdf-evento');
+    const evPdfNameSpan = document.getElementById('ev-pdf-nombre');
+
+    btnSelectEvPdf?.addEventListener('click', () => evPdfInput?.click());
+
+    evPdfInput?.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (btnSelectEvPdf) {
+        btnSelectEvPdf.textContent = '⏳ Subiendo folleto...';
+        btnSelectEvPdf.disabled = true;
+      }
+      if (evPdfNameSpan) evPdfNameSpan.textContent = file.name;
+
+      try {
+        const publicUrl = await uploadFileToSupabase(file, 'folletos');
+        const evPdfUrlInput = document.getElementById('ev-pdf-url');
+        if (evPdfUrlInput) evPdfUrlInput.value = publicUrl;
+        if (evPdfNameSpan) evPdfNameSpan.textContent = `✅ ${file.name}`;
+      } catch (err) {
+        alert('Error al subir el folleto: ' + err.message);
+        if (evPdfNameSpan) evPdfNameSpan.textContent = '❌ Error de subida';
+      } finally {
+        if (btnSelectEvPdf) {
+          btnSelectEvPdf.textContent = '📁 Subir PDF al Bucket (folletos)';
+          btnSelectEvPdf.disabled = false;
+        }
+      }
+    });
+
     btnNuevoEvento.addEventListener('click', () => {
       editingId = null; // Modo creación
       document.querySelector('#modal-evento h2').textContent = 'Añadir Nuevo Evento';
       formEvento.reset();
+      if (evPdfNameSpan) evPdfNameSpan.textContent = '';
       modalEvento.style.display = 'flex';
     });
 
     btnCerrarModalEvento.addEventListener('click', () => {
       modalEvento.style.display = 'none';
       formEvento.reset();
+      if (evPdfNameSpan) evPdfNameSpan.textContent = '';
     });
 
     formEvento.addEventListener('submit', async (e) => {
@@ -1262,6 +1302,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       const location = document.getElementById('ev-lugar').value;
       const event_type = document.getElementById('ev-tipo').value;
       const image_url = document.getElementById('ev-imagen').value;
+      const pdf_url = document.getElementById('ev-pdf-url').value || null;
+      const pdf_visible = document.getElementById('ev-pdf-visible').checked;
       const description = document.getElementById('ev-descripcion').value;
       const registration_open = document.getElementById('ev-registro').checked;
       const published = document.getElementById('ev-publicado').checked;
@@ -1271,7 +1313,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       btnSubmit.disabled = true;
 
       const payload = {
-        title, event_date, location, event_type, image_url, description, registration_open, published
+        title, event_date, location, event_type, image_url, pdf_url, pdf_visible, description, registration_open, published
       };
 
       let result;
@@ -1291,6 +1333,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       } else {
         modalEvento.style.display = 'none';
         formEvento.reset();
+        if (evPdfNameSpan) evPdfNameSpan.textContent = '';
         loadEvents(); // Recargar la tabla
       }
     });

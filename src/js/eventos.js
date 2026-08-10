@@ -76,18 +76,29 @@ async function renderizarEventos(contenedorId, limite = 0) {
         <h3 class="evento-title">${ev.titulo}</h3>
         <p class="evento-loc">📍 ${ev.lugar}</p>
         <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--ink-soft); margin-bottom:16px; line-height:1.7;">${ev.descripcion}</p>
-        ${ev.estado === 'abierto' ? `
-          <a href="${limite > 0 ? 'src/pages/eventos.html#inscripcion?id=' + ev.id : '#inscripcion'}" 
-             class="btn-primary btn-inscribirse" 
-             data-id="${ev.id}" 
-             style="font-size:0.7rem; padding:10px 22px;">
-            Inscribirse
-          </a>
-        ` : `
-          <span class="btn-outline" style="font-size:0.7rem; padding:10px 22px; cursor:not-allowed; opacity:0.6; display:inline-block;">
-            Inscripción Cerrada
-          </span>
-        `}
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;">
+          ${ev.estado === 'abierto' ? `
+            <a href="${limite > 0 ? 'src/pages/eventos.html#inscripcion?id=' + ev.id : '#inscripcion'}" 
+               class="btn-primary btn-inscribirse" 
+               data-id="${ev.id}" 
+               style="font-size:0.7rem; padding:10px 22px;">
+              Inscribirse
+            </a>
+          ` : `
+            <span class="btn-outline" style="font-size:0.7rem; padding:10px 22px; cursor:not-allowed; opacity:0.6; display:inline-block;">
+              Inscripción Cerrada
+            </span>
+          `}
+          ${(ev.pdf_url && ev.pdf_visible !== false) ? `
+            <a href="${ev.pdf_url}" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="btn-outline" 
+               style="font-size:0.7rem; padding:10px 22px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+              📄 Ver Folleto (PDF)
+            </a>
+          ` : ''}
+        </div>
       </div>
     </div>
   `).join('');

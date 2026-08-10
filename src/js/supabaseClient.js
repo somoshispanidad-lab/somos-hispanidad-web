@@ -59,7 +59,9 @@ async function getEventos() {
           descripcion: ev.description || '',
           url_inscripcion: ev.registration_open ? '#inscripcion' : '#contacto',
           estado: ev.registration_open ? 'abierto' : 'proximo',
-          image_url: ev.image_url
+          image_url: ev.image_url,
+          pdf_url: ev.pdf_url || null,
+          pdf_visible: ev.pdf_visible !== false
         };
       });
     }

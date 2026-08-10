@@ -583,6 +583,7 @@
         <ul style="margin-left: 20px; margin-bottom: 20px;">
           <li>Ve a <strong>"Eventos"</strong> y dale a <strong>"+ Nuevo Evento"</strong>.</li>
           <li><strong>Ejemplo:</strong> Título <em>"Conferencia en el Ateneo"</em>. Fecha: <em>El mes que viene</em>. Lugar: <em>Ateneo de Madrid</em>.</li>
+          <li><strong>Folletos PDF:</strong> Puedes adjuntar el programa o folleto en PDF pulsando <strong>"Subir PDF al Bucket (folletos)"</strong> (se guardará en la carpeta <code>folletos/</code> del bucket <code>Documentos</code>) o pegando un enlace directo. Marca o desmarca <strong>"Mostrar botón de Folleto (PDF) en la web"</strong> para hacer visible u ocultar este botón según convenga.</li>
           <li>Si dejas marcada la casilla <strong>"Permitir inscripciones"</strong>, la gente verá un formulario en la web para apuntarse con su email para ir. Cuando se llene el aforo, editas el evento, desmarcas esa casilla y la puerta quedará cerrada.</li>
         </ul>
 
@@ -699,6 +700,19 @@
       <div class="admin-form-group">
         <label>Descripción</label>
         <textarea id="ev-descripcion" class="admin-form-input" rows="3"></textarea>
+      </div>
+      <div class="admin-form-group">
+        <label>Folleto (PDF) del Evento (Bucket Supabase: Documentos/folletos)</label>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+          <input type="file" id="ev-pdf-archivo" accept=".pdf" style="display:none;">
+          <button id="btn-seleccionar-pdf-evento" class="admin-btn admin-btn-outline" type="button" style="padding:5px 12px; font-size:0.75rem;">📁 Subir PDF al Bucket (folletos)</button>
+          <span id="ev-pdf-nombre" style="font-size:0.8rem; color:#555;"></span>
+        </div>
+        <input type="url" id="ev-pdf-url" class="admin-form-input" placeholder="O pega la URL directa del PDF (https://...)">
+      </div>
+      <div class="admin-form-group" style="flex-direction:row; align-items:center;">
+        <input type="checkbox" id="ev-pdf-visible" checked style="margin-right:10px;">
+        <label for="ev-pdf-visible" style="margin:0; font-weight: 600; color:#1e3a8a;">📄 Mostrar botón de Folleto (PDF) en la web</label>
       </div>
       <div class="admin-form-group" style="flex-direction:row; align-items:center;">
         <input type="checkbox" id="ev-registro" checked style="margin-right:10px;">

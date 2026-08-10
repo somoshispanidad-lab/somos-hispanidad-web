@@ -110,6 +110,7 @@ async function getContenidos() {
         tipo: c.content_type === 'escrito' || c.content_type === 'Escrito' ? 'Escrito'
             : c.content_type === 'acta' || c.content_type === 'Acta' ? 'Acta'
             : c.content_type === 'barometro' || c.content_type === 'Barómetro' ? 'Barómetro'
+            : c.content_type === 'folleto' || c.content_type === 'Folleto' ? 'Folleto'
             : c.content_type === 'vídeo' || c.content_type === 'Vídeo' ? 'Vídeo'
             : c.content_type === 'conferencia' || c.content_type === 'Conferencia' ? 'Conferencia'
             : c.content_type,

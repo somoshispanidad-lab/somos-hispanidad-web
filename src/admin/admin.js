@@ -966,7 +966,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     btnSelectFile.textContent = 'Subiendo…';
     btnSelectFile.disabled = true;
     try {
-      const publicUrl = await uploadFileToSupabase(file);
+      const tipoContenido = document.getElementById('cont-tipo')?.value;
+      const targetFolder = (tipoContenido === 'Folleto' || file.name.toLowerCase().endsWith('.pdf')) ? 'folletos' : 'Escritos';
+      const publicUrl = await uploadFileToSupabase(file, targetFolder);
       // Fill the URL field automatically
       document.getElementById('cont-url').value = publicUrl;
     } catch (err) {

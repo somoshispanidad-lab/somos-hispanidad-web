@@ -354,6 +354,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   let listLecturas = [];
   let listPaginas = [];
   let listDivulgadores = [];
+  let listResenas = [];
 
   function renderAdminLinkList(containerId, list, type) {
     const container = document.getElementById(containerId);
@@ -468,6 +469,63 @@ document.addEventListener('DOMContentLoaded', async function () {
     await autoSaveSetting('divulgadores', listDivulgadores, 'save-status-divulgadores');
   });
 
+  // Subida de PDF para Reseña de Lecturas
+  const btnSelectResenaPdf = document.getElementById('btn-seleccionar-pdf-resena');
+  const fileInputResenaPdf = document.getElementById('add-resena-archivo');
+  const spanResenaPdfNombre = document.getElementById('resena-pdf-nombre');
+  const inputResenaUrl = document.getElementById('add-resena-url');
+
+  btnSelectResenaPdf?.addEventListener('click', () => fileInputResenaPdf?.click());
+  fileInputResenaPdf?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 20 * 1024 * 1024) { // 20MB max para PDF reseña
+      alert('El archivo PDF supera el límite de 20 MB.');
+      return;
+    }
+    if (spanResenaPdfNombre) spanResenaPdfNombre.textContent = file.name;
+    if (btnSelectResenaPdf) {
+      btnSelectResenaPdf.textContent = '⏳ Subiendo PDF...';
+      btnSelectResenaPdf.disabled = true;
+    }
+    try {
+      const publicUrl = await uploadFileToSupabase(file, 'folletos');
+      if (inputResenaUrl) inputResenaUrl.value = publicUrl;
+      if (spanResenaPdfNombre) spanResenaPdfNombre.textContent = `✅ ${file.name}`;
+    } catch (err) {
+      console.error(err);
+      alert('Error al subir el PDF de la reseña: ' + err.message);
+      if (spanResenaPdfNombre) spanResenaPdfNombre.textContent = '❌ Error de subida';
+    } finally {
+      if (btnSelectResenaPdf) {
+        btnSelectResenaPdf.textContent = '📄 Subir PDF al Bucket (folletos)';
+        btnSelectResenaPdf.disabled = false;
+      }
+    }
+  });
+
+  // Listener Añadir Reseña de Lectura
+  document.getElementById('btn-add-resena')?.addEventListener('click', async () => {
+    const titleInput = document.getElementById('add-resena-title');
+    const title = titleInput.value.trim();
+    let url = inputResenaUrl?.value.trim() || '';
+    if (!title || !url) return alert('Por favor, introduce el título/autor y la URL del PDF.');
+    if (!url.startsWith('http') && !url.startsWith('data:')) {
+      if (url.startsWith('www.')) {
+        url = 'https://' + url;
+      } else {
+        return alert('La URL debe empezar por http://, https:// o ser un PDF subido.');
+      }
+    }
+    listResenas.push({ title, url });
+    titleInput.value = '';
+    if (inputResenaUrl) inputResenaUrl.value = '';
+    if (spanResenaPdfNombre) spanResenaPdfNombre.textContent = '';
+    if (fileInputResenaPdf) fileInputResenaPdf.value = '';
+    renderAdminLinkList('admin-list-resenas', listResenas, 'resenas');
+    await autoSaveSetting('resenas_lecturas', listResenas, 'save-status-resenas');
+  });
+
   // Event Delegation para Borrar enlaces
   document.addEventListener('click', async (e) => {
     if (e.target.classList.contains('delete-link-btn')) {
@@ -486,6 +544,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         listDivulgadores.splice(index, 1);
         renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
         await autoSaveSetting('divulgadores', listDivulgadores, 'save-status-divulgadores');
+      } else if (type === 'resenas') {
+        listResenas.splice(index, 1);
+        renderAdminLinkList('admin-list-resenas', listResenas, 'resenas');
+        await autoSaveSetting('resenas_lecturas', listResenas, 'save-status-resenas');
       }
     }
   });
@@ -504,6 +566,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   setupEnterKey('add-lectura-title', 'add-lectura-url', 'btn-add-lectura');
   setupEnterKey('add-pagina-title', 'add-pagina-url', 'btn-add-pagina');
   setupEnterKey('add-divulgador-title', 'add-divulgador-url', 'btn-add-divulgador');
+  setupEnterKey('add-resena-title', 'add-resena-url', 'btn-add-resena');
 
   const btnGuardarAjustes = document.getElementById('btn-guardar-ajustes');
   if (btnGuardarAjustes) {
@@ -517,12 +580,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         const ok1 = await saveSetting('lecturas_recomendadas', JSON.stringify(listLecturas));
         const ok2 = await saveSetting('paginas_amigas', JSON.stringify(listPaginas));
         const ok3 = await saveSetting('divulgadores', JSON.stringify(listDivulgadores));
+        const ok4 = await saveSetting('resenas_lecturas', JSON.stringify(listResenas));
         
         btnGuardarAjustes.textContent = '💾 Guardar todos los ajustes';
         btnGuardarAjustes.disabled = false;
         
         msgEl.style.display = 'block';
-        if (ok1 && ok2 && ok3) {
+        if (ok1 && ok2 && ok3 && ok4) {
           msgEl.style.background = '#e8f5e9';
           msgEl.style.color = '#2e7d32';
           msgEl.textContent = '✦ Ajustes guardados correctamente y aplicados en toda la web.';
@@ -766,10 +830,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     listPaginas = parseLinks(settingsMap['paginas_amigas'], 'Protocolo de Santa Pola', 'https://protocolodesantapola.es/');
     // Migrar o cargar divulgadores
     listDivulgadores = parseLinks(settingsMap['divulgadores'], 'Somos Hispanidad Torrelodones', settingsMap['divulgadores_url'] || 'https://www.youtube.com/@SomosHispanidadTorrelodones');
+    // Migrar o cargar reseñas de lecturas
+    listResenas = parseLinks(settingsMap['resenas_lecturas'], '', '');
     
     renderAdminLinkList('admin-list-lecturas', listLecturas, 'lecturas');
     renderAdminLinkList('admin-list-paginas', listPaginas, 'paginas');
     renderAdminLinkList('admin-list-divulgadores', listDivulgadores, 'divulgadores');
+    renderAdminLinkList('admin-list-resenas', listResenas, 'resenas');
   }
 
   async function loadRealStatistics() {
@@ -1018,10 +1085,38 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   if (btnNuevoContenido && modalContenido) {
+    // Función auxiliar para cargar próximos eventos en el select
+    async function loadUpcomingEventsForFolleto() {
+      const groupEv = document.getElementById('group-cont-evento');
+      const selectEv = document.getElementById('cont-evento-id');
+      if (!selectEv) return;
+      selectEv.innerHTML = '<option value="">-- No vincular a un evento --</option>';
+      const { data: evs } = await supabaseClient.from('events').select('id, title, event_date').order('event_date', { ascending: true });
+      if (evs && evs.length > 0) {
+        selectEv.innerHTML += evs.map(e => {
+          const d = new Date(e.event_date).toLocaleDateString('es-ES');
+          return `<option value="${e.id}">${e.title} (${d})</option>`;
+        }).join('');
+      }
+    }
+
+    const selectTipoContenido = document.getElementById('cont-tipo');
+    selectTipoContenido?.addEventListener('change', async (e) => {
+      const groupEv = document.getElementById('group-cont-evento');
+      if (e.target.value === 'Folleto') {
+        if (groupEv) groupEv.style.display = 'flex';
+        await loadUpcomingEventsForFolleto();
+      } else {
+        if (groupEv) groupEv.style.display = 'none';
+      }
+    });
+
     btnNuevoContenido.addEventListener('click', async () => {
       editingId = null; // Modo creación
       document.querySelector('#modal-contenido h2').textContent = 'Añadir Nuevo Contenido';
       formContenido.reset();
+      const groupEv = document.getElementById('group-cont-evento');
+      if (groupEv) groupEv.style.display = 'none';
 
       // Cargar autores en el select
       const selectAutor = document.getElementById('cont-autor');
@@ -1036,20 +1131,26 @@ document.addEventListener('DOMContentLoaded', async function () {
     btnCerrarModal.addEventListener('click', () => {
       modalContenido.style.display = 'none';
       formContenido.reset();
+      const groupEv = document.getElementById('group-cont-evento');
+      if (groupEv) groupEv.style.display = 'none';
     });
 
     formContenido.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const content_type = document.getElementById('cont-tipo').value;
+      const fileInput = document.getElementById('cont-archivo');
+
       // Ensure any selected file has been uploaded (if cont-url still empty)
       if (fileInput?.files.length > 0 && !document.getElementById('cont-url').value) {
         const file = fileInput.files[0];
-        const MAX_SIZE = 500 * 1024;
+        const MAX_SIZE = 20 * 1024 * 1024; // 20MB
         if (file.size > MAX_SIZE) {
-          alert('El archivo supera el límite máximo de 500 KB.');
+          alert('El archivo supera el límite máximo de 20 MB.');
           return;
         }
         try {
-          const publicUrl = await uploadFileToSupabase(file);
+          const targetFolder = (content_type === 'Folleto' || file.name.toLowerCase().endsWith('.pdf')) ? 'folletos' : 'Escritos';
+          const publicUrl = await uploadFileToSupabase(file, targetFolder);
           document.getElementById('cont-url').value = publicUrl;
         } catch (err) {
           console.error(err);
@@ -1059,12 +1160,12 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
 
       const title = document.getElementById('cont-titulo').value;
-      const content_type = document.getElementById('cont-tipo').value;
       const author_id = document.getElementById('cont-autor').value || null;
       const youtube_url = document.getElementById('cont-url').value;
       const image_url = document.getElementById('cont-imagen').value || null;
       const summary = document.getElementById('cont-resumen').value;
       const published = document.getElementById('cont-publicado').checked;
+      const selectedEventId = document.getElementById('cont-evento-id')?.value;
 
       const btnSubmit = formContenido.querySelector('button[type="submit"]');
       btnSubmit.textContent = 'Guardando...';
@@ -1082,6 +1183,15 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
 
       const { error } = result;
+
+      // Si se vinculó a un evento y hay una URL de PDF/Folleto, actualizar el evento también
+      if (!error && selectedEventId && youtube_url) {
+        await supabaseClient.from('events').update({
+          pdf_url: youtube_url,
+          pdf_visible: true
+        }).eq('id', selectedEventId);
+        console.log('✅ Folleto asignado al evento con éxito.');
+      }
 
       btnSubmit.textContent = 'Guardar Contenido';
       btnSubmit.disabled = false;

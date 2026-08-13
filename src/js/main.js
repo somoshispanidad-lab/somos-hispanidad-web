@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const { data, error } = await supabaseClient
           .from('settings')
           .select('*')
-          .in('key', ['lecturas_recomendadas', 'paginas_amigas', 'divulgadores']);
+          .in('key', ['lecturas_recomendadas', 'resenas_lecturas', 'paginas_amigas', 'divulgadores']);
           
         if (error) throw error;
         
@@ -177,10 +177,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         };
 
         const lecturas = parseLinks(settingsMap['lecturas_recomendadas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        const resenas = parseLinks(settingsMap['resenas_lecturas'], []);
         const paginas = parseLinks(settingsMap['paginas_amigas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
         const divulgadores = parseLinks(settingsMap['divulgadores'], [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
 
         renderList('list-lecturas', lecturas);
+        renderList('list-resenas', resenas, '📄');
         renderList('list-paginas', paginas);
         renderList('list-divulgadores', divulgadores);
       } else {
@@ -190,12 +192,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       console.warn('⚠ Error cargando enlaces de la sección De Interés:', err.message);
       // Fallbacks
       renderList('list-lecturas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      renderList('list-resenas', [], '📄');
       renderList('list-paginas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
       renderList('list-divulgadores', [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
     }
   }
 
-  function renderList(id, links) {
+  function renderList(id, links, customIcon = '✦') {
     const el = document.getElementById(id);
     if (!el) return;
     if (!links || links.length === 0) {
@@ -205,7 +208,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     el.innerHTML = links.map(l => `
       <li class="interes-link-item">
         <a href="${l.url}" target="_blank" rel="noopener" class="interes-link-anchor">
-          <span class="interes-link-icon">✦</span>
+          <span class="interes-link-icon">${customIcon}</span>
           <span class="interes-link-text">${l.title}</span>
           <span class="interes-link-arrow">→</span>
         </a>

@@ -1674,6 +1674,7 @@
 
       <div class="interes-tabs-nav reveal">
         <button class="btn-interes-tab active" data-tab="lecturas">Lecturas Recomendadas</button>
+        <button class="btn-interes-tab" data-tab="resenas">Reseñas de lecturas</button>
         <button class="btn-interes-tab" data-tab="paginas">Páginas amigas</button>
         <button class="btn-interes-tab" data-tab="divulgadores">Divulgadores</button>
       </div>
@@ -1682,6 +1683,11 @@
         <div class="interes-tab-panel active" id="tab-lecturas">
           <ul class="interes-list" id="list-lecturas">
             <!-- Enlaces dinámicos -->
+          </ul>
+        </div>
+        <div class="interes-tab-panel" id="tab-resenas">
+          <ul class="interes-list" id="list-resenas">
+            <!-- Reseñas de lecturas PDF -->
           </ul>
         </div>
         <div class="interes-tab-panel" id="tab-paginas">
@@ -1883,7 +1889,7 @@
       const { data, error } = await supabaseClient
         .from('settings')
         .select('*')
-        .in('key', ['lecturas_recomendadas', 'paginas_amigas', 'divulgadores']);
+        .in('key', ['lecturas_recomendadas', 'resenas_lecturas', 'paginas_amigas', 'divulgadores']);
         
       if (error) throw error;
       
@@ -1904,10 +1910,12 @@
       };
 
       const lecturas = parseLinks(settingsMap['lecturas_recomendadas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      const resenas = parseLinks(settingsMap['resenas_lecturas'], []);
       const paginas = parseLinks(settingsMap['paginas_amigas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
       const divulgadores = parseLinks(settingsMap['divulgadores'], [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
 
       renderList('list-lecturas', lecturas);
+      renderList('list-resenas', resenas);
       renderList('list-paginas', paginas);
       renderList('list-divulgadores', divulgadores);
 
@@ -1915,6 +1923,7 @@
       console.warn('Error cargando enlaces de interés:', e);
       // Fallbacks
       renderList('list-lecturas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+      renderList('list-resenas', []);
       renderList('list-paginas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
       renderList('list-divulgadores', [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
     }

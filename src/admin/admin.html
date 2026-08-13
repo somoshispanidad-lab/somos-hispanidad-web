@@ -542,6 +542,29 @@
           </div>
         </div>
 
+        <!-- RESEÑAS DE LECTURAS (PDF) -->
+        <div class="ajuste-seccion-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="margin:0;">📖 Reseñas de Lecturas (PDF)</h3>
+            <span id="save-status-resenas" style="font-size:0.75rem; color:#2e7d32; background:#e8f5e9; padding:2px 8px; border-radius:12px; display:none;"></span>
+          </div>
+          <div class="links-list-container" id="admin-list-resenas">
+            <!-- Renderizado dinámico de reseñas con enlace a PDF -->
+          </div>
+          <div class="add-link-form" style="flex-direction:column; gap:10px; align-items:stretch;">
+            <input type="text" id="add-resena-title" placeholder="Título / Autor de la Reseña" class="admin-form-input-sm" style="width:100%;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <input type="file" id="add-resena-archivo" accept=".pdf" style="display:none;">
+              <button type="button" id="btn-seleccionar-pdf-resena" class="admin-btn admin-btn-outline admin-btn-sm">📄 Subir PDF al Bucket (folletos)</button>
+              <span id="resena-pdf-nombre" style="font-size:0.8rem; color:#555;"></span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="url" id="add-resena-url" placeholder="URL del PDF (https://...)" class="admin-form-input-sm" style="flex:1;">
+              <button type="button" id="btn-add-resena" class="admin-btn admin-btn-sm">+ Añadir Reseña</button>
+            </div>
+          </div>
+        </div>
+
         <button id="btn-guardar-ajustes" class="admin-btn admin-btn-primary" style="width:100%; height:45px; font-size:0.9rem;">
           💾 Guardar todos los ajustes
         </button>
@@ -628,6 +651,13 @@
           <option value="Vídeo">Vídeo</option>
           <option value="Conferencia">Conferencia</option>
         </select>
+      </div>
+      <div class="admin-form-group" id="group-cont-evento" style="display:none; background:#f0f7ff; padding:10px; border-radius:6px; border:1px solid #bfdbfe;">
+        <label style="color:#1e40af; font-weight:600;">📅 Vincular Folleto a Próximo Evento (Opcional)</label>
+        <select id="cont-evento-id" class="admin-form-input">
+          <option value="">-- No vincular a un evento --</option>
+        </select>
+        <span style="font-size:0.75rem; color:#1e3a8a; margin-top:4px;">Si seleccionas un evento, el PDF del folleto se asignará automáticamente a la ficha pública del evento.</span>
       </div>
       <div class="admin-form-group">
         <label>Autor</label>

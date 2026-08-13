@@ -1861,12 +1861,17 @@
     const currentUrl = encodeURIComponent(window.location.href);
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentUrl}&color=2c1a0e&bgcolor=faf6f0`;
   }
-  // ── LOGICA DE SECCIÓN DE INTERÉS ──
-  (async function initDeInteres() {
+</script>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="src/js/supabaseClient.js"></script>
+<script src="src/js/eventos.js"></script>
+<script>
+  (function () {
     const deInteresSection = document.getElementById('de-interes');
     if (!deInteresSection) return;
 
-    // Control de pestañas/tabs
     const tabs = deInteresSection.querySelectorAll('.btn-interes-tab');
     const panels = deInteresSection.querySelectorAll('.interes-tab-panel');
     tabs.forEach(tab => {
@@ -1881,54 +1886,56 @@
     });
 
     // Cargar enlaces desde Supabase
-    try {
-      if (typeof supabaseClient === 'undefined') {
-        throw new Error('Supabase client not loaded');
-      }
-      
-      const { data, error } = await supabaseClient
-        .from('settings')
-        .select('*')
-        .in('key', ['lecturas_recomendadas', 'resenas_lecturas', 'paginas_amigas', 'divulgadores']);
-        
-      if (error) throw error;
-      
-      const settingsMap = {};
-      data?.forEach(item => {
-        settingsMap[item.key] = item.value;
-      });
-      
-      const parseLinks = (val, def) => {
-        if (!val) return def;
-        try {
-          const parsed = JSON.parse(val);
-          if (Array.isArray(parsed)) return parsed;
-        } catch (e) {
-          if (val.startsWith('http')) return [{ title: 'Enlace', url: val }];
+    async function cargarEnlacesInteres() {
+      try {
+        if (typeof supabaseClient === 'undefined') {
+          throw new Error('Supabase client not loaded');
         }
-        return def;
-      };
+        
+        const { data, error } = await supabaseClient
+          .from('settings')
+          .select('*')
+          .in('key', ['lecturas_recomendadas', 'resenas_lecturas', 'paginas_amigas', 'divulgadores']);
+          
+        if (error) throw error;
+        
+        const settingsMap = {};
+        data?.forEach(item => {
+          settingsMap[item.key] = item.value;
+        });
+        
+        const parseLinks = (val, def) => {
+          if (!val) return def;
+          try {
+            const parsed = JSON.parse(val);
+            if (Array.isArray(parsed)) return parsed;
+          } catch (e) {
+            if (val.startsWith('http')) return [{ title: 'Enlace', url: val }];
+          }
+          return def;
+        };
 
-      const lecturas = parseLinks(settingsMap['lecturas_recomendadas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
-      const resenas = parseLinks(settingsMap['resenas_lecturas'], []);
-      const paginas = parseLinks(settingsMap['paginas_amigas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
-      const divulgadores = parseLinks(settingsMap['divulgadores'], [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+        const lecturas = parseLinks(settingsMap['lecturas_recomendadas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        const resenas = parseLinks(settingsMap['resenas_lecturas'], []);
+        const paginas = parseLinks(settingsMap['paginas_amigas'], [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        const divulgadores = parseLinks(settingsMap['divulgadores'], [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
 
-      renderList('list-lecturas', lecturas);
-      renderList('list-resenas', resenas);
-      renderList('list-paginas', paginas);
-      renderList('list-divulgadores', divulgadores);
+        renderList('list-lecturas', lecturas);
+        renderList('list-resenas', resenas, '📄');
+        renderList('list-paginas', paginas);
+        renderList('list-divulgadores', divulgadores);
 
-    } catch (e) {
-      console.warn('Error cargando enlaces de interés:', e);
-      // Fallbacks
-      renderList('list-lecturas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
-      renderList('list-resenas', []);
-      renderList('list-paginas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
-      renderList('list-divulgadores', [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+      } catch (e) {
+        console.warn('Error cargando enlaces de interés:', e);
+        // Fallbacks
+        renderList('list-lecturas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        renderList('list-resenas', [], '📄');
+        renderList('list-paginas', [{ title: 'Protocolo de Santa Pola', url: 'https://protocolodesantapola.es/' }]);
+        renderList('list-divulgadores', [{ title: 'Somos Hispanidad Torrelodones', url: 'https://www.youtube.com/@SomosHispanidadTorrelodones' }]);
+      }
     }
 
-    function renderList(id, links) {
+    function renderList(id, links, icon = '✦') {
       const el = document.getElementById(id);
       if (!el) return;
       if (!links || links.length === 0) {
@@ -1938,26 +1945,17 @@
       el.innerHTML = links.map(l => `
         <li class="interes-link-item">
           <a href="${l.url}" target="_blank" rel="noopener" class="interes-link-anchor">
-            <span class="interes-link-icon">✦</span>
+            <span class="interes-link-icon">${icon}</span>
             <span class="interes-link-text">${l.title}</span>
             <span class="interes-link-arrow">→</span>
           </a>
         </li>
       `).join('');
     }
-  })();
-</script>
-<!-- Vercel Web Analytics -->
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
 
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="src/js/supabaseClient.js"></script>
-<script src="src/js/eventos.js"></script>
-<script>
+    cargarEnlacesInteres();
+  })();
+
   document.addEventListener('DOMContentLoaded', function() {
     if (typeof renderizarEventos === 'function') {
       renderizarEventos('landing-eventos-list');

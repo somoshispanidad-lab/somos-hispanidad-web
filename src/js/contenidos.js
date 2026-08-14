@@ -110,6 +110,9 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
 
   if (filtroTipo) {
     lista = lista.filter(c => c.tipo === filtroTipo);
+  } else {
+    // Por defecto en la lista general de contenidos.html, excluir Folletos para que pertenezcan a la Agenda de Eventos y De Interés
+    lista = lista.filter(c => c.tipo !== 'Folleto');
   }
 
   if (limite > 0) {
@@ -133,14 +136,20 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
       }
     }
 
+    const isPdf = c.tipo === 'Folleto' || (c.url && c.url.toLowerCase().includes('.pdf'));
     const placeholderText = c.imagen_texto || c.tipo.toUpperCase();
-    const placeholderHtml = `<div class="post-thumb-placeholder">${placeholderText}</div>`;
+    const placeholderHtml = isPdf
+      ? `<div class="post-thumb-placeholder" style="background: linear-gradient(135deg, #2c1a0e 0%, #4a2e1b 100%); color: #e2c08d; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:180px;">
+           <span style="font-size:2.2rem;">📄</span>
+           <span style="font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.15em; font-weight:600;">DOCUMENTO PDF</span>
+         </div>`
+      : `<div class="post-thumb-placeholder">${placeholderText}</div>`;
 
     return `
     <article class="post-card reveal" id="${c.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
       ${imgSrc
         ? `<img src="${imgSrc}" alt="${c.titulo}" class="post-thumb" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-           <div class="post-thumb-placeholder" style="display:none; min-height:180px;">${placeholderText}</div>`
+           ${placeholderHtml}`
         : placeholderHtml
       }
       <div class="post-body">
@@ -149,7 +158,7 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
         <p style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${c.descripcion}</p>
         ${c.url && c.url !== '#' ? `
         <a href="${c.url}" class="post-link" target="_blank" rel="noopener">
-          ${c.tipo === 'Vídeo' ? 'Ver vídeo' : c.tipo === 'Artículo' ? 'Leer artículo' : 'Ver contenido'} →
+          ${c.tipo === 'Vídeo' ? 'Ver vídeo' : c.tipo === 'Artículo' ? 'Leer artículo' : isPdf ? 'Ver Folleto (PDF)' : 'Ver contenido'} →
         </a>` : ''}
       </div>
     </article>

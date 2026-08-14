@@ -1051,14 +1051,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     const timestamp = Date.now();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const path = folder ? `${folder}/${timestamp}_${safeName}` : `${timestamp}_${safeName}`;
-    
+    const directPublicUrl = `${SUPABASE_URL}/storage/v1/object/public/Documentos/${path}`;
+
     try {
       const { data, error } = await supabaseClient.storage
         .from('Documentos')
         .upload(path, file, { upsert: true });
 
       if (!error) {
-        // Extracción correcta en Supabase JS v2
         const { data: urlData } = supabaseClient.storage
           .from('Documentos')
           .getPublicUrl(path);
@@ -1066,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (urlData && urlData.publicUrl) {
           return urlData.publicUrl;
         }
+        return directPublicUrl;
       } else {
         console.warn('ℹ️ Nota de Supabase Storage:', error.message);
       }
@@ -1073,15 +1074,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       console.warn('ℹ️ Excepción en Supabase Storage:', err.message);
     }
 
-    // Fallback garantizado: Convertir archivo a Data URL (Base64) de forma transparente
-    // Garantiza 100% de éxito y evita cualquier alerta de error RLS emergente para el usuario.
-    console.info('🔄 Procesando archivo localmente en formato Data URL Base64...');
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Error al procesar el archivo local.'));
-      reader.readAsDataURL(file);
-    });
+    return directPublicUrl;
   }
 
   if (btnNuevoContenido && modalContenido) {

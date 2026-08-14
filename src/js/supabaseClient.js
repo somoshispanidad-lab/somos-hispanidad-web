@@ -41,11 +41,32 @@ async function getEventos() {
     todayStart.setHours(0, 0, 0, 0);
 
     if (data && data.length > 0) {
+      // Intentar cargar folletos desde contents por si pdf_url no viene en events
+      let folletosContents = [];
+      try {
+        const { data: fData } = await supabaseClient.from('contents').select('*').eq('content_type', 'Folleto').eq('published', true);
+        if (fData) folletosContents = fData;
+      } catch (fErr) {}
+
       // Filtrar eventos futuros o que se realicen hoy
       const activeEvents = data.filter(ev => new Date(ev.event_date) >= todayStart);
       const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
       return activeEvents.map(ev => {
         const d = new Date(ev.event_date);
+        
+        let pdfUrl = ev.pdf_url || null;
+        if (!pdfUrl && folletosContents.length > 0) {
+          const titleLower = ev.title.toLowerCase();
+          const match = folletosContents.find(f => {
+            const fTitle = f.title.toLowerCase();
+            const fSummary = (f.summary || '').toLowerCase();
+            return fTitle.includes(titleLower) || titleLower.includes(fTitle) || fSummary.includes(titleLower) || fTitle.includes('perú') && titleLower.includes('perú');
+          });
+          if (match && match.youtube_url) {
+            pdfUrl = match.youtube_url;
+          }
+        }
+
         return {
           id: ev.id,
           titulo: ev.title,
@@ -60,7 +81,7 @@ async function getEventos() {
           url_inscripcion: ev.registration_open ? '#inscripcion' : '#contacto',
           estado: ev.registration_open ? 'abierto' : 'proximo',
           image_url: ev.image_url,
-          pdf_url: ev.pdf_url || null,
+          pdf_url: pdfUrl,
           pdf_visible: ev.pdf_visible !== false
         };
       });

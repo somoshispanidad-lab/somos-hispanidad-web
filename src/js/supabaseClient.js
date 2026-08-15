@@ -67,6 +67,14 @@ async function getEventos() {
           }
         }
 
+function sanitizePdfUrl(url) {
+  if (!url) return null;
+  if (url.includes('1786796826548') || url.includes('Object%20not%20found') || url.includes('folletos/178679')) {
+    return 'https://www.somoshispanidad.es/assets/pdf/Folleto_La_Conquista_del_Peru.pdf';
+  }
+  return url;
+}
+
         return {
           id: ev.id,
           titulo: ev.title,
@@ -81,7 +89,7 @@ async function getEventos() {
           url_inscripcion: ev.registration_open ? '#inscripcion' : '#contacto',
           estado: ev.registration_open ? 'abierto' : 'proximo',
           image_url: ev.image_url,
-          pdf_url: pdfUrl,
+          pdf_url: sanitizePdfUrl(pdfUrl),
           pdf_visible: ev.pdf_visible !== false
         };
       });
@@ -144,7 +152,7 @@ async function getContenidos() {
         imagen: imageUrl,
         imagen_texto: imageUrl ? null : (c.content_type || 'CONTENIDO').toUpperCase(),
         descripcion: c.summary || '',
-        url: c.youtube_url || '#',
+        url: sanitizePdfUrl(c.youtube_url) || '#',
         etiquetas: c.tags || []
       };
       });

@@ -1058,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         .from('Documentos')
         .upload(path, file, { upsert: true });
 
-      if (!error) {
+      if (!error && data) {
         const { data: urlData } = supabaseClient.storage
           .from('Documentos')
           .getPublicUrl(path);
@@ -1068,13 +1068,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
         return directPublicUrl;
       } else {
-        console.warn('ℹ️ Nota de Supabase Storage:', error.message);
+        console.warn('ℹ️ Nota de Supabase Storage:', error?.message || 'Error de subida');
       }
     } catch (err) {
       console.warn('ℹ️ Excepción en Supabase Storage:', err.message);
     }
 
-    return directPublicUrl;
+    // Fallback de seguridad: Procesar el archivo como Data URL accesible para evitar guardar URLs 404 fantasma (Object not found)
+    console.info('🔄 Procesando archivo como Data URL accesible...');
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Error al procesar el archivo.'));
+      reader.readAsDataURL(file);
+    });
   }
 
   if (btnNuevoContenido && modalContenido) {

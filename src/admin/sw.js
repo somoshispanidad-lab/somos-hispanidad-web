@@ -1,4 +1,4 @@
-const CACHE_NAME = 'admin-sh-cache-v12';
+const CACHE_NAME = 'admin-sh-cache-v13';
 
 self.addEventListener('install', event => {
   self.skipWaiting();

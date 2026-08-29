@@ -20,6 +20,23 @@ console.log('✅ Supabase conectado:', SUPABASE_URL);
 
 
 // ═══════════════════════════════════════════════════════════
+// UTILIDADES
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Sanitiza URLs de PDFs problemáticas (Object not found, etc.)
+ * para evitar mostrar links rotos al usuario.
+ */
+function sanitizePdfUrl(url) {
+  if (!url) return null;
+  if (url.includes('1786796826548') || url.includes('Object%20not%20found') || url.includes('folletos/178679')) {
+    return 'https://www.somoshispanidad.es/assets/pdf/Folleto_La_Conquista_del_Peru.pdf';
+  }
+  return url;
+}
+
+
+// ═══════════════════════════════════════════════════════════
 // LECTURA (GET)
 // ═══════════════════════════════════════════════════════════
 
@@ -66,14 +83,6 @@ async function getEventos() {
             pdfUrl = match.youtube_url;
           }
         }
-
-function sanitizePdfUrl(url) {
-  if (!url) return null;
-  if (url.includes('1786796826548') || url.includes('Object%20not%20found') || url.includes('folletos/178679')) {
-    return 'https://www.somoshispanidad.es/assets/pdf/Folleto_La_Conquista_del_Peru.pdf';
-  }
-  return url;
-}
 
         return {
           id: ev.id,

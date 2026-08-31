@@ -131,6 +131,73 @@ function marcarPaginaActiva() {
   document.head.appendChild(script);
 })();
 
+
+// ── MEGAMENÚ HOVER "DE INTERÉS" ──────────────────────
+(function initInteresDropdown() {
+  const li = document.getElementById('nav-item-interes');
+  if (!li) return;
+
+  const trigger = li.querySelector('.nav-link-interes');
+  let openTimer, closeTimer;
+
+  function openDropdown() {
+    clearTimeout(closeTimer);
+    openTimer = setTimeout(function () {
+      li.classList.add('open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    }, 80); // pequeño delay anti-parpadeo
+  }
+
+  function closeDropdown() {
+    clearTimeout(openTimer);
+    closeTimer = setTimeout(function () {
+      li.classList.remove('open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }, 150); // delay cierre: evita cerrar al cruzar el gap
+  }
+
+  li.addEventListener('mouseenter', openDropdown);
+  li.addEventListener('mouseleave', closeDropdown);
+
+  // Cerrar con tecla Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDropdown();
+  });
+
+  // Cerrar al hacer click fuera del dropdown
+  document.addEventListener('click', function (e) {
+    if (!li.contains(e.target)) closeDropdown();
+  });
+})();
+
+
+// ── DEEP-LINK HACIA TABS DE "DE INTERÉS" ────────────
+// Al hacer click en un item del dropdown o del acordeón móvil,
+// tras el scroll activa automáticamente el tab correspondiente.
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-goto-tab]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      const tabId = this.dataset.gotoTab;
+      setTimeout(function () {
+        const tab = document.querySelector('.btn-interes-tab[data-tab="' + tabId + '"]');
+        if (tab) tab.click();
+      }, 600); // espera a que termine el scroll suave
+    });
+  });
+
+  // ── ACORDEÓN MÓVIL "DE INTERÉS" ────────────────────
+  const mobileTrigger = document.querySelector('.mobile-dropdown-trigger');
+  const mobilePanel   = document.getElementById('mobile-interes-panel');
+  if (mobileTrigger && mobilePanel) {
+    mobileTrigger.addEventListener('click', function () {
+      const isOpen = mobileTrigger.getAttribute('aria-expanded') === 'true';
+      mobileTrigger.setAttribute('aria-expanded', String(!isOpen));
+      mobilePanel.hidden = isOpen;
+    });
+  }
+});
+
+
 // ── CARGA DINÁMICA DE LA SECCIÓN "DE INTERÉS" Y VISITAS ───────
 document.addEventListener('DOMContentLoaded', async function () {
   const deInteresSection = document.getElementById('de-interes');

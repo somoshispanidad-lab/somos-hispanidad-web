@@ -133,23 +133,22 @@ function marcarPaginaActiva() {
 
 
 // ── MEGAMENÚ HOVER "DE INTERÉS" ──────────────────────
-(function initInteresDropdown() {
+// El hover se activa principalmente por CSS (:hover en el <li>).
+// El JS añade soporte de accesibilidad (aria-expanded, Escape, click-outside).
+document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
   const li = document.getElementById('nav-item-interes');
   if (!li) return;
 
   const trigger = li.querySelector('.nav-link-interes');
-  let openTimer, closeTimer;
+  let closeTimer;
 
   function openDropdown() {
-    clearTimeout(closeTimer);
-    openTimer = setTimeout(function () {
-      li.classList.add('open');
-      if (trigger) trigger.setAttribute('aria-expanded', 'true');
-    }, 80); // pequeño delay anti-parpadeo
+    li.classList.add('open');
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
   }
 
   function closeDropdown() {
-    clearTimeout(openTimer);
+    clearTimeout(closeTimer);
     closeTimer = setTimeout(function () {
       li.classList.remove('open');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
@@ -168,7 +167,7 @@ function marcarPaginaActiva() {
   document.addEventListener('click', function (e) {
     if (!li.contains(e.target)) closeDropdown();
   });
-})();
+});
 
 
 // ── DEEP-LINK HACIA TABS DE "DE INTERÉS" ────────────

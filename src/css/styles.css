@@ -1936,6 +1936,7 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   opacity: 0.7;
 }
 
+.nav-item-dropdown:hover .nav-dropdown-arrow,
 .nav-item-dropdown.open .nav-dropdown-arrow {
   transform: rotate(180deg);
   opacity: 1;
@@ -1961,7 +1962,8 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   z-index: 1100;
 }
 
-/* Estado visible (clase .open en el <li>) */
+/* Estado visible: por hover CSS (primario) o clase .open añadida por JS (accesibilidad) */
+.nav-item-dropdown:hover .nav-dropdown,
 .nav-item-dropdown.open .nav-dropdown {
   opacity: 1;
   visibility: visible;

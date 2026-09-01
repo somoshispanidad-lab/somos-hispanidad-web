@@ -1428,18 +1428,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       btnSubmit.textContent = 'Guardando...';
       btnSubmit.disabled = true;
 
-      // Payload base — siempre presente, columnas garantizadas en BD
+      // Payload completo — columnas pdf_url y pdf_visible confirmadas en BD (migración 2026-09-01)
       const payload = {
         title, event_date, location, event_type, image_url,
+        pdf_url: pdf_url || null,   // null permite borrar un PDF ya asignado
+        pdf_visible,
         description, registration_open, published
       };
-      // pdf_url y pdf_visible: columnas opcionales que requieren migracion SQL.
-      // Se incluyen solo cuando pdf_url tiene valor, para no romper el guardado
-      // si la columna todavia no existe en la BD (evita schema cache error de Supabase).
-      if (pdf_url) {
-        payload.pdf_url   = pdf_url;
-        payload.pdf_visible = pdf_visible;
-      }
 
       let result;
       if (editingId) {

@@ -26,14 +26,16 @@
 
 /* ── RESET BÁSICO ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden; /* Aquí —no en body— para no crear stacking context que clip el dropdown */
+}
 
 body {
   font-family: 'Lato', sans-serif;
   color: var(--ink);
   background-color: var(--cream);
   line-height: 1.6;
-  overflow-x: hidden;
   cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23b8926a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='4'/><path d='M12 2v4'/><path d='M12 18v4'/><path d='M4.93 4.93l2.83 2.83'/><path d='M16.24 16.24l2.83 2.83'/><path d='M2 12h4'/><path d='M18 12h4'/><path d='M4.93 19.07l2.83-2.83'/><path d='M16.24 7.76l2.83-2.83'/></svg>") 10 10, auto;
 }
 
@@ -93,6 +95,7 @@ nav.scrolled { box-shadow: 0 4px 24px var(--shadow); }
   gap: 24px;
   list-style: none;
   align-items: center;
+  overflow: visible; /* Imprescindible: permite que el dropdown desborde el ul sin clipping */
 }
 
 .nav-links a {
@@ -1954,12 +1957,13 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--sepia-light);
   border-top: 3px solid var(--gold);
+  border-radius: 0 0 8px 8px;
   box-shadow: 0 20px 56px rgba(44, 26, 14, 0.18), 0 4px 16px rgba(44, 26, 14, 0.08);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
-  z-index: 1100;
+  z-index: 9999; /* Elevado para garantizar que quede sobre cualquier stacking context */
 }
 
 /* Estado visible: por hover CSS (primario) o clase .open añadida por JS (accesibilidad) */

@@ -134,17 +134,50 @@ function marcarPaginaActiva() {
 
 // ── MEGAMENÚ HOVER "DE INTERÉS" ──────────────────────
 // El hover se activa principalmente por CSS (:hover en el <li>).
-// El JS añade soporte de accesibilidad (aria-expanded, Escape, click-outside).
+// El JS añade soporte de accesibilidad (aria-expanded, Escape, click-outside)
+// y corrección de posición cuando el panel se acerca al borde derecho del viewport.
 document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
   const li = document.getElementById('nav-item-interes');
   if (!li) return;
 
   const trigger = li.querySelector('.nav-link-interes');
+  const panel   = li.querySelector('.nav-dropdown');
   let closeTimer;
 
+  // Ajusta la alineación del panel si se sale por la derecha del viewport
+  function adjustDropdownPosition() {
+    if (!panel) return;
+    // Restablecer posición base antes de medir
+    panel.style.left      = '';
+    panel.style.right     = '';
+    panel.style.transform = '';
+
+    requestAnimationFrame(function () {
+      const rect = panel.getBoundingClientRect();
+      if (rect.right > window.innerWidth - 8) {
+        // Alinear a la derecha del <li> en lugar de centrar
+        panel.style.left      = 'auto';
+        panel.style.right     = '0';
+        panel.style.transform = 'translateY(0)';
+      } else if (rect.left < 8) {
+        // Alinear a la izquierda del <li>
+        panel.style.left      = '0';
+        panel.style.right     = 'auto';
+        panel.style.transform = 'translateY(0)';
+      } else {
+        // Centrado normal (vía CSS)
+        panel.style.left      = '50%';
+        panel.style.right     = 'auto';
+        panel.style.transform = 'translateX(-50%) translateY(0)';
+      }
+    });
+  }
+
   function openDropdown() {
+    clearTimeout(closeTimer);
     li.classList.add('open');
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    adjustDropdownPosition();
   }
 
   function closeDropdown() {

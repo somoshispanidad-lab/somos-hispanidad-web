@@ -132,73 +132,88 @@ function marcarPaginaActiva() {
 })();
 
 
-// ── MEGAMENÚ HOVER "DE INTERÉS" ──────────────────────
-// El hover se activa principalmente por CSS (:hover en el <li>).
-// El JS añade soporte de accesibilidad (aria-expanded, Escape, click-outside)
-// y corrección de posición cuando el panel se acerca al borde derecho del viewport.
+// ── MEGAMENÚ "DE INTERÉS" — PATRÓN PORTAL ────────────────
+// El panel .nav-dropdown se extrae del <nav> y se adjunta a <body>.
+// Motivo: Safari clipea compositing layers (backdrop-filter en nav) a los límites
+// del elemento, haciendo invisible cualquier hijo que se extienda más allá de 64px.
+// Al vivir en <body>, el panel está en el root stacking context y es siempre visible.
 document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
   const li = document.getElementById('nav-item-interes');
   if (!li) return;
 
   const trigger = li.querySelector('.nav-link-interes');
   const panel   = li.querySelector('.nav-dropdown');
+  if (!panel) return;
+
+  // ── Mover el panel al <body> (portal) ────────────────
+  document.body.appendChild(panel);
+
   let closeTimer;
+  let isOpen = false;
 
-  // Ajusta la alineación del panel si se sale por la derecha del viewport
-  function adjustDropdownPosition() {
-    if (!panel) return;
-    // Restablecer posición base antes de medir
-    panel.style.left      = '';
-    panel.style.right     = '';
-    panel.style.transform = '';
+  // Calcula y aplica la posición fixed del panel basada en el <li>
+  function positionPanel() {
+    const rect = li.getBoundingClientRect();
+    const panelWidth = 480; // ancho del panel (.nav-dropdown width en CSS)
 
-    requestAnimationFrame(function () {
-      const rect = panel.getBoundingClientRect();
-      if (rect.right > window.innerWidth - 8) {
-        // Alinear a la derecha del <li> en lugar de centrar
-        panel.style.left      = 'auto';
-        panel.style.right     = '0';
-        panel.style.transform = 'translateY(0)';
-      } else if (rect.left < 8) {
-        // Alinear a la izquierda del <li>
-        panel.style.left      = '0';
-        panel.style.right     = 'auto';
-        panel.style.transform = 'translateY(0)';
-      } else {
-        // Centrado normal (vía CSS)
-        panel.style.left      = '50%';
-        panel.style.right     = 'auto';
-        panel.style.transform = 'translateX(-50%) translateY(0)';
-      }
-    });
+    // Top: borde inferior del li + 10px de gap
+    const top = rect.bottom + 10;
+
+    // Left: centrado bajo el li
+    let left = rect.left + rect.width / 2 - panelWidth / 2;
+
+    // Guardar dentro del viewport con margen de 8px
+    if (left + panelWidth > window.innerWidth - 8) {
+      left = window.innerWidth - panelWidth - 8;
+    }
+    if (left < 8) left = 8;
+
+    panel.style.top  = top  + 'px';
+    panel.style.left = left + 'px';
   }
 
   function openDropdown() {
     clearTimeout(closeTimer);
-    li.classList.add('open');
+    isOpen = true;
+    positionPanel();
+    panel.classList.add('open');
+    li.classList.add('open');       // mantiene rotación de la flecha ▾
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
-    adjustDropdownPosition();
   }
 
   function closeDropdown() {
     clearTimeout(closeTimer);
     closeTimer = setTimeout(function () {
+      isOpen = false;
+      panel.classList.remove('open');
       li.classList.remove('open');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
-    }, 150); // delay cierre: evita cerrar al cruzar el gap
+    }, 150); // delay: evita cerrar al cruzar el gap li→panel
   }
 
+  // Hover en el <li> del nav
   li.addEventListener('mouseenter', openDropdown);
   li.addEventListener('mouseleave', closeDropdown);
 
-  // Cerrar con tecla Escape
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeDropdown();
+  // Hover en el panel mismo (evita cerrar al mover el ratón de li al panel)
+  panel.addEventListener('mouseenter', function () { clearTimeout(closeTimer); });
+  panel.addEventListener('mouseleave', closeDropdown);
+
+  // Reposicionar si el viewport cambia (responsive)
+  window.addEventListener('resize', function () {
+    if (isOpen) positionPanel();
   });
 
-  // Cerrar al hacer click fuera del dropdown
+  // Cerrar con tecla Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && isOpen) closeDropdown();
+  });
+
+  // Cerrar al hacer click fuera (li o panel)
   document.addEventListener('click', function (e) {
-    if (!li.contains(e.target)) closeDropdown();
+    if (!li.contains(e.target) && !panel.contains(e.target)) {
+      closeDropdown();
+    }
   });
 });
 

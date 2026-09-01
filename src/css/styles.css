@@ -2010,12 +2010,12 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   opacity: 1;
 }
 
-/* Panel principal del dropdown */
+/* Panel principal del dropdown — PORTAL: vive en <body>, posicionado vía JS */
 .nav-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
+  position: fixed;        /* Fuera del stacking context del nav (backdrop-filter) */
+  top: 0;                 /* Sobrescrito por JS en openDropdown() */
+  left: 0;                /* Sobrescrito por JS en openDropdown() */
+  transform: translateY(-8px); /* Offset inicial para la animación de entrada */
   width: 480px;
   background: rgba(245, 239, 230, 0.97);
   backdrop-filter: blur(18px);
@@ -2028,16 +2028,15 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
-  z-index: 9999; /* Elevado para garantizar que quede sobre cualquier stacking context */
+  z-index: 9999;
 }
 
-/* Estado visible: por hover CSS (primario) o clase .open añadida por JS (accesibilidad) */
-.nav-item-dropdown:hover .nav-dropdown,
-.nav-item-dropdown.open .nav-dropdown {
+/* Estado visible: clase .open añadida por JS directamente al panel (portal) */
+.nav-dropdown.open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 /* Conector invisible para evitar parpadeo entre nav y panel */

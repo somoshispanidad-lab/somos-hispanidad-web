@@ -2029,6 +2029,10 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
   pointer-events: none;
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
   z-index: 9999;
+  /* padding-top: espacio visual entre el borde del nav y el primer item.
+     JS coloca el panel a top = rect.bottom (gap=0) para que relatedTarget
+     funcione correctamente. El gap visual lo da este padding. */
+  padding-top: 10px;
 }
 
 /* Estado visible: clase .open añadida por JS directamente al panel (portal) */
@@ -2229,4 +2233,146 @@ textarea.contacto-input { resize: vertical; min-height: 120px; }
 .mobile-dropdown-panel a:hover {
   background: rgba(201, 168, 76, 0.1);
   color: var(--sepia-deep);
+}
+
+
+/* =====================================================
+   TARJETAS REDES SOCIALES — Sección "De Interés"
+   ===================================================== */
+
+.redes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+
+/* Tarjeta base */
+.red-social-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 24px;
+  text-decoration: none;
+  border-radius: 4px;
+  border: 1px solid var(--sepia-light);
+  background: var(--cream);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Barra de acento izquierda */
+.red-social-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  transition: width 0.2s ease;
+}
+
+.red-social-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 6px 24px rgba(44, 26, 14, 0.12);
+}
+
+.red-social-card:hover::before {
+  width: 6px;
+}
+
+/* Icono */
+.red-social-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.red-social-card:hover .red-social-icon {
+  transform: scale(1.08);
+}
+
+/* Info: nombre + handle */
+.red-social-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.red-social-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sepia-deep);
+  line-height: 1.2;
+}
+
+.red-social-handle {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.75rem;
+  color: var(--sepia);
+  letter-spacing: 0.02em;
+}
+
+/* Flecha derecha */
+.red-social-arrow {
+  font-family: 'Lato', sans-serif;
+  font-size: 1rem;
+  color: var(--sepia-light);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.red-social-card:hover .red-social-arrow {
+  transform: translateX(4px);
+}
+
+/* ── Instagram ── */
+.red-social-instagram::before {
+  background: linear-gradient(to bottom, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888);
+}
+
+.red-social-instagram .red-social-icon {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 20%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #fff;
+}
+
+.red-social-instagram:hover .red-social-arrow {
+  color: #dc2743;
+}
+
+/* ── YouTube ── */
+.red-social-youtube::before {
+  background: #ff0000;
+}
+
+.red-social-youtube .red-social-icon {
+  background: #ff0000;
+  color: #fff;
+}
+
+.red-social-youtube:hover .red-social-arrow {
+  color: #ff0000;
+}
+
+/* Responsive: apilado en mobile */
+@media (max-width: 500px) {
+  .red-social-card {
+    padding: 18px 16px;
+    gap: 14px;
+  }
+  .red-social-icon {
+    width: 44px;
+    height: 44px;
+  }
 }

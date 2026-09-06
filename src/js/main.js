@@ -137,6 +137,11 @@ function marcarPaginaActiva() {
 // Motivo: Safari clipea compositing layers (backdrop-filter en nav) a los límites
 // del elemento, haciendo invisible cualquier hijo que se extienda más allá de 64px.
 // Al vivir en <body>, el panel está en el root stacking context y es siempre visible.
+//
+// FIX v2: gap = 0 (panel arranca exactamente en el borde inferior del <li>),
+// espacio visual gestionado por padding-top en CSS.
+// Se añaden checks de relatedTarget en mouseleave de ambos lados (li ↔ panel)
+// y cierre explícito al hacer click en cualquier item del panel.
 document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
   const li = document.getElementById('nav-item-interes');
   if (!li) return;
@@ -152,17 +157,15 @@ document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
   let isOpen = false;
 
   // Calcula y aplica la posición fixed del panel basada en el <li>
+  // gap = 0: el panel arranca exactamente en el borde inferior del <li>.
+  // El espacio visual entre nav y panel se consigue con padding-top en CSS.
   function positionPanel() {
     const rect = li.getBoundingClientRect();
-    const panelWidth = 480; // ancho del panel (.nav-dropdown width en CSS)
+    const panelWidth = 480;
 
-    // Top: borde inferior del li + 10px de gap
-    const top = rect.bottom + 10;
-
-    // Left: centrado bajo el li
+    const top = rect.bottom; // sin gap → relatedTarget funciona de li→panel
     let left = rect.left + rect.width / 2 - panelWidth / 2;
 
-    // Guardar dentro del viewport con margen de 8px
     if (left + panelWidth > window.innerWidth - 8) {
       left = window.innerWidth - panelWidth - 8;
     }
@@ -172,32 +175,58 @@ document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
     panel.style.left = left + 'px';
   }
 
+  function forceClose() {
+    clearTimeout(closeTimer);
+    isOpen = false;
+    panel.classList.remove('open');
+    li.classList.remove('open');
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  }
+
   function openDropdown() {
     clearTimeout(closeTimer);
     isOpen = true;
     positionPanel();
     panel.classList.add('open');
-    li.classList.add('open');       // mantiene rotación de la flecha ▾
+    li.classList.add('open');
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
   }
 
   function closeDropdown() {
     clearTimeout(closeTimer);
-    closeTimer = setTimeout(function () {
-      isOpen = false;
-      panel.classList.remove('open');
-      li.classList.remove('open');
-      if (trigger) trigger.setAttribute('aria-expanded', 'false');
-    }, 150); // delay: evita cerrar al cruzar el gap li→panel
+    closeTimer = setTimeout(forceClose, 120);
   }
 
-  // Hover en el <li> del nav
+  // ── Hover en el <li> del nav ──
   li.addEventListener('mouseenter', openDropdown);
-  li.addEventListener('mouseleave', closeDropdown);
+  li.addEventListener('mouseleave', function (e) {
+    // Si el cursor va hacia el panel, no cerrar
+    const rt = e.relatedTarget;
+    if (rt && (rt === panel || panel.contains(rt))) {
+      clearTimeout(closeTimer);
+      return;
+    }
+    closeDropdown();
+  });
 
-  // Hover en el panel mismo (evita cerrar al mover el ratón de li al panel)
+  // ── Hover en el panel (cancela cierre si viene del li) ──
   panel.addEventListener('mouseenter', function () { clearTimeout(closeTimer); });
-  panel.addEventListener('mouseleave', closeDropdown);
+  panel.addEventListener('mouseleave', function (e) {
+    // Si el cursor vuelve al li, no cerrar
+    const rt = e.relatedTarget;
+    if (rt && (rt === li || li.contains(rt))) {
+      clearTimeout(closeTimer);
+      return;
+    }
+    closeDropdown();
+  });
+
+  // ── Cerrar inmediatamente al hacer click en un item ──
+  panel.addEventListener('click', function (e) {
+    if (e.target.closest('.nav-dropdown-item') || e.target.closest('.nav-dropdown-cta')) {
+      forceClose();
+    }
+  });
 
   // Reposicionar si el viewport cambia (responsive)
   window.addEventListener('resize', function () {
@@ -206,13 +235,13 @@ document.addEventListener('DOMContentLoaded', function initInteresDropdown() {
 
   // Cerrar con tecla Escape
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && isOpen) closeDropdown();
+    if (e.key === 'Escape' && isOpen) forceClose();
   });
 
   // Cerrar al hacer click fuera (li o panel)
   document.addEventListener('click', function (e) {
     if (!li.contains(e.target) && !panel.contains(e.target)) {
-      closeDropdown();
+      if (isOpen) forceClose();
     }
   });
 });
@@ -225,10 +254,15 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-goto-tab]').forEach(function (link) {
     link.addEventListener('click', function () {
       const tabId = this.dataset.gotoTab;
+      // Espera a que termine el scroll suave antes de activar el tab
       setTimeout(function () {
         const tab = document.querySelector('.btn-interes-tab[data-tab="' + tabId + '"]');
-        if (tab) tab.click();
-      }, 600); // espera a que termine el scroll suave
+        if (tab) {
+          tab.click();
+          // Scroll fino al tab nav por si el usuario llegó desde muy arriba
+          tab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 750);
     });
   });
 
@@ -237,9 +271,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobilePanel   = document.getElementById('mobile-interes-panel');
   if (mobileTrigger && mobilePanel) {
     mobileTrigger.addEventListener('click', function () {
-      const isOpen = mobileTrigger.getAttribute('aria-expanded') === 'true';
-      mobileTrigger.setAttribute('aria-expanded', String(!isOpen));
-      mobilePanel.hidden = isOpen;
+      const expanded = mobileTrigger.getAttribute('aria-expanded') === 'true';
+      mobileTrigger.setAttribute('aria-expanded', String(!expanded));
+      mobilePanel.hidden = expanded;
     });
   }
 });

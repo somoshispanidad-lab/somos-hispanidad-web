@@ -55,7 +55,7 @@ RESP=$(curl -s -X POST \
   -H "Content-Type: application/json" \
   -d "{\"name\":\"somos-hispanidad-web\",\"project\":\"${VERCEL_PROJECT_ID}\",\"target\":\"production\",\"gitSource\":{\"type\":\"github\",\"repoId\":\"${VERCEL_REPO_ID}\",\"ref\":\"main\",\"sha\":\"$SHA\"}}")
 
-DID=$(echo "$RESP" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))" 2>/dev/null)
+DID=$(echo "$RESP" | python3 -c "import sys,re; m=re.search(r'\"(?:id|uid)\":\"([^\"]+)\"', sys.stdin.read()); print(m.group(1) if m else '')" 2>/dev/null)
 
 if [[ -z "$DID" || "$DID" == "None" ]]; then
     echo "⚠️  Deploy no pudo iniciarse. Tus cambios SÍ están en GitHub."
@@ -68,7 +68,7 @@ else
         sleep 5
         ST=$(curl -s "https://api.vercel.com/v13/deployments/$DID?teamId=${VERCEL_TEAM_ID}" \
           -H "Authorization: Bearer ${VERCEL_TOKEN}" \
-          | python3 -c "import sys,json; print(json.load(sys.stdin).get('readyState','?'))" 2>/dev/null)
+          | python3 -c "import sys,re; m=re.search(r'\"readyState\":\"([^\"]+)\"', sys.stdin.read()); print(m.group(1) if m else '?')" 2>/dev/null)
         [[ "$ST" == "READY" ]] && echo "   ✅ READY — ¡deploy completado!" && break
         [[ "$ST" == "ERROR" ]] && echo "   ❌ ERROR — revisa Vercel." && break
         echo "   $((i*5))s — $ST"

@@ -157,7 +157,7 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
         <h3 class="post-title">${c.titulo}</h3>
         <p style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${c.descripcion}</p>
         ${c.url && c.url !== '#' ? `
-        <a href="${c.url}" class="post-link" target="_blank" rel="noopener">
+        <a href="${typeof resolverRutaPdf === 'function' ? resolverRutaPdf(c.url) : c.url}" class="post-link" target="_blank" rel="noopener">
           ${c.tipo === 'Vídeo' ? 'Ver vídeo' : c.tipo === 'Artículo' ? 'Leer artículo' : isPdf ? 'Ver Folleto (PDF)' : 'Ver contenido'} →
         </a>` : ''}
       </div>

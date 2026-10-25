@@ -35,6 +35,91 @@ function sanitizePdfUrl(url) {
   return url;
 }
 
+/**
+ * Resuelve rutas relativas a assets/ teniendo en cuenta el nivel del documento actual
+ * (raíz vs src/pages/ vs src/admin/).
+ */
+function resolverRutaPdf(url) {
+  if (!url) return '';
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+  const pathname = window.location.pathname || '';
+  const isInsidePages = pathname.includes('/src/pages/') || pathname.includes('/src/admin/');
+
+  // Si la ruta viene como assets/...
+  if (url.startsWith('assets/')) {
+    return isInsidePages ? '../../' + url : url;
+  }
+  // Si la ruta viene con prefijo relativo ../../assets/
+  if (url.startsWith('../../assets/')) {
+    return isInsidePages ? url : url.replace(/^\.\.\/\.\.\//, '');
+  }
+  // Si viene con barra inicial /assets/
+  if (url.startsWith('/assets/')) {
+    if (window.location.protocol === 'file:') {
+      return isInsidePages ? '../../' + url.substring(1) : url.substring(1);
+    }
+    return url;
+  }
+  return url;
+}
+
+/**
+ * Abre un PDF de forma universal y segura:
+ * - Si es Base64 (data:application/pdf...): crea un Blob y lo abre mediante ObjectURL
+ *   evitando el error 'about:blank' / 'sin título' del navegador.
+ * - Si es ruta relativa o absoluta: resuelve la ruta correcta y la abre en nueva pestaña.
+ */
+function abrirDocumentoPdf(rawUrl, titulo = 'folleto.pdf') {
+  if (!rawUrl) return;
+
+  // Caso 1: Cadena Base64
+  if (rawUrl.startsWith('data:')) {
+    try {
+      const parts = rawUrl.split(',');
+      const mime = parts[0].match(/:(.*?);/)?.[1] || 'application/pdf';
+      const bstr = atob(parts[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      const blob = new Blob([u8arr], { type: mime });
+      const blobUrl = URL.createObjectURL(blob);
+
+      const win = window.open(blobUrl, '_blank');
+      if (!win) {
+        // Fallback si el navegador o bloqueador intercepta el popup
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = (titulo && titulo.toLowerCase().endsWith('.pdf')) ? titulo : `${titulo || 'folleto'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      // Revocar después de 60 segundos para liberar memoria
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      return;
+    } catch (err) {
+      console.error('Error al decodificar y abrir PDF en Base64:', err);
+      alert('No se pudo abrir el folleto PDF. Por favor, contacta con soporte.');
+      return;
+    }
+  }
+
+  // Caso 2: URL o ruta de archivo
+  const urlFinal = resolverRutaPdf(rawUrl);
+  window.open(urlFinal, '_blank', 'noopener,noreferrer');
+}
+
+// Exponer en window para acceso global
+if (typeof window !== 'undefined') {
+  window.sanitizePdfUrl = sanitizePdfUrl;
+  window.resolverRutaPdf = resolverRutaPdf;
+  window.abrirDocumentoPdf = abrirDocumentoPdf;
+}
+
 
 // ═══════════════════════════════════════════════════════════
 // LECTURA (GET)

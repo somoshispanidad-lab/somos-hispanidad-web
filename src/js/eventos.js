@@ -45,6 +45,9 @@ const EVENTOS_SIMULADOS = [
 ];
 
 
+// Caché local de eventos cargados para acceso rápido por ID
+let eventosCargados = {};
+
 // ── FUNCIÓN: RENDERIZAR TARJETAS DE EVENTOS ───────────────
 /**
  * Genera y muestra las tarjetas de eventos en el contenedor indicado.
@@ -58,6 +61,11 @@ async function renderizarEventos(contenedorId, limite = 0) {
   // Cargar eventos desde Supabase (con fallback a simulados)
   const eventos = await getEventos();
   const lista = limite > 0 ? eventos.slice(0, limite) : eventos;
+
+  // Indexar eventos para recuperación inmediata
+  eventos.forEach(ev => {
+    if (ev && ev.id) eventosCargados[ev.id] = ev;
+  });
 
   if (lista.length === 0) {
     contenedor.innerHTML = '<p class="body-text">No hay eventos próximos en este momento. Vuelve pronto.</p>';
@@ -90,11 +98,12 @@ async function renderizarEventos(contenedorId, limite = 0) {
             </span>
           `}
           ${(ev.pdf_url && ev.pdf_visible !== false) ? `
-            <a href="${ev.pdf_url}" 
+            <a href="${ev.pdf_url.startsWith('data:') ? '#' : (typeof resolverRutaPdf === 'function' ? resolverRutaPdf(ev.pdf_url) : ev.pdf_url)}" 
                target="_blank" 
                rel="noopener noreferrer" 
-               class="btn-outline" 
-               style="font-size:0.7rem; padding:10px 22px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+               class="btn-outline btn-ver-folleto" 
+               data-event-id="${ev.id}"
+               style="font-size:0.7rem; padding:10px 22px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
               📄 Ver Folleto (PDF)
             </a>
           ` : ''}
@@ -103,14 +112,31 @@ async function renderizarEventos(contenedorId, limite = 0) {
     </div>
   `).join('');
 
-  // Delegación de eventos para auto-seleccionar en el formulario (mismo panel)
+  // Delegación de eventos para auto-seleccionar en el formulario y abrir folletos de forma segura
   contenedor.addEventListener('click', function(e) {
-    const btn = e.target.closest('.btn-inscribirse');
-    if (btn) {
-      const eventId = btn.getAttribute('data-id');
+    const btnInsc = e.target.closest('.btn-inscribirse');
+    if (btnInsc) {
+      const eventId = btnInsc.getAttribute('data-id');
       const select = document.getElementById('select-evento');
       if (select) {
         select.value = eventId;
+      }
+    }
+
+    const btnPdf = e.target.closest('.btn-ver-folleto');
+    if (btnPdf) {
+      const eventId = btnPdf.getAttribute('data-event-id');
+      const evObj = eventosCargados[eventId];
+      if (evObj && evObj.pdf_url) {
+        if (evObj.pdf_url.startsWith('data:')) {
+          e.preventDefault();
+          if (typeof abrirDocumentoPdf === 'function') {
+            abrirDocumentoPdf(evObj.pdf_url, evObj.titulo || 'folleto');
+          }
+        } else {
+          const resolved = typeof resolverRutaPdf === 'function' ? resolverRutaPdf(evObj.pdf_url) : evObj.pdf_url;
+          btnPdf.setAttribute('href', resolved);
+        }
       }
     }
   });

@@ -734,12 +734,13 @@
       </div>
       <div class="admin-form-group">
         <label>Folleto (PDF) del Evento (Bucket Supabase: Documentos/folletos)</label>
-        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
           <input type="file" id="ev-pdf-archivo" accept=".pdf" style="display:none;">
           <button id="btn-seleccionar-pdf-evento" class="admin-btn admin-btn-outline" type="button" style="padding:5px 12px; font-size:0.75rem;">📁 Subir PDF al Bucket (folletos)</button>
+          <button id="btn-previsualizar-pdf-evento" class="admin-btn admin-btn-outline" type="button" style="display:none; padding:5px 10px; font-size:0.75rem; background:#f0fdf4; color:#166534; border-color:#bbf7d0;">👁️ Ver PDF</button>
           <span id="ev-pdf-nombre" style="font-size:0.8rem; color:#555;"></span>
         </div>
-        <input type="url" id="ev-pdf-url" class="admin-form-input" placeholder="O pega la URL directa del PDF (https://...)">
+        <input type="text" id="ev-pdf-url" class="admin-form-input" placeholder="O pega la URL o ruta del PDF (https://... o assets/pdf/...)">
       </div>
       <div class="admin-form-group" style="flex-direction:row; align-items:center;">
         <input type="checkbox" id="ev-pdf-visible" checked style="margin-right:10px;">

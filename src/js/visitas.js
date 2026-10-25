@@ -30,7 +30,8 @@ function formatearFecha(isoDate) {
 function renderTarjetaVisita(v, esFutura) {
   let buttonsHtml = '';
   if (v.pdf_url) {
-    buttonsHtml += `<div style="margin-top: 25px;"><a href="${v.pdf_url}" target="_blank" class="btn-primary" style="font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Leer Reseña de la Visita →</a></div>`;
+    const pdfHref = typeof resolverRutaPdf === 'function' ? resolverRutaPdf(v.pdf_url) : v.pdf_url;
+    buttonsHtml += `<div style="margin-top: 25px;"><a href="${pdfHref}" target="_blank" class="btn-primary" style="font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Leer Reseña de la Visita →</a></div>`;
   }
   if (v.video_url) {
     buttonsHtml += `<div style="margin-top: 20px;"><a href="${v.video_url}" target="_blank" class="btn-primary" style="font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Ver Vídeo del Acto →</a></div>`;

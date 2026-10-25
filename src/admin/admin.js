@@ -986,7 +986,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('ev-imagen').value = data.image_url || '';
         document.getElementById('ev-pdf-url').value = data.pdf_url || '';
         const evPdfName = document.getElementById('ev-pdf-nombre');
-        if (evPdfName) evPdfName.textContent = data.pdf_url ? '📄 PDF cargado' : '';
+        const btnPrevPdf = document.getElementById('btn-previsualizar-pdf-evento');
+        if (evPdfName) evPdfName.textContent = data.pdf_url ? '📄 PDF asignado' : '';
+        if (btnPrevPdf) btnPrevPdf.style.display = data.pdf_url ? 'inline-flex' : 'none';
         document.getElementById('ev-pdf-visible').checked = data.pdf_visible !== false;
         document.getElementById('ev-descripcion').value = data.description || '';
         document.getElementById('ev-registro').checked = data.registration_open;
@@ -1367,6 +1369,23 @@ document.addEventListener('DOMContentLoaded', async function () {
     const evPdfInput = document.getElementById('ev-pdf-archivo');
     const btnSelectEvPdf = document.getElementById('btn-seleccionar-pdf-evento');
     const evPdfNameSpan = document.getElementById('ev-pdf-nombre');
+    const btnPreviewEvPdf = document.getElementById('btn-previsualizar-pdf-evento');
+
+    btnPreviewEvPdf?.addEventListener('click', () => {
+      const url = document.getElementById('ev-pdf-url')?.value;
+      const title = document.getElementById('ev-titulo')?.value || 'folleto-evento';
+      if (url && typeof abrirDocumentoPdf === 'function') {
+        abrirDocumentoPdf(url, title);
+      } else if (url) {
+        window.open(url, '_blank');
+      }
+    });
+
+    document.getElementById('ev-pdf-url')?.addEventListener('input', (e) => {
+      if (btnPreviewEvPdf) {
+        btnPreviewEvPdf.style.display = e.target.value.trim() ? 'inline-flex' : 'none';
+      }
+    });
 
     btnSelectEvPdf?.addEventListener('click', () => evPdfInput?.click());
 
@@ -1385,6 +1404,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const evPdfUrlInput = document.getElementById('ev-pdf-url');
         if (evPdfUrlInput) evPdfUrlInput.value = publicUrl;
         if (evPdfNameSpan) evPdfNameSpan.textContent = `✅ ${file.name}`;
+        if (btnPreviewEvPdf) btnPreviewEvPdf.style.display = 'inline-flex';
       } catch (err) {
         alert('Error al subir el folleto: ' + err.message);
         if (evPdfNameSpan) evPdfNameSpan.textContent = '❌ Error de subida';
@@ -1401,6 +1421,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       document.querySelector('#modal-evento h2').textContent = 'Añadir Nuevo Evento';
       formEvento.reset();
       if (evPdfNameSpan) evPdfNameSpan.textContent = '';
+      if (btnPreviewEvPdf) btnPreviewEvPdf.style.display = 'none';
       modalEvento.style.display = 'flex';
     });
 
@@ -1408,6 +1429,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       modalEvento.style.display = 'none';
       formEvento.reset();
       if (evPdfNameSpan) evPdfNameSpan.textContent = '';
+      if (btnPreviewEvPdf) btnPreviewEvPdf.style.display = 'none';
     });
 
     formEvento.addEventListener('submit', async (e) => {

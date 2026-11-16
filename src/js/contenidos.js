@@ -89,13 +89,48 @@ const AUTORES_SIMULADOS = [
 
 
 // ── FUNCIÓN: RENDERIZAR TARJETAS DE CONTENIDO ─────────────
+function normalizarTexto(str) {
+  return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+function actualizarBannerAutor(contenedor, filtroAutor, filtroTipo) {
+  const existing = document.getElementById('autor-filter-banner');
+  if (existing) existing.remove();
+  if (!filtroAutor || !contenedor || !contenedor.parentNode) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'autor-filter-banner';
+  banner.style.cssText = 'display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:24px; padding:12px 18px; background:var(--cream); border:1px solid var(--sepia-light);';
+
+  const label = document.createElement('span');
+  label.style.cssText = "font-family:'Lato',sans-serif; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--sepia-dark);";
+  label.textContent = `Mostrando publicaciones de: ${filtroAutor}`;
+
+  const clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.className = 'filtro-btn';
+  clearBtn.textContent = 'Ver todos los autores ✕';
+  clearBtn.addEventListener('click', function() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('autor');
+    window.history.replaceState({}, '', url.toString());
+    initFiltros('');
+    renderizarContenidos('lista-contenidos', 0, filtroTipo, '');
+  });
+
+  banner.appendChild(label);
+  banner.appendChild(clearBtn);
+  contenedor.parentNode.insertBefore(banner, contenedor);
+}
+
 /**
  * Genera tarjetas de contenido en el contenedor indicado.
  * @param {string} contenedorId - Id del elemento HTML
  * @param {number} limite - Cuántos mostrar (0 = todos)
- * @param {string} filtroTipo - Filtrar por tipo ("Artículo", "Vídeo", etc.) o vacío para todos
+ * @param {string} filtroTipo - Filtrar por tipo ("Escrito", "Vídeo", etc.) o vacío para todos
+ * @param {string} filtroAutor - Filtrar por nombre de autor o vacío para todos
  */
-async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
+async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '', filtroAutor = '') {
   const contenedor = document.getElementById(contenedorId);
   if (!contenedor) return;
 
@@ -113,6 +148,15 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
   } else {
     // Por defecto en la lista general de contenidos.html, excluir Folletos para que pertenezcan a la Agenda de Eventos y De Interés
     lista = lista.filter(c => c.tipo !== 'Folleto');
+  }
+
+  if (filtroAutor) {
+    const autorNorm = normalizarTexto(filtroAutor);
+    lista = lista.filter(c => normalizarTexto(c.autor) === autorNorm);
+  }
+
+  if (contenedorId === 'lista-contenidos') {
+    actualizarBannerAutor(contenedor, filtroAutor, filtroTipo);
   }
 
   if (limite > 0) {
@@ -136,14 +180,28 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
       }
     }
 
-    const isPdf = c.tipo === 'Folleto' || (c.url && c.url.toLowerCase().includes('.pdf'));
+    const isFolleto = c.tipo === 'Folleto';
+    const isPdf = isFolleto || (c.url && c.url.toLowerCase().includes('.pdf'));
     const placeholderText = c.imagen_texto || c.tipo.toUpperCase();
+    const pdfLabel = isFolleto
+      ? 'DOCUMENTO PDF'
+      : `${(c.tipo === 'Escrito' ? 'ARTÍCULO' : c.tipo).toUpperCase()} · PDF`;
     const placeholderHtml = isPdf
       ? `<div class="post-thumb-placeholder" style="background: linear-gradient(135deg, #2c1a0e 0%, #4a2e1b 100%); color: #e2c08d; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:180px;">
            <span style="font-size:2.2rem;">📄</span>
-           <span style="font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.15em; font-weight:600;">DOCUMENTO PDF</span>
+           <span style="font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.15em; font-weight:600;">${pdfLabel}</span>
          </div>`
       : `<div class="post-thumb-placeholder">${placeholderText}</div>`;
+
+    const ctaTexto = c.tipo === 'Vídeo'
+      ? 'Ver vídeo'
+      : isFolleto
+        ? 'Ver Folleto (PDF)'
+        : (c.tipo === 'Escrito' || c.tipo === 'Artículo')
+          ? (isPdf ? 'Leer artículo (PDF)' : 'Leer artículo')
+          : isPdf
+            ? 'Ver documento (PDF)'
+            : 'Ver contenido';
 
     return `
     <article class="post-card reveal" id="${c.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
@@ -158,7 +216,7 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '') {
         <p style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${c.descripcion}</p>
         ${c.url && c.url !== '#' ? `
         <a href="${typeof resolverRutaPdf === 'function' ? resolverRutaPdf(c.url) : c.url}" class="post-link" target="_blank" rel="noopener">
-          ${c.tipo === 'Vídeo' ? 'Ver vídeo' : c.tipo === 'Artículo' ? 'Leer artículo' : isPdf ? 'Ver Folleto (PDF)' : 'Ver contenido'} →
+          ${ctaTexto} →
         </a>` : ''}
       </div>
     </article>
@@ -188,7 +246,8 @@ async function renderizarAutores(contenedorId) {
         <p class="post-meta">${a.especialidad}</p>
         <h3 class="post-title">${a.nombre}</h3>
         <p style="font-family:'Lato',serif; font-size:0.75rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">${a.cargo}</p>
-        <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--ink-soft); line-height:1.7;">${a.bio}</p>
+        <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${a.bio}</p>
+        <a href="contenidos.html?autor=${encodeURIComponent(a.nombre)}" class="post-link" style="margin-top:auto;">Ver publicaciones →</a>
       </div>
     </div>
   `).join('');
@@ -198,14 +257,16 @@ async function renderizarAutores(contenedorId) {
 
 
 // ── FUNCIÓN: FILTROS DE CONTENIDO ─────────────────────────
-function initFiltros() {
+function initFiltros(filtroAutor = '') {
   const botones = document.querySelectorAll('[data-filtro]');
   botones.forEach(btn => {
-    btn.addEventListener('click', function() {
-      botones.forEach(b => b.classList.remove('active'));
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', function() {
+      document.querySelectorAll('[data-filtro]').forEach(b => b.classList.remove('active'));
       this.classList.add('active');
       const tipo = this.getAttribute('data-filtro');
-      renderizarContenidos('lista-contenidos', 0, tipo === 'todos' ? '' : tipo);
+      renderizarContenidos('lista-contenidos', 0, tipo === 'todos' ? '' : tipo, filtroAutor);
     });
   });
 }
@@ -214,8 +275,10 @@ function initFiltros() {
 // ── INICIALIZAR AL CARGAR LA PÁGINA ──────────────────────
 document.addEventListener('DOMContentLoaded', async function() {
   if (document.getElementById('lista-contenidos')) {
-    await renderizarContenidos('lista-contenidos');
-    initFiltros();
+    const params = new URLSearchParams(window.location.search);
+    const filtroAutor = params.get('autor') || '';
+    await renderizarContenidos('lista-contenidos', 0, '', filtroAutor);
+    initFiltros(filtroAutor);
   }
 
   if (document.getElementById('lista-autores')) {

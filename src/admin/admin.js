@@ -984,7 +984,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('ev-lugar').value = data.location || '';
         document.getElementById('ev-tipo').value = data.event_type;
         document.getElementById('ev-imagen').value = data.image_url || '';
-        document.getElementById('ev-pdf-url').value = data.pdf_url || '';
+        const evPdfUrlInput = document.getElementById('ev-pdf-url');
+        if (evPdfUrlInput) {
+          if (data.pdf_url && data.pdf_url.startsWith('data:')) {
+            evPdfUrlInput.dataset.fullDataUrl = data.pdf_url;
+            evPdfUrlInput.value = `[PDF en memoria (${Math.round(data.pdf_url.length / 1024)} KB)]`;
+          } else {
+            delete evPdfUrlInput.dataset.fullDataUrl;
+            evPdfUrlInput.value = data.pdf_url || '';
+          }
+        }
         const evPdfName = document.getElementById('ev-pdf-nombre');
         const btnPrevPdf = document.getElementById('btn-previsualizar-pdf-evento');
         if (evPdfName) evPdfName.textContent = data.pdf_url ? '📄 PDF asignado' : '';
@@ -1372,7 +1381,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const btnPreviewEvPdf = document.getElementById('btn-previsualizar-pdf-evento');
 
     btnPreviewEvPdf?.addEventListener('click', () => {
-      const url = document.getElementById('ev-pdf-url')?.value;
+      const evPdfUrlInput = document.getElementById('ev-pdf-url');
+      const url = evPdfUrlInput?.dataset.fullDataUrl || evPdfUrlInput?.value;
       const title = document.getElementById('ev-titulo')?.value || 'folleto-evento';
       if (url && typeof abrirDocumentoPdf === 'function') {
         abrirDocumentoPdf(url, title);
@@ -1382,6 +1392,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     document.getElementById('ev-pdf-url')?.addEventListener('input', (e) => {
+      delete e.target.dataset.fullDataUrl;
       if (btnPreviewEvPdf) {
         btnPreviewEvPdf.style.display = e.target.value.trim() ? 'inline-flex' : 'none';
       }
@@ -1402,7 +1413,15 @@ document.addEventListener('DOMContentLoaded', async function () {
       try {
         const publicUrl = await uploadFileToSupabase(file, 'folletos');
         const evPdfUrlInput = document.getElementById('ev-pdf-url');
-        if (evPdfUrlInput) evPdfUrlInput.value = publicUrl;
+        if (evPdfUrlInput) {
+          if (publicUrl && publicUrl.startsWith('data:')) {
+            evPdfUrlInput.dataset.fullDataUrl = publicUrl;
+            evPdfUrlInput.value = `[PDF en memoria (${Math.round(publicUrl.length / 1024)} KB)]`;
+          } else {
+            delete evPdfUrlInput.dataset.fullDataUrl;
+            evPdfUrlInput.value = publicUrl;
+          }
+        }
         if (evPdfNameSpan) evPdfNameSpan.textContent = `✅ ${file.name}`;
         if (btnPreviewEvPdf) btnPreviewEvPdf.style.display = 'inline-flex';
       } catch (err) {
@@ -1420,6 +1439,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       editingId = null; // Modo creación
       document.querySelector('#modal-evento h2').textContent = 'Añadir Nuevo Evento';
       formEvento.reset();
+      const evPdfUrlInput = document.getElementById('ev-pdf-url');
+      if (evPdfUrlInput) delete evPdfUrlInput.dataset.fullDataUrl;
       if (evPdfNameSpan) evPdfNameSpan.textContent = '';
       if (btnPreviewEvPdf) btnPreviewEvPdf.style.display = 'none';
       modalEvento.style.display = 'flex';
@@ -1428,6 +1449,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     btnCerrarModalEvento.addEventListener('click', () => {
       modalEvento.style.display = 'none';
       formEvento.reset();
+      const evPdfUrlInput = document.getElementById('ev-pdf-url');
+      if (evPdfUrlInput) delete evPdfUrlInput.dataset.fullDataUrl;
       if (evPdfNameSpan) evPdfNameSpan.textContent = '';
       if (btnPreviewEvPdf) btnPreviewEvPdf.style.display = 'none';
     });
@@ -1440,7 +1463,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       const location = document.getElementById('ev-lugar').value;
       const event_type = document.getElementById('ev-tipo').value;
       const image_url = document.getElementById('ev-imagen').value;
-      const pdf_url = document.getElementById('ev-pdf-url').value || null;
+      const evPdfUrlInput = document.getElementById('ev-pdf-url');
+      const pdf_url = evPdfUrlInput?.dataset.fullDataUrl || evPdfUrlInput?.value || null;
       const pdf_visible = document.getElementById('ev-pdf-visible').checked;
       const description = document.getElementById('ev-descripcion').value;
       const registration_open = document.getElementById('ev-registro').checked;

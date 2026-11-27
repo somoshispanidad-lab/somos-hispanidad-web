@@ -93,6 +93,37 @@ function normalizarTexto(str) {
   return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 }
 
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function sanitizeContentUrl(url, allowDataPdf = true) {
+  if (!url || url === '#') return '';
+  const trimmed = String(url).replace(/[\u0000-\u001F\u007F]/g, '').trim();
+  if (!trimmed) return '';
+  const lower = trimmed.toLowerCase();
+  if (
+    lower.startsWith('http://') ||
+    lower.startsWith('https://') ||
+    lower.startsWith('#') ||
+    (lower.startsWith('/') && !lower.startsWith('//')) ||
+    lower.startsWith('assets/') ||
+    lower.startsWith('src/') ||
+    lower.startsWith('../')
+  ) {
+    return trimmed;
+  }
+  if (allowDataPdf && /^data:application\/pdf;base64,[A-Za-z0-9+/=\s]+$/i.test(trimmed)) {
+    return trimmed;
+  }
+  return '';
+}
+
 function actualizarBannerAutor(contenedor, filtroAutor, filtroTipo) {
   const existing = document.getElementById('autor-filter-banner');
   if (existing) existing.remove();
@@ -170,7 +201,7 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '', f
 
   contenedor.innerHTML = lista.map(c => {
     // Auto-generar miniatura de YouTube si no hay imagen pero hay URL de YouTube
-    let imgSrc = c.imagen;
+    let imgSrc = sanitizeContentUrl(c.imagen, false);
     if (!imgSrc && c.url) {
       const ytMatch = c.url.match(
         /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/
@@ -180,16 +211,23 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '', f
       }
     }
 
+    const safeUrl = sanitizeContentUrl(c.url, true);
+    const isBase64Pdf = /^data:application\/pdf;base64,/i.test(safeUrl);
     const isFolleto = c.tipo === 'Folleto';
-    const isPdf = isFolleto || (c.url && c.url.toLowerCase().includes('.pdf'));
-    const placeholderText = c.imagen_texto || c.tipo.toUpperCase();
+    const isPdf = isFolleto || isBase64Pdf || (safeUrl && safeUrl.toLowerCase().includes('.pdf'));
+    const placeholderText = escapeHtml(c.imagen_texto || (c.tipo || '').toUpperCase());
     const pdfLabel = isFolleto
       ? 'DOCUMENTO PDF'
-      : `${(c.tipo === 'Escrito' ? 'ARTÍCULO' : c.tipo).toUpperCase()} · PDF`;
+      : `${escapeHtml((c.tipo === 'Escrito' ? 'ARTÍCULO' : (c.tipo || '')).toUpperCase())} · PDF`;
     const placeholderHtml = isPdf
-      ? `<div class="post-thumb-placeholder" style="background: linear-gradient(135deg, #2c1a0e 0%, #4a2e1b 100%); color: #e2c08d; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:180px;">
-           <span style="font-size:2.2rem;">📄</span>
-           <span style="font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.15em; font-weight:600;">${pdfLabel}</span>
+      ? `<div class="post-thumb-placeholder post-thumb-pdf">
+           <span class="post-thumb-pdf-badge">
+             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+               <polyline points="14 2 14 8 20 8"></polyline>
+             </svg>
+             <span>${pdfLabel}</span>
+           </span>
          </div>`
       : `<div class="post-thumb-placeholder">${placeholderText}</div>`;
 
@@ -203,24 +241,37 @@ async function renderizarContenidos(contenedorId, limite = 0, filtroTipo = '', f
             ? 'Ver documento (PDF)'
             : 'Ver contenido';
 
+    const resolvedHref = isBase64Pdf
+      ? '#'
+      : (typeof resolverRutaPdf === 'function' ? resolverRutaPdf(safeUrl) : safeUrl);
+
     return `
-    <article class="post-card reveal" id="${c.titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
+    <article class="post-card reveal" id="${(c.titulo || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}">
       ${imgSrc
-        ? `<img src="${imgSrc}" alt="${c.titulo}" class="post-thumb" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        ? `<img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(c.titulo)}" class="post-thumb" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
            ${placeholderHtml}`
         : placeholderHtml
       }
       <div class="post-body">
-        <p class="post-meta">${c.fecha} · ${c.tipo} · ${c.autor}</p>
-        <h3 class="post-title">${c.titulo}</h3>
-        <p style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${c.descripcion}</p>
-        ${c.url && c.url !== '#' ? `
-        <a href="${typeof resolverRutaPdf === 'function' ? resolverRutaPdf(c.url) : c.url}" class="post-link" target="_blank" rel="noopener">
-          ${ctaTexto} →
+        <p class="post-meta">${escapeHtml(c.fecha)} · ${escapeHtml(c.tipo)} · ${escapeHtml(c.autor)}</p>
+        <h3 class="post-title">${escapeHtml(c.titulo)}</h3>
+        <p style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${escapeHtml(c.descripcion)}</p>
+        ${safeUrl ? `
+        <a href="${escapeHtml(resolvedHref)}" class="post-link"${isBase64Pdf ? ` data-base64-pdf="${escapeHtml(safeUrl)}" data-pdf-title="${escapeHtml(c.titulo || 'documento')}"` : ' target="_blank" rel="noopener noreferrer"'}>
+          ${escapeHtml(ctaTexto)} →
         </a>` : ''}
       </div>
     </article>
   `}).join('');
+
+  contenedor.querySelectorAll('a[data-base64-pdf]').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (typeof abrirDocumentoPdf === 'function') {
+        abrirDocumentoPdf(this.getAttribute('data-base64-pdf'), this.getAttribute('data-pdf-title') || 'documento');
+      }
+    });
+  });
 
   activarReveal();
 }
@@ -233,24 +284,27 @@ async function renderizarAutores(contenedorId) {
 
   const autores = await getAutores();
 
-  contenedor.innerHTML = autores.map(a => `
+  contenedor.innerHTML = autores.map(a => {
+    const safeFoto = sanitizeContentUrl(a.imagen, false);
+    return `
     <div class="post-card reveal">
-      <div class="post-thumb-placeholder" style="aspect-ratio:1/1;">
-        ${a.imagen
-          ? `<img src="${a.imagen}" alt="${a.nombre}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-             <span style="font-size:2rem; display:none; align-items:center; justify-content:center; width:100%; height:100%;">👤</span>`
-          : '<span style="font-size:2rem; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">👤</span>'
+      <div class="post-thumb-placeholder post-thumb-autor">
+        ${safeFoto
+          ? `<img src="${escapeHtml(safeFoto)}" alt="${escapeHtml(a.nombre)}" class="post-thumb-autor-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+             <div class="post-thumb-autor-default" style="display:none;" aria-hidden="true"></div>`
+          : `<div class="post-thumb-autor-default" aria-hidden="true"></div>`
         }
       </div>
       <div class="post-body">
-        <p class="post-meta">${a.especialidad}</p>
-        <h3 class="post-title">${a.nombre}</h3>
-        <p style="font-family:'Lato',serif; font-size:0.75rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">${a.cargo}</p>
-        <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${a.bio}</p>
-        <a href="contenidos.html?autor=${encodeURIComponent(a.nombre)}" class="post-link" style="margin-top:auto;">Ver publicaciones →</a>
+        <p class="post-meta">${escapeHtml(a.especialidad)}</p>
+        <h3 class="post-title">${escapeHtml(a.nombre)}</h3>
+        <p style="font-family:'Lato',serif; font-size:0.75rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">${escapeHtml(a.cargo)}</p>
+        <p style="font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--ink-soft); line-height:1.7; margin-bottom:16px;">${escapeHtml(a.bio)}</p>
+        <a href="contenidos.html?autor=${encodeURIComponent(a.nombre || '')}" class="post-link" style="margin-top:auto;">Ver publicaciones →</a>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   activarReveal();
 }
@@ -299,8 +353,9 @@ document.addEventListener('DOMContentLoaded', async function() {
       c.titulo.toLowerCase().includes('barómetro') || 
       c.titulo.toLowerCase().includes('barometro')
     );
-    if (barometroData && barometroData.url && barometroData.url !== '#') {
-      btnBarometro.href = barometroData.url;
+    const safeBarometroUrl = barometroData ? sanitizeContentUrl(barometroData.url, false) : '';
+    if (safeBarometroUrl) {
+      btnBarometro.href = safeBarometroUrl;
     }
   }
 });

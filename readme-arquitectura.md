@@ -26,6 +26,7 @@ SOMOS AG-GH-VL/
 │   ├── js/
 │   │   ├── supabaseClient.js      # Cliente Supabase + funciones de consulta
 │   │   ├── main.js                # Animaciones globales, scroll, navbar
+│   │   ├── buscador.js            # Buscador global 100 % en el navegador
 │   │   ├── contenidos.js          # Renderizado de contenidos en web pública
 │   │   ├── eventos.js             # Renderizado de eventos en web pública
 │   │   └── contacto.js            # Formulario de contacto (Supabase + EmailJS)

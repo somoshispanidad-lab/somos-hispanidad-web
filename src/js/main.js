@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded', function () {
   marcarPaginaActiva();
 
 
+  // ── BUSCADOR GLOBAL EN EL MENÚ ────────────────────────
+  iniciarBuscadorGlobal();
+
+
   // ── GENERAR CÓDIGO QR DINÁMICO EN EL FOOTER ───────────
   const qrImg = document.getElementById('footer-qr');
   if (qrImg) {
@@ -57,6 +61,28 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 });
+
+
+// ── FUNCIÓN: conectar buscador global al menú ─────────────
+function iniciarBuscadorGlobal() {
+  if (window.SomosBuscador && typeof window.SomosBuscador.init === 'function') {
+    window.SomosBuscador.init();
+    return;
+  }
+
+  // Fallback defensivo si alguna página no incluyó la etiqueta <script> de buscador.js
+  if (document.querySelector('script[src*="buscador.js"]')) return;
+  const mainScript = document.querySelector('script[src*="main.js"]');
+  const base = mainScript ? mainScript.getAttribute('src').replace(/main\.js.*$/, '') : 'src/js/';
+  const script = document.createElement('script');
+  script.src = base + 'buscador.js';
+  script.onload = function () {
+    if (window.SomosBuscador && typeof window.SomosBuscador.init === 'function') {
+      window.SomosBuscador.init();
+    }
+  };
+  document.body.appendChild(script);
+}
 
 
 // ── FUNCIÓN GLOBAL: activar animaciones reveal ────────────
@@ -319,7 +345,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             const parsed = JSON.parse(val);
             if (Array.isArray(parsed)) return parsed;
           } catch (e) {
-            if (val.startsWith('http')) return [{ title: 'Enlace', url: val }];
+            if (typeof val === 'string' && (val.startsWith('https://') || val.startsWith('http://'))) {
+              return [{ title: 'Enlace', url: val }];
+            }
           }
           return def;
         };
@@ -346,22 +374,63 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   }
 
+  function sanitizeSafeLink(url) {
+    if (!url) return '';
+    const trimmed = String(url).replace(/[\u0000-\u001F\u007F]/g, '').trim();
+    const lower = trimmed.toLowerCase();
+    if (
+      lower.startsWith('https://') ||
+      lower.startsWith('http://') ||
+      (lower.startsWith('/') && !lower.startsWith('//')) ||
+      lower.startsWith('assets/')
+    ) {
+      return trimmed;
+    }
+    return '';
+  }
+
   function renderList(id, links, customIcon = '✦') {
     const el = document.getElementById(id);
     if (!el) return;
-    if (!links || links.length === 0) {
-      el.innerHTML = '<li class="interes-link-item empty">No hay enlaces disponibles.</li>';
+    el.innerHTML = '';
+
+    const validLinks = (links || []).filter(l => l && sanitizeSafeLink(l.url));
+    if (validLinks.length === 0) {
+      const emptyLi = document.createElement('li');
+      emptyLi.className = 'interes-link-item empty';
+      emptyLi.textContent = 'No hay enlaces disponibles.';
+      el.appendChild(emptyLi);
       return;
     }
-    el.innerHTML = links.map(l => `
-      <li class="interes-link-item">
-        <a href="${l.url}" target="_blank" rel="noopener" class="interes-link-anchor">
-          <span class="interes-link-icon">${customIcon}</span>
-          <span class="interes-link-text">${l.title}</span>
-          <span class="interes-link-arrow">→</span>
-        </a>
-      </li>
-    `).join('');
+
+    validLinks.forEach(l => {
+      const li = document.createElement('li');
+      li.className = 'interes-link-item';
+
+      const a = document.createElement('a');
+      a.href = sanitizeSafeLink(l.url);
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'interes-link-anchor';
+
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'interes-link-icon';
+      iconSpan.textContent = customIcon;
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'interes-link-text';
+      textSpan.textContent = l.title || 'Enlace';
+
+      const arrowSpan = document.createElement('span');
+      arrowSpan.className = 'interes-link-arrow';
+      arrowSpan.textContent = '→';
+
+      a.appendChild(iconSpan);
+      a.appendChild(textSpan);
+      a.appendChild(arrowSpan);
+      li.appendChild(a);
+      el.appendChild(li);
+    });
   }
 
   // ── REGISTRAR VISITA EN SUPABASE (DATOS REALES) ──────

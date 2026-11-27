@@ -103,6 +103,22 @@ Para activar una skill en cualquier conversación, escribe:
 
 ---
 
+### 6. 🏛️ Arquitecto de Software
+**Identificador:** `skill_arquitecto_software`
+**Ubicación activa:** `.agents/skills/arquitecto-software/SKILL.md`
+**Cuándo usarla:** Cuando necesites separar entornos (Producción vs. Test/Evolución), reorganizar carpetas, auditar la estructura del proyecto o tomar decisiones técnicas seguras sin riesgo de romper la web publicada.
+
+**Qué hace:**
+- Analiza el estado del proyecto en modo solo lectura antes de tocar nada.
+- Diseña planes de separación de código, migración o limpieza protegiendo el entorno de Producción.
+- Explica las decisiones de forma breve, clara y sin tecnicismos, pidiendo siempre tu aprobación ("OK") antes de modificar archivos.
+
+**Output:** Diagnóstico claro + ejecución controlada de cambios arquitectónicos.
+
+**Activación:** *"Usa el skill Arquitecto de Software"* o *"Actúa como Arquitecto de Software"*
+
+---
+
 ## 🗂️ Tabla Resumen
 
 | Skill | Caso de uso | Output principal |
@@ -112,6 +128,7 @@ Para activar una skill en cualquier conversación, escribe:
 | 🏗️ Web Migración | Migrar web a Dark Mode SúperLanding | Landing dark con branding original |
 | ✅ Modo Producción | QA antes de publicar | Checklist + correcciones aplicadas |
 | 🖥️ Panel de Control | Añadir admin panel a web con Supabase | admin.html + admin.js + SQL |
+| 🏛️ Arquitecto de Software | Separar entornos, organizar carpetas y decisiones técnicas | Plan seguro + separación controlada |
 
 ---
 

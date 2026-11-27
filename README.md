@@ -24,6 +24,7 @@ Asociación Cultural sin ánimo de lucro dedicada a divulgar el legado históric
     │
     ├── /js/
     │   ├── main.js         ← JavaScript general (nav, animaciones)
+    │   ├── buscador.js     ← Buscador global 100 % en el navegador
     │   ├── supabaseClient.js ← Preparado para conectar con Supabase
     │   ├── eventos.js      ← Datos y lógica de eventos
     │   ├── contenidos.js   ← Datos y lógica de contenidos y autores
